@@ -1,0 +1,553 @@
+{
+  "hinweis": "Erwartungen woertlich aus der Direktive, nicht aus dem Code abgeleitet. Es gilt ausschliesslich 256QAM.",
+  "diagnosen": [
+    {
+      "name": "Matrix sat P1/Q0",
+      "art": "sat",
+      "pegel": -75,
+      "rausch": 0,
+      "erwartet": "KEIN-SIGNAL"
+    },
+    {
+      "name": "Matrix sat P1/Q1",
+      "art": "sat",
+      "pegel": -75,
+      "rausch": 5,
+      "erwartet": "UNTERPEGEL"
+    },
+    {
+      "name": "Matrix sat P1/Q2",
+      "art": "sat",
+      "pegel": -75,
+      "rausch": 6,
+      "erwartet": "UNTERPEGEL"
+    },
+    {
+      "name": "Matrix sat P1/Q3",
+      "art": "sat",
+      "pegel": -75,
+      "rausch": 11,
+      "erwartet": "WIDERSPRUCH"
+    },
+    {
+      "name": "Matrix sat P1/Q4",
+      "art": "sat",
+      "pegel": -75,
+      "rausch": 20.5,
+      "erwartet": "UNPLAUSIBEL"
+    },
+    {
+      "name": "Matrix sat P2/Q0",
+      "art": "sat",
+      "pegel": -70,
+      "rausch": 0,
+      "erwartet": "KONFIG"
+    },
+    {
+      "name": "Matrix sat P2/Q1",
+      "art": "sat",
+      "pegel": -70,
+      "rausch": 5,
+      "erwartet": "UNTERPEGEL"
+    },
+    {
+      "name": "Matrix sat P2/Q2",
+      "art": "sat",
+      "pegel": -70,
+      "rausch": 6,
+      "erwartet": "UNTERPEGEL-GRENZ"
+    },
+    {
+      "name": "Matrix sat P2/Q3",
+      "art": "sat",
+      "pegel": -70,
+      "rausch": 11,
+      "erwartet": "RAND-UNTEN-OK"
+    },
+    {
+      "name": "Matrix sat P2/Q4",
+      "art": "sat",
+      "pegel": -70,
+      "rausch": 20.5,
+      "erwartet": "UNPLAUSIBEL"
+    },
+    {
+      "name": "Matrix sat P3/Q0",
+      "art": "sat",
+      "pegel": -65,
+      "rausch": 0,
+      "erwartet": "KONFIG"
+    },
+    {
+      "name": "Matrix sat P3/Q1",
+      "art": "sat",
+      "pegel": -65,
+      "rausch": 5,
+      "erwartet": "STOERUNG"
+    },
+    {
+      "name": "Matrix sat P3/Q2",
+      "art": "sat",
+      "pegel": -65,
+      "rausch": 6,
+      "erwartet": "STOERUNG-GRENZ"
+    },
+    {
+      "name": "Matrix sat P3/Q3",
+      "art": "sat",
+      "pegel": -65,
+      "rausch": 11,
+      "erwartet": "OK"
+    },
+    {
+      "name": "Matrix sat P3/Q4",
+      "art": "sat",
+      "pegel": -65,
+      "rausch": 20.5,
+      "erwartet": "UNPLAUSIBEL"
+    },
+    {
+      "name": "Matrix sat P5/Q0",
+      "art": "sat",
+      "pegel": -24.5,
+      "rausch": 0,
+      "erwartet": "KONFIG-ODER-UEBERPEGEL"
+    },
+    {
+      "name": "Matrix sat P5/Q1",
+      "art": "sat",
+      "pegel": -24.5,
+      "rausch": 5,
+      "erwartet": "UEBERPEGEL"
+    },
+    {
+      "name": "Matrix sat P5/Q2",
+      "art": "sat",
+      "pegel": -24.5,
+      "rausch": 6,
+      "erwartet": "UEBERPEGEL-GRENZ"
+    },
+    {
+      "name": "Matrix sat P5/Q3",
+      "art": "sat",
+      "pegel": -24.5,
+      "rausch": 11,
+      "erwartet": "PEGEL-HOCH-OK"
+    },
+    {
+      "name": "Matrix sat P5/Q4",
+      "art": "sat",
+      "pegel": -24.5,
+      "rausch": 20.5,
+      "erwartet": "UNPLAUSIBEL"
+    },
+    {
+      "name": "Matrix kabel P1/Q0",
+      "art": "kabel",
+      "pegel": 40,
+      "rausch": 0,
+      "erwartet": "KEIN-SIGNAL"
+    },
+    {
+      "name": "Matrix kabel P1/Q1",
+      "art": "kabel",
+      "pegel": 40,
+      "rausch": 29,
+      "erwartet": "UNTERPEGEL"
+    },
+    {
+      "name": "Matrix kabel P1/Q2",
+      "art": "kabel",
+      "pegel": 40,
+      "rausch": 30,
+      "erwartet": "UNTERPEGEL"
+    },
+    {
+      "name": "Matrix kabel P1/Q3",
+      "art": "kabel",
+      "pegel": 40,
+      "rausch": 36,
+      "erwartet": "WIDERSPRUCH"
+    },
+    {
+      "name": "Matrix kabel P1/Q4",
+      "art": "kabel",
+      "pegel": 40,
+      "rausch": 42.5,
+      "erwartet": "UNPLAUSIBEL"
+    },
+    {
+      "name": "Matrix kabel P2/Q0",
+      "art": "kabel",
+      "pegel": 45,
+      "rausch": 0,
+      "erwartet": "KONFIG"
+    },
+    {
+      "name": "Matrix kabel P2/Q1",
+      "art": "kabel",
+      "pegel": 45,
+      "rausch": 29,
+      "erwartet": "UNTERPEGEL"
+    },
+    {
+      "name": "Matrix kabel P2/Q2",
+      "art": "kabel",
+      "pegel": 45,
+      "rausch": 30,
+      "erwartet": "UNTERPEGEL-GRENZ"
+    },
+    {
+      "name": "Matrix kabel P2/Q3",
+      "art": "kabel",
+      "pegel": 45,
+      "rausch": 36,
+      "erwartet": "RAND-UNTEN-OK"
+    },
+    {
+      "name": "Matrix kabel P2/Q4",
+      "art": "kabel",
+      "pegel": 45,
+      "rausch": 42.5,
+      "erwartet": "UNPLAUSIBEL"
+    },
+    {
+      "name": "Matrix kabel P3/Q0",
+      "art": "kabel",
+      "pegel": 50,
+      "rausch": 0,
+      "erwartet": "KONFIG"
+    },
+    {
+      "name": "Matrix kabel P3/Q1",
+      "art": "kabel",
+      "pegel": 50,
+      "rausch": 29,
+      "erwartet": "STOERUNG"
+    },
+    {
+      "name": "Matrix kabel P3/Q2",
+      "art": "kabel",
+      "pegel": 50,
+      "rausch": 30,
+      "erwartet": "STOERUNG-GRENZ"
+    },
+    {
+      "name": "Matrix kabel P3/Q3",
+      "art": "kabel",
+      "pegel": 50,
+      "rausch": 36,
+      "erwartet": "OK"
+    },
+    {
+      "name": "Matrix kabel P3/Q4",
+      "art": "kabel",
+      "pegel": 50,
+      "rausch": 42.5,
+      "erwartet": "UNPLAUSIBEL"
+    },
+    {
+      "name": "Matrix kabel P4/Q0",
+      "art": "kabel",
+      "pegel": 70.5,
+      "rausch": 0,
+      "erwartet": "KONFIG"
+    },
+    {
+      "name": "Matrix kabel P4/Q1",
+      "art": "kabel",
+      "pegel": 70.5,
+      "rausch": 29,
+      "erwartet": "UEBERPEGEL"
+    },
+    {
+      "name": "Matrix kabel P4/Q2",
+      "art": "kabel",
+      "pegel": 70.5,
+      "rausch": 30,
+      "erwartet": "UEBERPEGEL-BEGINN"
+    },
+    {
+      "name": "Matrix kabel P4/Q3",
+      "art": "kabel",
+      "pegel": 70.5,
+      "rausch": 36,
+      "erwartet": "RAND-OBEN-OK"
+    },
+    {
+      "name": "Matrix kabel P4/Q4",
+      "art": "kabel",
+      "pegel": 70.5,
+      "rausch": 42.5,
+      "erwartet": "UNPLAUSIBEL"
+    },
+    {
+      "name": "Matrix kabel P5/Q0",
+      "art": "kabel",
+      "pegel": 78.5,
+      "rausch": 0,
+      "erwartet": "KONFIG-ODER-UEBERPEGEL"
+    },
+    {
+      "name": "Matrix kabel P5/Q1",
+      "art": "kabel",
+      "pegel": 78.5,
+      "rausch": 29,
+      "erwartet": "UEBERPEGEL"
+    },
+    {
+      "name": "Matrix kabel P5/Q2",
+      "art": "kabel",
+      "pegel": 78.5,
+      "rausch": 30,
+      "erwartet": "UEBERPEGEL-GRENZ"
+    },
+    {
+      "name": "Matrix kabel P5/Q3",
+      "art": "kabel",
+      "pegel": 78.5,
+      "rausch": 36,
+      "erwartet": "PEGEL-HOCH-OK"
+    },
+    {
+      "name": "Matrix kabel P5/Q4",
+      "art": "kabel",
+      "pegel": 78.5,
+      "rausch": 42.5,
+      "erwartet": "UNPLAUSIBEL"
+    },
+    {
+      "name": "Schwelle sat Pegel unten exakt (-70)",
+      "art": "sat",
+      "pegel": -70,
+      "rausch": 11,
+      "erwartet": "RAND-UNTEN-OK"
+    },
+    {
+      "name": "Schwelle sat Pegel unten knapp darueber (-69.9)",
+      "art": "sat",
+      "pegel": -69.9,
+      "rausch": 11,
+      "erwartet": "RAND-UNTEN-OK"
+    },
+    {
+      "name": "Schwelle sat Pegel randUnten exakt (-65)",
+      "art": "sat",
+      "pegel": -65,
+      "rausch": 11,
+      "erwartet": "OK"
+    },
+    {
+      "name": "Schwelle sat Pegel randUnten knapp darueber (-64.9)",
+      "art": "sat",
+      "pegel": -64.9,
+      "rausch": 11,
+      "erwartet": "OK"
+    },
+    {
+      "name": "Schwelle sat Pegel ueber exakt (-25)",
+      "art": "sat",
+      "pegel": -25,
+      "rausch": 11,
+      "erwartet": "OK"
+    },
+    {
+      "name": "Schwelle sat Pegel ueber knapp darueber (-24.9)",
+      "art": "sat",
+      "pegel": -24.9,
+      "rausch": 11,
+      "erwartet": "PEGEL-HOCH-OK"
+    },
+    {
+      "name": "Schwelle sat Rauschabstand min exakt (6)",
+      "art": "sat",
+      "pegel": -65,
+      "rausch": 6,
+      "erwartet": "STOERUNG-GRENZ"
+    },
+    {
+      "name": "Schwelle sat Rauschabstand min knapp darueber (6.1)",
+      "art": "sat",
+      "pegel": -65,
+      "rausch": 6.1,
+      "erwartet": "STOERUNG-GRENZ"
+    },
+    {
+      "name": "Schwelle sat Rauschabstand soll exakt (11)",
+      "art": "sat",
+      "pegel": -65,
+      "rausch": 11,
+      "erwartet": "OK"
+    },
+    {
+      "name": "Schwelle sat Rauschabstand soll knapp darueber (11.1)",
+      "art": "sat",
+      "pegel": -65,
+      "rausch": 11.1,
+      "erwartet": "OK"
+    },
+    {
+      "name": "Schwelle sat Rauschabstand unplausibel exakt (20)",
+      "art": "sat",
+      "pegel": -65,
+      "rausch": 20,
+      "erwartet": "OK"
+    },
+    {
+      "name": "Schwelle sat Rauschabstand unplausibel knapp darueber (20.1)",
+      "art": "sat",
+      "pegel": -65,
+      "rausch": 20.1,
+      "erwartet": "UNPLAUSIBEL"
+    },
+    {
+      "name": "Schwelle kabel Pegel unten exakt (45)",
+      "art": "kabel",
+      "pegel": 45,
+      "rausch": 36,
+      "erwartet": "RAND-UNTEN-OK"
+    },
+    {
+      "name": "Schwelle kabel Pegel unten knapp darueber (45.1)",
+      "art": "kabel",
+      "pegel": 45.1,
+      "rausch": 36,
+      "erwartet": "RAND-UNTEN-OK"
+    },
+    {
+      "name": "Schwelle kabel Pegel randUnten exakt (50)",
+      "art": "kabel",
+      "pegel": 50,
+      "rausch": 36,
+      "erwartet": "OK"
+    },
+    {
+      "name": "Schwelle kabel Pegel randUnten knapp darueber (50.1)",
+      "art": "kabel",
+      "pegel": 50.1,
+      "rausch": 36,
+      "erwartet": "OK"
+    },
+    {
+      "name": "Schwelle kabel Pegel ueber exakt (78)",
+      "art": "kabel",
+      "pegel": 78,
+      "rausch": 36,
+      "erwartet": "RAND-OBEN-OK"
+    },
+    {
+      "name": "Schwelle kabel Pegel ueber knapp darueber (78.1)",
+      "art": "kabel",
+      "pegel": 78.1,
+      "rausch": 36,
+      "erwartet": "PEGEL-HOCH-OK"
+    },
+    {
+      "name": "Schwelle kabel Pegel randOben exakt (70)",
+      "art": "kabel",
+      "pegel": 70,
+      "rausch": 36,
+      "erwartet": "OK"
+    },
+    {
+      "name": "Schwelle kabel Pegel randOben knapp darueber (70.1)",
+      "art": "kabel",
+      "pegel": 70.1,
+      "rausch": 36,
+      "erwartet": "RAND-OBEN-OK"
+    },
+    {
+      "name": "Schwelle kabel Rauschabstand min exakt (30)",
+      "art": "kabel",
+      "pegel": 50,
+      "rausch": 30,
+      "erwartet": "STOERUNG-GRENZ"
+    },
+    {
+      "name": "Schwelle kabel Rauschabstand min knapp darueber (30.1)",
+      "art": "kabel",
+      "pegel": 50,
+      "rausch": 30.1,
+      "erwartet": "STOERUNG-GRENZ"
+    },
+    {
+      "name": "Schwelle kabel Rauschabstand soll exakt (36)",
+      "art": "kabel",
+      "pegel": 50,
+      "rausch": 36,
+      "erwartet": "OK"
+    },
+    {
+      "name": "Schwelle kabel Rauschabstand soll knapp darueber (36.1)",
+      "art": "kabel",
+      "pegel": 50,
+      "rausch": 36.1,
+      "erwartet": "OK"
+    },
+    {
+      "name": "Schwelle kabel Rauschabstand unplausibel exakt (42)",
+      "art": "kabel",
+      "pegel": 50,
+      "rausch": 42,
+      "erwartet": "OK"
+    },
+    {
+      "name": "Schwelle kabel Rauschabstand unplausibel knapp darueber (42.1)",
+      "art": "kabel",
+      "pegel": 50,
+      "rausch": 42.1,
+      "erwartet": "UNPLAUSIBEL"
+    },
+    {
+      "name": "Regression aus dem Anlass: sat −15 dBm / 10 dB",
+      "art": "sat",
+      "pegel": -15,
+      "rausch": 10,
+      "erwartet": "UEBERPEGEL-GRENZ"
+    }
+  ],
+  "ausserhalb": [
+    {
+      "name": "dBµV-Wert im dBm-Feld bei Satellit",
+      "art": "sat",
+      "pegel": 60,
+      "rausch": 12,
+      "nennt": "Pegel"
+    },
+    {
+      "name": "Satellit Pegel weit zu niedrig",
+      "art": "sat",
+      "pegel": -120,
+      "rausch": 12,
+      "nennt": "Pegel"
+    },
+    {
+      "name": "Satellit Rauschabstand über Messbereich",
+      "art": "sat",
+      "pegel": -50,
+      "rausch": 40,
+      "nennt": "Rauschabstand"
+    },
+    {
+      "name": "Kabel Pegel unmöglich hoch",
+      "art": "kabel",
+      "pegel": 150,
+      "rausch": 35,
+      "nennt": "Pegel"
+    },
+    {
+      "name": "Kabel MER über Messbereich",
+      "art": "kabel",
+      "pegel": 60,
+      "rausch": 60,
+      "nennt": "MER"
+    },
+    {
+      "name": "Beide Werte unmöglich",
+      "art": "sat",
+      "pegel": 0,
+      "rausch": 40,
+      "nennt": "Pegel"
+    }
+  ]
+}

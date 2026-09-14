@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- Arbeitsunterlage: nicht in Suchmaschinen aufnehmen -->
+<meta name="robots" content="noindex, nofollow">
+<title>Diagnosematrix — TV-Diagnose</title>
+<link rel="stylesheet" href="../assets/stil.css">
+<link rel="stylesheet" href="matrix.css">
+</head>
+<body>
+
+<main class="fall">
+<div class="shell">
+  <div class="track-body">
+    <h1 class="track-title">Diagnosematrix</h1>
+    <p class="mk-sub">Zeile = Pegelklasse · Spalte = Rauschabstandsklasse · Zelle = Befund</p>
+
+    <section class="sec">
+      <h2>Satellit · DVB-S/S2</h2>
+      <p class="mk-quelle">Pegel in dBm, Messbereich −90 … −10 · SNR in dB, Messbereich 0 … 25</p>
+      <div class="tw"><table class="matrixtabelle">
+  <caption>Kein oberer Randbereich definiert, deshalb entfällt P4</caption>
+  <tr>
+    <th class="mk-ecke"></th>
+    <th scope="col"><span class="mk-kl">Q0</span><span class="mk-na">kein Einrasten</span><span class="mk-br">exakt 0</span></th>
+    <th scope="col"><span class="mk-kl">Q1</span><span class="mk-na">unter Minimum</span><span class="mk-br">&lt; 6</span></th>
+    <th scope="col"><span class="mk-kl">Q2</span><span class="mk-na">Grenzbereich</span><span class="mk-br">6 … &lt;11</span></th>
+    <th scope="col"><span class="mk-kl">Q3</span><span class="mk-na">gut</span><span class="mk-br">11 … 20</span></th>
+    <th scope="col"><span class="mk-kl">Q4</span><span class="mk-na">unplausibel hoch</span><span class="mk-br">&gt; 20</span></th>
+  </tr>
+  <tr>
+    <th scope="row"><span class="mk-kl">P1</span><span class="mk-na">zu niedrig</span><span class="mk-br">&lt; −70</span></th>
+    <td class="mk-fehler">KEIN-SIGNAL</td>
+    <td class="mk-fehler">UNTERPEGEL</td>
+    <td class="mk-fehler">UNTERPEGEL</td>
+    <td class="mk-unklar">WIDERSPRUCH</td>
+    <td class="mk-unklar">UNPLAUSIBEL</td>
+  </tr>
+  <tr>
+    <th scope="row"><span class="mk-kl">P2</span><span class="mk-na">unterer Rand</span><span class="mk-br">−70 … &lt;−65</span></th>
+    <td class="mk-fehler">KONFIG</td>
+    <td class="mk-fehler">UNTERPEGEL</td>
+    <td class="mk-grenz">UNTERPEGEL-GRENZ</td>
+    <td class="mk-grenz">RAND-UNTEN-OK</td>
+    <td class="mk-unklar">UNPLAUSIBEL</td>
+  </tr>
+  <tr>
+    <th scope="row"><span class="mk-kl">P3</span><span class="mk-na">normal</span><span class="mk-br">−65 … −25</span></th>
+    <td class="mk-fehler">KONFIG</td>
+    <td class="mk-fehler">STOERUNG</td>
+    <td class="mk-grenz">STOERUNG-GRENZ</td>
+    <td class="mk-gut">OK</td>
+    <td class="mk-unklar">UNPLAUSIBEL</td>
+  </tr>
+  <tr>
+    <th scope="row"><span class="mk-kl">P5</span><span class="mk-na">zu hoch</span><span class="mk-br">&gt; −25</span></th>
+    <td class="mk-fehler">KONFIG-ODER-<br>UEBERPEGEL</td>
+    <td class="mk-fehler">UEBERPEGEL</td>
+    <td class="mk-fehler">UEBERPEGEL-GRENZ</td>
+    <td class="mk-grenz">PEGEL-HOCH-OK</td>
+    <td class="mk-unklar">UNPLAUSIBEL</td>
+  </tr>
+      </table></div>
+
+      <h2>Kabel · DVB-C, 256QAM</h2>
+      <p class="mk-quelle">Pegel in dBµV, Messbereich 20 … 100 · MER in dB, Messbereich 0 … 45</p>
+      <div class="tw"><table class="matrixtabelle">
+  <tr>
+    <th class="mk-ecke"></th>
+    <th scope="col"><span class="mk-kl">Q0</span><span class="mk-na">kein Einrasten</span><span class="mk-br">exakt 0</span></th>
+    <th scope="col"><span class="mk-kl">Q1</span><span class="mk-na">unter Minimum</span><span class="mk-br">&lt; 30</span></th>
+    <th scope="col"><span class="mk-kl">Q2</span><span class="mk-na">Grenzbereich</span><span class="mk-br">30 … &lt;36</span></th>
+    <th scope="col"><span class="mk-kl">Q3</span><span class="mk-na">gut</span><span class="mk-br">36 … 42</span></th>
+    <th scope="col"><span class="mk-kl">Q4</span><span class="mk-na">unplausibel hoch</span><span class="mk-br">&gt; 42</span></th>
+  </tr>
+  <tr>
+    <th scope="row"><span class="mk-kl">P1</span><span class="mk-na">zu niedrig</span><span class="mk-br">&lt; 45</span></th>
+    <td class="mk-fehler">KEIN-SIGNAL</td>
+    <td class="mk-fehler">UNTERPEGEL</td>
+    <td class="mk-fehler">UNTERPEGEL</td>
+    <td class="mk-unklar">WIDERSPRUCH</td>
+    <td class="mk-unklar">UNPLAUSIBEL</td>
+  </tr>
+  <tr>
+    <th scope="row"><span class="mk-kl">P2</span><span class="mk-na">unterer Rand</span><span class="mk-br">45 … &lt;50</span></th>
+    <td class="mk-fehler">KONFIG</td>
+    <td class="mk-fehler">UNTERPEGEL</td>
+    <td class="mk-grenz">UNTERPEGEL-GRENZ</td>
+    <td class="mk-grenz">RAND-UNTEN-OK</td>
+    <td class="mk-unklar">UNPLAUSIBEL</td>
+  </tr>
+  <tr>
+    <th scope="row"><span class="mk-kl">P3</span><span class="mk-na">normal</span><span class="mk-br">50 … 70</span></th>
+    <td class="mk-fehler">KONFIG</td>
+    <td class="mk-fehler">STOERUNG</td>
+    <td class="mk-grenz">STOERUNG-GRENZ</td>
+    <td class="mk-gut">OK</td>
+    <td class="mk-unklar">UNPLAUSIBEL</td>
+  </tr>
+  <tr>
+    <th scope="row"><span class="mk-kl">P4</span><span class="mk-na">oberer Rand</span><span class="mk-br">&gt;70 … 78</span></th>
+    <td class="mk-fehler">KONFIG</td>
+    <td class="mk-fehler">UEBERPEGEL</td>
+    <td class="mk-fehler">UEBERPEGEL-BEGINN</td>
+    <td class="mk-grenz">RAND-OBEN-OK</td>
+    <td class="mk-unklar">UNPLAUSIBEL</td>
+  </tr>
+  <tr>
+    <th scope="row"><span class="mk-kl">P5</span><span class="mk-na">zu hoch</span><span class="mk-br">&gt; 78</span></th>
+    <td class="mk-fehler">KONFIG-ODER-<br>UEBERPEGEL</td>
+    <td class="mk-fehler">UEBERPEGEL</td>
+    <td class="mk-fehler">UEBERPEGEL-GRENZ</td>
+    <td class="mk-grenz">PEGEL-HOCH-OK</td>
+    <td class="mk-unklar">UNPLAUSIBEL</td>
+  </tr>
+      </table></div>
+
+      <p class="mk-legende">
+        <span><i class="mk-gut"></i>gut</span>
+        <span><i class="mk-grenz"></i>grenz</span>
+        <span><i class="mk-fehler"></i>fehler</span>
+        <span><i class="mk-unklar"></i>unklar</span>
+      </p>
+
+      <p class="mk-quelle mk-fuss">Erzeugt aus assets/grenzwerte.js · <code>node dokumentation/erzeuge-matrix.cjs</code></p>
+    </section>
+  </div>
+</div>
+</main>
+
+</body>
+</html>

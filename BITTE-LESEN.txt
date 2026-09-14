@@ -1,0 +1,95 @@
+TV — Diagnose-Handbuch
+======================
+
+WORUM ES GEHT
+-------------
+Selbstdiagnose für den eigenen Fernseher: Der Empfang ist
+gestört, das Bild klötzchent oder Sender fehlen.
+
+Die erste Frage lautet immer: gibt es überhaupt ein Problem? Und
+wenn ja, welches. Das Handbuch führt Schritt für Schritt dorthin
+und erklärt dabei, was die Messwerte bedeuten und warum eine
+Maßnahme wirkt oder eben nicht. Wer es einmal durchgeht, kann den
+Fall danach nicht nur beheben, sondern versteht die Technik.
+
+
+BENUTZUNG
+---------
+Den gesamten Ordner auspacken und die Datei "index.html"
+doppelklicken. Sie öffnet sich im Browser und zeigt den
+Rechner. Das war die gesamte Installation.
+
+Es wird kein Server gebraucht, keine Internetverbindung und kein
+zusätzliches Programm. Alles funktioniert vollständig offline.
+
+WICHTIG: Der Ordner muss zusammenbleiben. Die Seiten holen sich
+Gestaltung und Funktionen aus dem Unterordner "assets". Wird nur
+index.html allein weitergegeben, fehlt beides. Zum Weitergeben
+deshalb immer den ganzen Ordner packen.
+
+Verschieben ist dagegen unproblematisch: Der Ordner darf überall
+liegen, alle Verweise sind relativ.
+
+
+AUFBAU
+------
+index.html            der Rechner, die gesamte Anwendung
+assets/grenzwerte.js  Schwellen, Diagnosen
+assets/handbuch.js    Bedienung der Seite
+assets/stil.css       Gestaltung
+
+
+DAUERHAFT GRIFFBEREIT
+---------------------
+Windows : Ordner nach "Dokumente" ziehen, index.html im Browser
+          öffnen und mit Strg+D als Lesezeichen sichern.
+macOS   : Ordner nach "Dokumente" ziehen, index.html im Browser
+          öffnen und mit Cmd+D als Lesezeichen sichern.
+
+Danach reicht ein Klick auf das Lesezeichen.
+
+
+HINWEISE
+--------
+- Die Fragen im ersten Abschnitt sind anklickbar. Sie öffnen
+  Antwortflächen und Textfelder. Wer nicht klickt, sieht nichts
+  davon — der Text bleibt wie er ist.
+
+- Aus den Antworten entsteht am Ende des Abschnitts eine Notiz
+  zum Kopieren. Sie ist frei bearbeitbar. "Reset" oben leert
+  alles für einen neuen Durchgang.
+
+- Der Überpegel-Rechner erwartet die Werte, die das Gerät
+  anzeigt. Satellit und Kabel haben verschiedene Grenzwerte,
+  deshalb oben die richtige Empfangsart wählen.
+
+- Der Abschnitt "Was gemessen wird" erklärt, warum ein hoher
+  Pegel allein nichts beweist und warum weder ein Verstärker noch
+  ein Dämpfungsglied den MER verbessert. Wer nur einen Abschnitt
+  liest, sollte diesen lesen.
+
+- Drucken (Strg+P bzw. Cmd+P) gibt die geöffnete Fallseite ohne
+  Bedienelemente aus. So entsteht bei Bedarf ein PDF.
+
+- Unter iOS führt die Vorschau der Dateien-App kein JavaScript
+  aus. Dort erscheint ein Hinweis, und die Fachinhalte sind
+  lesbar, aber Rechner und Notiz fehlen. Auf Mobilgeräten ist
+  eine Web-Adresse der zuverlässigere Weg.
+
+
+WO DIE EINSTELLUNGEN STEHEN
+---------------------------
+Signalwerte, nur sichtbar wenn Live-TV läuft:
+  Alle Einstellungen -> Support -> Schnellhilfe ->
+  Selbstdiagnose und Pflege -> RF/HDMI
+
+Signaltest, nur bei Antenne und Kabel:
+  Alle Einstellungen -> Allgemein -> Sender -> Sendereinstellung ->
+  Programmsuche und -einstellungen -> Signaltest
+
+SIMPLINK (HDMI-CEC):
+  Alle Einstellungen -> Allgemein -> Externe Geräte ->
+  HDMI-Einstellungen
+
+
+Menüwege sind modell- und firmwareabhängig.

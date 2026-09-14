@@ -1,0 +1,787 @@
+
+/* ============================================================
+   Tokens
+   ============================================================ */
+:root{
+  --bg:#FFFFFF;
+  --bg-alt:#F5F5F7;
+  --ink:#1D1D1F;
+  --ink-2:#424245;
+  --muted:#6E6E73;
+  --hairline:#D2D2D7;
+  --hairline-soft:#E8E8ED;
+  --accent:#0066CC;
+  --accent-soft:#EAF2FC;
+  --ok:#1D7A3C;
+  --ok-soft:#EAF6EE;
+  --warn:#9A5B00;
+  --warn-soft:#FCF3E6;
+  --fault:#B30F1E;
+  --fault-soft:#FBEDEF;
+  /* Neutral, bewusst ohne Blaustich: der Handlungsblock ist blau */
+  --neutral:#5A5A5A;
+  --neutral-soft:#F0F0F0;
+
+  --sans:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --mono:ui-monospace,"SF Mono",SFMono-Regular,Menlo,Consolas,monospace;
+
+  --ease:cubic-bezier(.4,0,.2,1);
+  --pad:40px;
+  /* Ohne Leiste auf breiten Bildschirmen: davon haengen der Klebepunkt
+     der Schiene und scroll-padding-top ab. */
+  --topbar-h:0px;
+  --text-w:68ch;
+  --block-w:720px;
+  --wide-w:860px;
+}
+
+/* ============================================================
+   Grundlagen
+   ============================================================ */
+*{box-sizing:border-box;}
+html{
+  scroll-behavior:smooth;
+  scroll-padding-top:calc(var(--topbar-h) + 24px);
+  -webkit-text-size-adjust:100%;
+}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--ink-2);
+  font-family:var(--sans);
+  font-size:17px;
+  line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,h4{color:var(--ink);}
+p{margin:0 0 16px;}
+a{color:var(--accent);}
+strong{font-weight:600;color:var(--ink);}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+
+.shell{max-width:1240px;margin:0 auto;padding:0 var(--pad);}
+.sr-only{
+  position:absolute;width:1px;height:1px;padding:0;margin:-1px;
+  overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0;
+}
+.hidden{display:none !important;}
+
+/* ============================================================
+   Kopfleiste — kleiner Schalter, mobil zusätzlich Sprungleiste
+   ============================================================ */
+/* Auf breiten Bildschirmen ist die Leiste leer — die Schiene steht links,
+   der Notiz-Knopf waere ihr einziger Inhalt. Sie erscheint erst dort, wo
+   sie gebraucht wird: auf schmalen Bildschirmen traegt sie die
+   Sprungleiste, die dort die Schiene ersetzt. */
+.topbar{
+  display:none;
+  position:sticky;top:0;z-index:40;
+  background:var(--bg);
+  border-bottom:1px solid var(--hairline-soft);
+}
+.topbar-row{
+  /* Seit dem Wegfall des Zurueck-Verweises steht hier nur noch die
+     Werkzeuggruppe. Ohne flex-end rutschte sie an den linken Rand. */
+  display:flex;align-items:center;justify-content:flex-end;gap:16px;
+  height:var(--topbar-h);
+}
+.topbar-name{
+  font-size:14px;color:var(--muted);
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+.switch{
+  flex:none;
+  background:transparent;border:0;border-radius:6px;
+  padding:6px 8px;margin-right:-8px;
+  font-family:inherit;font-size:14px;font-weight:600;
+  color:var(--accent);cursor:pointer;
+}
+.switch:hover{background:var(--accent-soft);}
+
+.jumpbar{display:none;padding-bottom:10px;}
+.jumpbar select{
+  width:100%;
+  padding:11px 40px 11px 13px;
+  font-family:inherit;font-size:16px;font-weight:500;
+  color:var(--ink);background-color:var(--bg-alt);
+  border:1px solid var(--hairline);border-radius:8px;
+  appearance:none;-webkit-appearance:none;
+  background-image:
+    linear-gradient(45deg,transparent 50%,var(--ink-2) 50%),
+    linear-gradient(135deg,var(--ink-2) 50%,transparent 50%);
+  background-position:calc(100% - 21px) calc(50% + 2px),calc(100% - 15px) calc(50% + 2px);
+  background-size:6px 6px,6px 6px;
+  background-repeat:no-repeat;
+}
+
+/* ============================================================
+   Spuren-Layout
+   ============================================================ */
+/* Jede Fallseite ist genau eine Spur. Ohne JavaScript bleiben die
+   Fachinhalte lesbar, nur Schiene und Erstaufnahme fehlen. */
+
+.nojs{
+  background:var(--warn-soft);border-left:3px solid var(--warn);border-radius:12px;
+  padding:20px;margin:24px 0 0;max-width:var(--block-w);
+}
+.nojs strong{display:block;color:var(--warn);margin-bottom:6px;}
+.nojs p{margin:0;color:var(--ink);}
+.track-inner{padding-bottom:96px;}
+.js .track-inner{
+  display:grid;
+  grid-template-columns:236px minmax(0,1fr);
+  gap:64px;
+  align-items:start;
+}
+.track-body{min-width:0;max-width:var(--wide-w);}
+.track-title{
+  font-size:40px;font-weight:600;letter-spacing:-.02em;line-height:1.1;
+  margin:56px 0 64px;max-width:var(--text-w);
+}
+
+/* ============================================================
+   Fortschrittsschiene
+   ============================================================ */
+.rail{display:none;}
+.js .rail{display:block;position:sticky;top:calc(var(--topbar-h) + 24px);padding-top:60px;}
+.rail-lines{position:relative;}
+.rail-list{list-style:none;margin:0;padding:0;}
+.rail-track{
+  position:absolute;left:7px;top:0;width:2px;height:0;
+  background:var(--hairline-soft);
+}
+.rail-fill{
+  position:absolute;left:0;top:0;width:2px;height:0;
+  background:var(--accent);
+  transition:height 350ms var(--ease);
+}
+.rail-item{
+  display:flex;align-items:flex-start;gap:12px;
+  padding:9px 0;
+  text-decoration:none;color:inherit;
+  border-radius:6px;
+}
+.rail-dot{flex:0 0 16px;height:22px;position:relative;}
+.rail-dot::before{
+  content:"";position:absolute;left:50%;top:50%;
+  width:8px;height:8px;margin:-4px 0 0 -4px;
+  border-radius:50%;
+  background:var(--bg);
+  border:1.5px solid var(--hairline);
+  box-shadow:0 0 0 0 var(--accent-soft);
+  transition:
+    width 200ms var(--ease),height 200ms var(--ease),margin 200ms var(--ease),
+    background-color 200ms var(--ease),border-color 200ms var(--ease),
+    box-shadow 200ms var(--ease);
+}
+.rail-label{font-size:15px;line-height:22px;font-weight:400;color:var(--muted);}
+
+.rail-item.is-done .rail-dot::before{
+  background:var(--accent);border-color:var(--accent);
+}
+.rail-item.is-done .rail-label{color:var(--ink-2);}
+
+.rail-item.is-active .rail-dot::before{
+  width:14px;height:14px;margin:-7px 0 0 -7px;
+  background:var(--accent);border-color:var(--accent);
+  box-shadow:0 0 0 5px var(--accent-soft);
+}
+.rail-item.is-active .rail-label{color:var(--ink);font-weight:600;}
+
+/* ============================================================
+   Abschnitte
+   ============================================================ */
+.sec{margin:0 0 64px;}
+.sec:last-child{margin-bottom:0;}
+.sec-num{
+  font-size:14px;color:var(--muted);margin:0 0 4px;
+}
+.sec h2{
+  font-size:28px;font-weight:600;letter-spacing:-.015em;line-height:1.2;
+  margin:0 0 14px;
+}
+.sec-head{
+  border-bottom:1px solid var(--hairline-soft);
+  padding-bottom:14px;margin-bottom:28px;
+  max-width:var(--wide-w);
+}
+.sec h3{
+  font-size:20px;font-weight:600;letter-spacing:-.005em;
+  margin:32px 0 8px;
+}
+/* Vierte Ebene: kleiner als h3, deutlich abgesetzt nach oben, damit
+   Unterpunkte eines Themenblocks als solche erkennbar bleiben. */
+.sec h4{
+  font-size:17px;font-weight:600;letter-spacing:-.005em;
+  margin:30px 0 8px;
+}
+
+/* ============================================================
+   Formeln
+   ------------------------------------------------------------
+   Eigenes Bauteil, bewusst getrennt von path: path setzt einzeilige
+   Menuewege und Transponderangaben klein und ohne Umbruch. Formeln
+   brauchen das Gegenteil — mehr Groesse, mehr Zeilenhoehe und
+   Gleichheitszeichen, die ueber mehrere Zeilen untereinander stehen.
+
+   Das leistet das Raster: eine Spalte so breit wie die laengste linke
+   Seite, eine feste schmale Spalte fuer das Zeichen, der Rest rechts.
+   ============================================================ */
+.formel{
+  background:var(--bg-alt);
+  border-radius:12px;
+  padding:18px 20px;
+  margin:14px 0;
+  max-width:var(--block-w);
+  font-family:var(--mono);
+  /* Groesse wie bei path: abgesetzt vom Fliesstext, aber nicht vergroessert.
+     Die Zeilenhoehe bleibt grosszuegig, damit Exponenten und Indizes Platz
+     haben. */
+  font-size:14px;
+  line-height:1.9;
+  color:var(--ink);
+
+  /* Das Raster liegt auf dem ganzen Block, nicht auf der einzelnen Zeile:
+     nur so wird max-content ueber alle Zeilen gemeinsam bestimmt und die
+     Gleichheitszeichen stehen wirklich untereinander. Ein Raster je Zeile
+     wuerde bei einer leeren linken Seite auf null zusammenfallen.
+     minmax(0,1fr) statt 1fr, sonst verhindert die Mindestbreite des
+     Rasterfelds den Umbruch und die Seite scrollt waagerecht. */
+  display:grid;
+  grid-template-columns:max-content 1ch minmax(0,1fr);
+  gap:0 10px;
+  align-items:baseline;
+}
+/* Die Zeile ist nur Klammer — ihre drei Felder gehoeren ins Raster des Blocks */
+.formel-zeile{display:contents;}
+.formel-zeile > span{overflow-wrap:anywhere;}
+.formel-zeile > span:nth-child(2){text-align:center;}
+/* Erklaerender Nachsatz zu einer Zeile: steht unter der rechten Spalte */
+.formel-hinweis{
+  grid-column:3;
+  font-family:var(--sans);
+  font-size:14px;
+  line-height:1.5;
+  color:var(--muted);
+}
+/* Mehrzeilige Herleitung: die Ergebniszeile bekommt Luft nach oben und
+   setzt sich damit vom Rechenweg ab. Fett wird sie im Markup.
+   Abstand ueber padding, weil display:contents keine Raender kennt. */
+.formel--herleitung .formel-zeile:last-child > span{padding-top:8px;}
+
+/* ============================================================
+   Daempfungsrechner
+   ------------------------------------------------------------
+   Bewusst als eigenes Werkzeug erkennbar: schmaler als der
+   Hauptrechner, heller Rahmen statt gefuellter Flaeche, und der
+   Auswerten-Knopf traegt keine Signalfarbe. Wer die Seite ueberfliegt,
+   soll ihn nicht fuer den Hauptrechner halten.
+   ============================================================ */
+.kdcalc{
+  max-width:560px;
+  border:1px solid var(--hairline);
+  border-radius:12px;
+  padding:18px 20px;
+  margin:16px 0 0;
+}
+.kdcalc .fset{margin-bottom:16px;}
+.kdcalc .fields{margin-bottom:16px;}
+.kdcalc-actions{margin-top:4px;}
+/* Ergebnis in der Breite des Kastens, nicht in Blockbreite.
+   Zwei Klassen, damit die Regel die spaeter notierte Breite schlaegt. */
+.ergebnis.kdcalc-out{max-width:560px;}
+.sec > p,.sec > ul,.sec > ol{max-width:var(--text-w);}
+ul.tight,ol.tight{margin:12px 0 16px;padding-left:22px;}
+ul.tight li,ol.tight li{margin-bottom:6px;}
+.small{font-size:14px;color:var(--muted);}
+
+/* ============================================================
+   Hinweisblöcke
+   ============================================================ */
+.note{
+  --tone:var(--accent);
+  --tone-bg:var(--accent-soft);
+  background:var(--tone-bg);
+  border-left:3px solid var(--tone);
+  border-radius:12px;
+  padding:24px;
+  margin:24px 0;
+  max-width:var(--block-w);
+}
+.note--ok{--tone:var(--ok);--tone-bg:var(--ok-soft);}
+.note--warn{--tone:var(--warn);--tone-bg:var(--warn-soft);}
+.note--fault{--tone:var(--fault);--tone-bg:var(--fault-soft);}
+.note-t{font-size:15px;font-weight:600;color:var(--tone);margin:0 0 8px;}
+.note p{color:var(--ink);margin:0 0 12px;}
+.note p:last-child{margin-bottom:0;}
+.note ul{margin:0;padding-left:20px;color:var(--ink);}
+.note li{margin-bottom:5px;}
+.note li:last-child{margin-bottom:0;}
+
+/* ============================================================
+   Menüweg und Code
+   ============================================================ */
+.path{
+  display:block;
+  font-family:var(--mono);font-size:14px;
+  background:var(--bg-alt);color:var(--ink);
+  border-radius:6px;
+  padding:8px 12px;
+  margin:8px 0;
+  max-width:var(--block-w);
+  overflow-x:auto;white-space:nowrap;
+}
+code{
+  font-family:var(--mono);font-size:.86em;
+  background:var(--bg-alt);color:var(--ink);
+  border-radius:6px;padding:2px 6px;
+}
+
+/* ============================================================
+   Tabellen
+   ============================================================ */
+.tw{overflow-x:auto;margin:16px 0 24px;max-width:var(--wide-w);}
+table{border-collapse:collapse;width:100%;font-size:15px;}
+thead th{
+  text-align:left;
+  font-size:12px;font-weight:600;letter-spacing:.04em;
+  text-transform:uppercase;color:var(--muted);
+  padding:0 16px 10px;
+  border-bottom:1px solid var(--hairline);
+  white-space:nowrap;
+}
+tbody td{
+  padding:14px 16px;
+  border-bottom:1px solid var(--hairline-soft);
+  vertical-align:top;
+  color:var(--ink-2);
+}
+tbody td:first-child{color:var(--ink);}
+td.num,td.mono{font-family:var(--mono);font-size:14px;white-space:nowrap;}
+
+/* Tabellen mit mehrzeiligen Zellen wirken mit Trennlinien unruhig.
+   Die Linie unter der Kopfzeile bleibt, der Zeilenabstand waechst dafuer. */
+table.table--nolines tbody td{border-bottom:0;padding-top:18px;padding-bottom:18px;}
+
+tbody tr.is-good td:first-child,
+tbody tr.is-warn td:first-child,
+tbody tr.is-bad td:first-child{position:relative;padding-left:34px;}
+tbody tr.is-good td:first-child::before,
+tbody tr.is-warn td:first-child::before,
+tbody tr.is-bad td:first-child::before{
+  content:"";position:absolute;left:16px;top:21px;
+  width:8px;height:8px;border-radius:50%;
+}
+tbody tr.is-good td:first-child::before{background:var(--ok);}
+tbody tr.is-warn td:first-child::before{background:var(--warn);}
+tbody tr.is-bad  td:first-child::before{background:var(--fault);}
+
+/* ============================================================
+   Phasen
+   ============================================================ */
+.phase{margin:0 0 8px;max-width:var(--wide-w);}
+.phase-n{font-size:14px;color:var(--muted);margin:32px 0 2px;}
+.phase h3{margin:0 0 8px;}
+.phase p,.phase ul,.phase ol{max-width:var(--text-w);}
+
+/* ============================================================
+   Rechner
+   ============================================================ */
+.calc{
+  background:var(--bg-alt);
+  border-radius:12px;
+  padding:24px;
+  margin:24px 0;
+  max-width:var(--block-w);
+}
+.fset{border:0;padding:0;margin:0 0 20px;min-width:0;}
+.fset legend{
+  font-size:15px;font-weight:600;color:var(--ink);
+  padding:0;margin-bottom:8px;
+}
+.seg{
+  display:inline-flex;flex-wrap:wrap;gap:2px;
+  background:var(--hairline-soft);
+  border-radius:10px;
+  padding:2px;
+  max-width:100%;
+}
+.seg label{position:relative;display:block;}
+.seg input{position:absolute;opacity:0;width:0;height:0;}
+.seg span{
+  display:block;
+  padding:7px 14px;
+  border-radius:8px;
+  font-size:15px;font-weight:500;
+  color:var(--ink-2);
+  cursor:pointer;user-select:none;
+  transition:background-color 150ms var(--ease),box-shadow 150ms var(--ease),color 150ms var(--ease);
+}
+.seg input:checked + span{
+  background:var(--bg);
+  color:var(--ink);
+  font-weight:600;
+  box-shadow:0 1px 3px rgba(0,0,0,.12);
+}
+.seg input:focus-visible + span{outline:2px solid var(--accent);outline-offset:2px;}
+
+.fields{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));margin-bottom:20px;}
+.field label{display:block;font-size:15px;font-weight:600;color:var(--ink);margin-bottom:6px;}
+.field .hint{display:block;font-size:13px;font-weight:400;color:var(--muted);margin-top:2px;}
+.field input[type=number]{
+  width:100%;
+  padding:10px 12px;
+  background:var(--bg);
+  border:1px solid var(--hairline);
+  border-radius:8px;
+  color:var(--ink);
+  font-family:var(--mono);font-size:16px;
+}
+.field input[type=number]:focus{
+  outline:2px solid var(--accent);outline-offset:-1px;border-color:var(--accent);
+}
+.calc-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:24px;}
+.btn{
+  border:1px solid transparent;border-radius:8px;
+  padding:11px 20px;
+  font-family:inherit;font-size:15px;font-weight:600;
+  cursor:pointer;
+}
+.btn-primary{background:var(--accent);color:#FFFFFF;}
+.btn-primary:hover{background:#0058B0;}
+.btn-secondary{background:var(--bg);color:var(--ink);border-color:var(--hairline);}
+.btn-secondary:hover{border-color:var(--ink-2);}
+
+/* ============================================================
+   Ergebnis eines Rechners: Urteil und Handlung
+   ------------------------------------------------------------
+   Genau zwei Teile. Oben ein Satz, was Sache ist, in der Farbe des
+   Zustands. Darunter blau, was zu tun ist. Die Farbe traegt die
+   Aussage nie allein — der Wortlaut benennt den Zustand ebenfalls.
+   ============================================================ */
+.ergebnis{margin:24px 0;max-width:var(--block-w);}
+.urteil{
+  /* Der Kasten traegt Befund und Begruendung. Die Zustandsfarbe faerbt
+     nur den Befund; die Begruendung bleibt neutral, sonst wird sie in
+     Braun oder Rot bei 15 px muehsam zu lesen. */
+  --ton:var(--neutral);
+  --ton-bg:var(--neutral-soft);
+  background:var(--ton-bg);
+  border-radius:12px;
+  padding:16px 20px;
+  margin:0;
+}
+.urteil--gut   {--ton:var(--ok);     --ton-bg:var(--ok-soft);}
+.urteil--grenz {--ton:var(--warn);   --ton-bg:var(--warn-soft);}
+.urteil--fehler{--ton:var(--fault);  --ton-bg:var(--fault-soft);}
+.urteil--unklar{--ton:var(--neutral);--ton-bg:var(--neutral-soft);}
+.urteil--info  {--ton:var(--accent); --ton-bg:var(--accent-soft);}
+
+.urteil-befund{
+  margin:0;
+  font-size:20px;font-weight:600;letter-spacing:-.01em;line-height:1.3;
+  color:var(--ton);
+}
+/* Erklaerung, kein Urteil: kleiner und abgesetzt, im selben Kasten. */
+.urteil-warum{
+  margin:14px 0 0;
+  font-size:17px;
+  line-height:1.5;
+  color:var(--ink-2);
+}
+.urteil-werte{
+  display:flex;align-items:center;gap:8px;flex-wrap:wrap;
+  margin:14px 0 0;
+  font-family:var(--mono);
+  font-size:14px;
+  color:var(--muted);
+}
+/* Zeichen statt Beschriftung: die Messwertzeile ist lang, ein Wort
+   daneben wuerde sie umbrechen. Tippflaeche bleibt bei 28 px.
+   Immer grau und rahmenlos — die Rueckmeldung traegt das Zeichen
+   selbst, ein Haken statt der beiden Blaetter. */
+.werte-kopieren{
+  flex:none;
+  display:inline-flex;align-items:center;justify-content:center;
+  width:28px;height:28px;padding:0;
+  background:transparent;
+  border:0;
+  border-radius:6px;
+  color:var(--muted);cursor:pointer;
+}
+.werte-kopieren svg{
+  width:15px;height:15px;
+  fill:none;stroke:currentColor;stroke-width:1.6;
+  stroke-linecap:round;stroke-linejoin:round;
+}
+.werte-kopieren:hover{background:var(--bg-alt);}
+
+.aktion{
+  background:var(--accent-soft);
+  border-radius:12px;
+  padding:16px 20px;
+  margin:8px 0 0;
+}
+.aktion-t{
+  font-size:15px;font-weight:600;color:var(--accent);
+  margin:0 0 8px;
+}
+.aktion ul{margin:0;padding-left:20px;}
+.aktion li{margin:0 0 6px;color:var(--ink);}
+.aktion li:last-child{margin-bottom:0;}
+
+/* ============================================================
+   Merksätze
+   ============================================================ */
+.rules{margin:24px 0 0;max-width:var(--block-w);border-top:1px solid var(--hairline-soft);}
+.rule{padding:20px 0;border-bottom:1px solid var(--hairline-soft);}
+.rule .k{font-size:17px;font-weight:600;color:var(--ink);margin:0 0 4px;}
+.rule .v{margin:0;color:var(--ink-2);}
+
+/* ============================================================
+   Zuständigkeit
+   ============================================================ */
+.split{display:grid;gap:20px;grid-template-columns:repeat(2,minmax(0,1fr));max-width:var(--wide-w);margin:24px 0;}
+.split .note{margin:0;max-width:none;}
+
+/* ============================================================
+   Fuß und Zurück-nach-oben
+   ============================================================ */
+.totop{
+  display:none;
+  position:fixed;right:16px;bottom:16px;z-index:50;
+  width:46px;height:46px;
+  background:var(--bg);color:var(--ink);
+  border:1px solid var(--hairline);border-radius:8px;
+  font-size:19px;line-height:1;cursor:pointer;
+  box-shadow:0 2px 10px rgba(0,0,0,.14);
+}
+
+/* ============================================================
+   Erstaufnahme — Fragen mit Antwortfeldern
+   ============================================================ */
+.q-toggle{
+  display:block;width:100%;text-align:left;
+  background:none;border:0;padding:0;margin:0;
+  font:inherit;font-weight:600;color:var(--ink);cursor:pointer;border-radius:6px;
+}
+.q-toggle:hover .q-text{text-decoration:underline;}
+.q-caret{
+  display:inline-block;width:6px;height:6px;margin-left:9px;
+  border-right:1.5px solid var(--muted);border-bottom:1.5px solid var(--muted);
+  transform:rotate(45deg);vertical-align:3px;
+}
+.q-toggle[aria-expanded="true"] .q-caret{transform:rotate(-135deg);vertical-align:0;}
+.q-answer{display:block;font-size:15px;font-weight:600;color:var(--accent);margin-top:2px;}
+.q-panel{background:var(--bg-alt);border-radius:12px;padding:18px;margin:10px 0 16px;}
+.q-group{margin-bottom:16px;}
+.q-group:last-child{margin-bottom:0;}
+.q-legend{font-size:14px;color:var(--muted);margin:0 0 8px;}
+.q-chips{display:flex;flex-wrap:wrap;gap:8px;}
+.chip{
+  background:var(--bg);color:var(--ink);
+  border:1px solid var(--hairline);border-radius:8px;
+  padding:8px 14px;font-family:inherit;font-size:15px;cursor:pointer;
+}
+.chip:hover{border-color:var(--ink-2);}
+.chip[aria-pressed="true"]{background:var(--accent);color:#FFFFFF;border-color:var(--accent);}
+/* Ein Feld je gewähltem Anschluss */
+.q-ports{margin-top:16px;display:grid;gap:10px;}
+.q-port{display:grid;grid-template-columns:150px minmax(0,1fr);gap:12px;align-items:center;}
+.q-port label{font-size:15px;color:var(--ink);font-weight:600;}
+.q-port input{
+  width:100%;padding:10px 12px;
+  background:var(--bg);border:1px solid var(--hairline);border-radius:8px;
+  color:var(--ink);font-family:inherit;font-size:16px;
+}
+.q-port input:focus{outline:2px solid var(--accent);outline-offset:-1px;border-color:var(--accent);}
+
+.q-text-field{margin-top:16px;}
+.q-text-field label{display:block;font-size:14px;color:var(--muted);margin-bottom:6px;}
+.q-text-field input{
+  width:100%;max-width:440px;padding:10px 12px;
+  background:var(--bg);border:1px solid var(--hairline);border-radius:8px;
+  color:var(--ink);font-family:inherit;font-size:16px;
+}
+.q-text-field input:focus{outline:2px solid var(--accent);outline-offset:-1px;border-color:var(--accent);}
+.q-hint{
+  margin:16px 0 0;padding:12px 14px;
+  background:var(--accent-soft);border-left:3px solid var(--accent);border-radius:8px;
+  font-size:15px;color:var(--ink);
+}
+.q-hint a{font-weight:600;white-space:nowrap;}
+
+/* ---------- Entscheidungsblock ----------
+   Zweite Ansicht auf eine Frage, immer sichtbar im Lesefluss. Auswahl und
+   Hinweis benutzen die vorhandenen Muster: .q-panel mit .chip wie bei allen
+   Fragen, .note für den Hinweis. Eigene Stile gibt es nur fürs Ein- und
+   Ausblenden. Ohne JavaScript bleibt stattdessen der statische Block stehen,
+   damit im Ausdruck und in der iOS-Vorschau alle Fälle dastehen. */
+.entscheidung{display:none;}
+.js .entscheidung{display:block;margin:24px 0;max-width:var(--block-w);}
+/* Im Panel führt der Block bereits den Inhalt an — kein Abstand nach oben,
+   sonst klafft eine Lücke zwischen Frage und Auswahl. */
+.q-panel > .entscheidung{margin:0;max-width:none;}
+.js .nur-ohne-js{display:none;}
+.note a{font-weight:600;}
+
+/* ---------- Notiz — erscheint erst mit der ersten Antwort ---------- */
+.memo{display:none;}
+.memo.has-content{
+  display:block;
+  border-top:1px solid var(--hairline-soft);
+  margin-top:44px;padding-top:28px;max-width:var(--block-w);
+}
+.memo h3{margin:0 0 10px;}
+.memo-hint{font-size:14px;color:var(--muted);margin:0 0 10px;}
+.memo-out{
+  display:block;width:100%;
+  background:var(--bg-alt);border:1px solid var(--hairline);border-radius:8px;
+  padding:14px;margin:0;
+  font-family:var(--mono);font-size:14px;line-height:1.55;color:var(--ink);
+  resize:vertical;
+}
+.memo-out:focus{outline:2px solid var(--accent);outline-offset:-1px;}
+.memo-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px;}
+.memo-status{font-size:14px;color:var(--ok);margin:10px 0 0;min-height:21px;}
+.memo-status.is-warn{color:var(--warn);}
+.topbar-tools{display:flex;align-items:center;gap:2px;flex:none;}
+.memo-jump{
+  background:transparent;border:0;border-radius:6px;
+  padding:6px 8px;font-family:inherit;font-size:14px;font-weight:600;
+  color:var(--accent);cursor:pointer;
+}
+.memo-jump:hover{background:var(--accent-soft);}
+
+/* ============================================================
+   Responsiv
+   ============================================================ */
+@media(max-width:860px){
+  :root{--pad:20px;--topbar-h:48px;}
+  .topbar{display:block;}
+  .chip{padding:12px 16px;font-size:16px;min-height:44px;}
+  .q-panel{padding:14px;}
+  .q-port{grid-template-columns:1fr;gap:6px;}
+  /* Tippflächen mindestens 44 px */
+  .q-port input,.q-text-field input,.field input[type=number]{min-height:44px;}
+  .memo-out{font-size:16px;}
+  .memo-actions .btn{flex:1 1 auto;text-align:center;}
+  .formel{padding:16px;}
+  .topbar-name{font-size:13px;}
+  html{scroll-padding-top:112px;}
+  body{font-size:16px;}
+
+
+  .jumpbar{display:block;}
+
+  .track-inner,.js .track-inner{grid-template-columns:1fr;gap:0;padding-bottom:64px;}
+  .rail,.js .rail{display:none;}
+  .track-title{font-size:30px;margin:28px 0 40px;}
+
+  .sec{margin-bottom:44px;}
+  .sec h2{font-size:24px;}
+  .sec h3{font-size:18px;margin-top:28px;}
+  .sec-head{margin-bottom:22px;}
+
+  .note{padding:18px;}
+  .split{grid-template-columns:1fr;}
+
+  /* Tabellen bis an den Bildschirmrand */
+  .tw{margin-left:calc(-1 * var(--pad));margin-right:calc(-1 * var(--pad));}
+  table{font-size:15px;}
+  thead th{padding:0 16px 10px;}
+  tbody td{padding:13px 16px;}
+  td.num,td.mono{white-space:normal;word-break:break-word;}
+  tbody tr.is-good td:first-child,
+  tbody tr.is-warn td:first-child,
+  tbody tr.is-bad td:first-child{padding-left:32px;}
+  tbody tr.is-good td:first-child::before,
+  tbody tr.is-warn td:first-child::before,
+  tbody tr.is-bad td:first-child::before{left:16px;}
+
+  /* Matrix gestapelt */
+  .matrix{display:block;}
+  .mx-top,.mx-side{display:none;}
+  .mx-cell{margin-bottom:14px;padding:18px;}
+  .mx-cell::before{
+    content:attr(data-mx);
+    display:block;font-size:13px;color:var(--muted);margin-bottom:6px;
+  }
+
+  /* Rechner */
+  .calc{padding:18px;}
+  .seg{display:flex;width:100%;}
+  .seg label{flex:1 1 auto;}
+  .seg span{text-align:center;padding:11px 14px;font-size:16px;}
+  .fields{grid-template-columns:1fr;}
+  .calc-actions .btn{flex:1 1 auto;padding:14px 20px;font-size:16px;}
+  .urteil,.aktion{padding:14px 16px;}
+  .urteil{font-size:18px;}
+
+  .path{font-size:14px;}
+  .totop{display:block;}
+}
+
+@media(max-width:400px){
+  :root{--pad:12px;}
+  /* Platz für die Knöpfe — die Spur steht direkt darunter als Überschrift */
+  .topbar-name{display:none;}
+  body{font-size:15.5px;}
+  table{font-size:13px;}
+  td.num,td.mono{font-size:13px;}
+  thead th{font-size:11px;padding:0 12px 9px;}
+  tbody td{padding:12px;}
+  tbody tr.is-good td:first-child,
+  tbody tr.is-warn td:first-child,
+  tbody tr.is-bad td:first-child{padding-left:28px;}
+  tbody tr.is-good td:first-child::before,
+  tbody tr.is-warn td:first-child::before,
+  tbody tr.is-bad td:first-child::before{left:12px;}
+  .track-title{font-size:26px;}
+  .sec h2{font-size:21px;}
+  .sec h3{font-size:17px;}
+}
+
+/* ============================================================
+   Drucken — beide Spuren vollständig, keine Bedienelemente
+   ============================================================ */
+@media print{
+  :root{--pad:0;}
+  html{scroll-padding-top:0;}
+  body{font-size:11pt;color:#000;background:#fff;}
+  .topbar,.rail,.totop,.calc,.ergebnis{display:none !important;}
+  /* Der Daempfungsrechner ist ein Bedienelement — der erklaerende Text
+     davor bleibt im Ausdruck stehen, das Werkzeug selbst nicht. */
+  .kdcalc{display:none !important;}
+  /* Formeln muessen im Ausdruck lesbar bleiben */
+  .formel{background:#fff !important;border:1px solid #000;page-break-inside:avoid;}
+  /* Im Ausdruck derselbe Zustand wie ohne JavaScript */
+  .entscheidung{display:none !important;}
+  .nur-ohne-js{display:block !important;}
+  .q-panel,.q-caret,.memo-actions,.memo-status{display:none !important;}
+  /* Notiz nur ausgeben, wenn tatsaechlich etwas erfasst wurde */
+  .memo{display:none !important;}
+  .memo.has-content{display:block !important;page-break-inside:avoid;}
+  .memo-out{background:#fff !important;border:1px solid #000;}
+  .track-inner,.js .track-inner{display:block;padding-bottom:0;}
+  .track-body{max-width:none;}
+  .track-title{font-size:24pt;margin:24pt 0 18pt;}
+  .sec{page-break-inside:avoid;margin-bottom:24pt;}
+  .sec h2,.sec h3,.track-title{page-break-after:avoid;}
+  .note,.mx-cell{
+    background:#fff !important;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;
+  }
+  .mx-cell{border:1px solid #000;}
+  .path,code{background:#fff !important;border:1px solid #000;}
+  .tw{overflow:visible;}
+  .matrix{grid-template-columns:100px 1fr 1fr;}
+}
+
+/* ============================================================
+   Reduzierte Bewegung
+   ============================================================ */
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto;}
+  .rail-fill,.rail-dot::before,.seg span{transition:none !important;}
+}
