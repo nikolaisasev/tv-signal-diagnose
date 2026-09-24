@@ -32,37 +32,76 @@
   </tr>
   <tr>
     <th scope="row"><span class="mk-kl">P1</span><span class="mk-na">zu niedrig</span><span class="mk-br">&lt; −70</span></th>
-    <td class="mk-fehler">KEIN-SIGNAL</td>
-    <td class="mk-fehler">UNTERPEGEL</td>
-    <td class="mk-fehler">UNTERPEGEL</td>
-    <td class="mk-unklar">WIDERSPRUCH</td>
-    <td class="mk-unklar">UNPLAUSIBEL</td>
+    <td class="mk-fehler" data-kennung="KEIN-SIGNAL">KEIN-SIGNAL</td>
+    <td class="mk-fehler" data-kennung="UNTERPEGEL">UNTERPEGEL</td>
+    <td class="mk-fehler" data-kennung="UNTERPEGEL">UNTERPEGEL</td>
+    <td class="mk-unklar" data-kennung="WIDERSPRUCH">WIDERSPRUCH</td>
+    <td class="mk-unklar" data-kennung="UNPLAUSIBEL">UNPLAUSIBEL</td>
   </tr>
   <tr>
     <th scope="row"><span class="mk-kl">P2</span><span class="mk-na">unterer Rand</span><span class="mk-br">−70 … &lt;−65</span></th>
-    <td class="mk-fehler">KONFIG</td>
-    <td class="mk-fehler">UNTERPEGEL</td>
-    <td class="mk-grenz">UNTERPEGEL-GRENZ</td>
-    <td class="mk-grenz">RAND-UNTEN-OK</td>
-    <td class="mk-unklar">UNPLAUSIBEL</td>
+    <td class="mk-fehler" data-kennung="KONFIG">KONFIG</td>
+    <td class="mk-fehler" data-kennung="UNTERPEGEL">UNTERPEGEL</td>
+    <td class="mk-grenz" data-kennung="UNTERPEGEL-GRENZ">UNTERPEGEL-GRENZ</td>
+    <td class="mk-grenz" data-kennung="RAND-UNTEN-OK">RAND-UNTEN-OK</td>
+    <td class="mk-unklar" data-kennung="UNPLAUSIBEL">UNPLAUSIBEL</td>
   </tr>
   <tr>
     <th scope="row"><span class="mk-kl">P3</span><span class="mk-na">normal</span><span class="mk-br">−65 … −25</span></th>
-    <td class="mk-fehler">KONFIG</td>
-    <td class="mk-fehler">STOERUNG</td>
-    <td class="mk-grenz">STOERUNG-GRENZ</td>
-    <td class="mk-gut">OK</td>
-    <td class="mk-unklar">UNPLAUSIBEL</td>
+    <td class="mk-fehler" data-kennung="KONFIG">KONFIG</td>
+    <td class="mk-fehler" data-kennung="STOERUNG">STOERUNG</td>
+    <td class="mk-grenz" data-kennung="STOERUNG-GRENZ">STOERUNG-GRENZ</td>
+    <td class="mk-gut" data-kennung="OK">OK</td>
+    <td class="mk-unklar" data-kennung="UNPLAUSIBEL">UNPLAUSIBEL</td>
   </tr>
   <tr>
     <th scope="row"><span class="mk-kl">P5</span><span class="mk-na">zu hoch</span><span class="mk-br">&gt; −25</span></th>
-    <td class="mk-fehler">KONFIG-ODER-<br>UEBERPEGEL</td>
-    <td class="mk-fehler">UEBERPEGEL</td>
-    <td class="mk-fehler">UEBERPEGEL-GRENZ</td>
-    <td class="mk-grenz">PEGEL-HOCH-OK</td>
-    <td class="mk-unklar">UNPLAUSIBEL</td>
+    <td class="mk-fehler" data-kennung="KONFIG-ODER-UEBERPEGEL">KONFIG-ODER-<br>UEBERPEGEL</td>
+    <td class="mk-fehler" data-kennung="UEBERPEGEL">UEBERPEGEL</td>
+    <td class="mk-fehler" data-kennung="UEBERPEGEL-GRENZ">UEBERPEGEL-GRENZ</td>
+    <td class="mk-grenz" data-kennung="PEGEL-HOCH-OK">PEGEL-HOCH-OK</td>
+    <td class="mk-unklar" data-kennung="UNPLAUSIBEL">UNPLAUSIBEL</td>
   </tr>
       </table></div>
+      <p class="mk-legende">
+        <span><i class="mk-gut"></i>gut</span>
+        <span><i class="mk-grenz"></i>grenz</span>
+        <span><i class="mk-fehler"></i>fehler</span>
+        <span><i class="mk-unklar"></i>unklar</span>
+      </p>
+      <details class="legende-aus">
+        <summary>Legende zeigen</summary>
+        <dl class="mk-befunde">
+          <dt class="mk-gut" data-kennung="OK">OK</dt>
+          <dd>Empfangswerte in Ordnung — die Ursache liegt woanders.</dd>
+          <dt class="mk-grenz" data-kennung="PEGEL-HOCH-OK">PEGEL-HOCH-OK</dt>
+          <dd>Pegel über dem Grenzwert, Rauschabstand noch gut.</dd>
+          <dt class="mk-grenz" data-kennung="RAND-UNTEN-OK">RAND-UNTEN-OK</dt>
+          <dd>Pegel am unteren Rand, Rauschabstand gut.</dd>
+          <dt class="mk-grenz" data-kennung="STOERUNG-GRENZ">STOERUNG-GRENZ</dt>
+          <dd>Grenzbereich — Pegel stimmt, Rauschabstand ohne Reserve.</dd>
+          <dt class="mk-grenz" data-kennung="UNTERPEGEL-GRENZ">UNTERPEGEL-GRENZ</dt>
+          <dd>Pegel am unteren Rand, Reserve fast aufgebraucht.</dd>
+          <dt class="mk-fehler" data-kennung="KEIN-SIGNAL">KEIN-SIGNAL</dt>
+          <dd>Kein Signal am Tuner.</dd>
+          <dt class="mk-fehler" data-kennung="KONFIG">KONFIG</dt>
+          <dd>Leistung kommt an, der Tuner rastet nicht ein.</dd>
+          <dt class="mk-fehler" data-kennung="KONFIG-ODER-UEBERPEGEL">KONFIG-ODER-UEBERPEGEL</dt>
+          <dd>Sehr hoher Pegel, aber nichts dekodierbar.</dd>
+          <dt class="mk-fehler" data-kennung="STOERUNG">STOERUNG</dt>
+          <dd>Störung im Signalweg — Pegel stimmt, Signal ist verzerrt.</dd>
+          <dt class="mk-fehler" data-kennung="UEBERPEGEL">UEBERPEGEL</dt>
+          <dd>Überpegel — der Tuner übersteuert.</dd>
+          <dt class="mk-fehler" data-kennung="UEBERPEGEL-GRENZ">UEBERPEGEL-GRENZ</dt>
+          <dd>Pegel über dem Grenzwert, Rauschabstand bereits angegriffen.</dd>
+          <dt class="mk-fehler" data-kennung="UNTERPEGEL">UNTERPEGEL</dt>
+          <dd>Unterpegel — zu wenig Leistung am Tuner.</dd>
+          <dt class="mk-unklar" data-kennung="UNPLAUSIBEL">UNPLAUSIBEL</dt>
+          <dd>Rauschabstand unplausibel hoch.</dd>
+          <dt class="mk-unklar" data-kennung="WIDERSPRUCH">WIDERSPRUCH</dt>
+          <dd>Werte passen nicht zusammen.</dd>
+        </dl>
+      </details>
 
       <h2>Kabel · DVB-C, 256QAM</h2>
       <p class="mk-quelle">Pegel in dBµV, Messbereich 20 … 100 · MER in dB, Messbereich 0 … 45</p>
@@ -77,54 +116,90 @@
   </tr>
   <tr>
     <th scope="row"><span class="mk-kl">P1</span><span class="mk-na">zu niedrig</span><span class="mk-br">&lt; 45</span></th>
-    <td class="mk-fehler">KEIN-SIGNAL</td>
-    <td class="mk-fehler">UNTERPEGEL</td>
-    <td class="mk-fehler">UNTERPEGEL</td>
-    <td class="mk-unklar">WIDERSPRUCH</td>
-    <td class="mk-unklar">UNPLAUSIBEL</td>
+    <td class="mk-fehler" data-kennung="KEIN-SIGNAL">KEIN-SIGNAL</td>
+    <td class="mk-fehler" data-kennung="UNTERPEGEL">UNTERPEGEL</td>
+    <td class="mk-fehler" data-kennung="UNTERPEGEL">UNTERPEGEL</td>
+    <td class="mk-unklar" data-kennung="WIDERSPRUCH">WIDERSPRUCH</td>
+    <td class="mk-unklar" data-kennung="UNPLAUSIBEL">UNPLAUSIBEL</td>
   </tr>
   <tr>
     <th scope="row"><span class="mk-kl">P2</span><span class="mk-na">unterer Rand</span><span class="mk-br">45 … &lt;50</span></th>
-    <td class="mk-fehler">KONFIG</td>
-    <td class="mk-fehler">UNTERPEGEL</td>
-    <td class="mk-grenz">UNTERPEGEL-GRENZ</td>
-    <td class="mk-grenz">RAND-UNTEN-OK</td>
-    <td class="mk-unklar">UNPLAUSIBEL</td>
+    <td class="mk-fehler" data-kennung="KONFIG">KONFIG</td>
+    <td class="mk-fehler" data-kennung="UNTERPEGEL">UNTERPEGEL</td>
+    <td class="mk-grenz" data-kennung="UNTERPEGEL-GRENZ">UNTERPEGEL-GRENZ</td>
+    <td class="mk-grenz" data-kennung="RAND-UNTEN-OK">RAND-UNTEN-OK</td>
+    <td class="mk-unklar" data-kennung="UNPLAUSIBEL">UNPLAUSIBEL</td>
   </tr>
   <tr>
     <th scope="row"><span class="mk-kl">P3</span><span class="mk-na">normal</span><span class="mk-br">50 … 70</span></th>
-    <td class="mk-fehler">KONFIG</td>
-    <td class="mk-fehler">STOERUNG</td>
-    <td class="mk-grenz">STOERUNG-GRENZ</td>
-    <td class="mk-gut">OK</td>
-    <td class="mk-unklar">UNPLAUSIBEL</td>
+    <td class="mk-fehler" data-kennung="KONFIG">KONFIG</td>
+    <td class="mk-fehler" data-kennung="STOERUNG">STOERUNG</td>
+    <td class="mk-grenz" data-kennung="STOERUNG-GRENZ">STOERUNG-GRENZ</td>
+    <td class="mk-gut" data-kennung="OK">OK</td>
+    <td class="mk-unklar" data-kennung="UNPLAUSIBEL">UNPLAUSIBEL</td>
   </tr>
   <tr>
     <th scope="row"><span class="mk-kl">P4</span><span class="mk-na">oberer Rand</span><span class="mk-br">&gt;70 … 78</span></th>
-    <td class="mk-fehler">KONFIG</td>
-    <td class="mk-fehler">UEBERPEGEL</td>
-    <td class="mk-fehler">UEBERPEGEL-BEGINN</td>
-    <td class="mk-grenz">RAND-OBEN-OK</td>
-    <td class="mk-unklar">UNPLAUSIBEL</td>
+    <td class="mk-fehler" data-kennung="KONFIG">KONFIG</td>
+    <td class="mk-fehler" data-kennung="UEBERPEGEL">UEBERPEGEL</td>
+    <td class="mk-fehler" data-kennung="UEBERPEGEL-BEGINN">UEBERPEGEL-BEGINN</td>
+    <td class="mk-grenz" data-kennung="RAND-OBEN-OK">RAND-OBEN-OK</td>
+    <td class="mk-unklar" data-kennung="UNPLAUSIBEL">UNPLAUSIBEL</td>
   </tr>
   <tr>
     <th scope="row"><span class="mk-kl">P5</span><span class="mk-na">zu hoch</span><span class="mk-br">&gt; 78</span></th>
-    <td class="mk-fehler">KONFIG-ODER-<br>UEBERPEGEL</td>
-    <td class="mk-fehler">UEBERPEGEL</td>
-    <td class="mk-fehler">UEBERPEGEL-GRENZ</td>
-    <td class="mk-grenz">PEGEL-HOCH-OK</td>
-    <td class="mk-unklar">UNPLAUSIBEL</td>
+    <td class="mk-fehler" data-kennung="KONFIG-ODER-UEBERPEGEL">KONFIG-ODER-<br>UEBERPEGEL</td>
+    <td class="mk-fehler" data-kennung="UEBERPEGEL">UEBERPEGEL</td>
+    <td class="mk-fehler" data-kennung="UEBERPEGEL-GRENZ">UEBERPEGEL-GRENZ</td>
+    <td class="mk-grenz" data-kennung="PEGEL-HOCH-OK">PEGEL-HOCH-OK</td>
+    <td class="mk-unklar" data-kennung="UNPLAUSIBEL">UNPLAUSIBEL</td>
   </tr>
       </table></div>
-
       <p class="mk-legende">
         <span><i class="mk-gut"></i>gut</span>
         <span><i class="mk-grenz"></i>grenz</span>
         <span><i class="mk-fehler"></i>fehler</span>
         <span><i class="mk-unklar"></i>unklar</span>
       </p>
+      <details class="legende-aus">
+        <summary>Legende zeigen</summary>
+        <dl class="mk-befunde">
+          <dt class="mk-gut" data-kennung="OK">OK</dt>
+          <dd>Empfangswerte in Ordnung — die Ursache liegt woanders.</dd>
+          <dt class="mk-grenz" data-kennung="PEGEL-HOCH-OK">PEGEL-HOCH-OK</dt>
+          <dd>Pegel über dem Grenzwert, Rauschabstand noch gut.</dd>
+          <dt class="mk-grenz" data-kennung="RAND-OBEN-OK">RAND-OBEN-OK</dt>
+          <dd>Pegel am oberen Rand, Rauschabstand gut.</dd>
+          <dt class="mk-grenz" data-kennung="RAND-UNTEN-OK">RAND-UNTEN-OK</dt>
+          <dd>Pegel am unteren Rand, Rauschabstand gut.</dd>
+          <dt class="mk-grenz" data-kennung="STOERUNG-GRENZ">STOERUNG-GRENZ</dt>
+          <dd>Grenzbereich — Pegel stimmt, Rauschabstand ohne Reserve.</dd>
+          <dt class="mk-grenz" data-kennung="UNTERPEGEL-GRENZ">UNTERPEGEL-GRENZ</dt>
+          <dd>Pegel am unteren Rand, Reserve fast aufgebraucht.</dd>
+          <dt class="mk-fehler" data-kennung="KEIN-SIGNAL">KEIN-SIGNAL</dt>
+          <dd>Kein Signal am Tuner.</dd>
+          <dt class="mk-fehler" data-kennung="KONFIG">KONFIG</dt>
+          <dd>Leistung kommt an, der Tuner rastet nicht ein.</dd>
+          <dt class="mk-fehler" data-kennung="KONFIG-ODER-UEBERPEGEL">KONFIG-ODER-UEBERPEGEL</dt>
+          <dd>Sehr hoher Pegel, aber nichts dekodierbar.</dd>
+          <dt class="mk-fehler" data-kennung="STOERUNG">STOERUNG</dt>
+          <dd>Störung im Signalweg — Pegel stimmt, Signal ist verzerrt.</dd>
+          <dt class="mk-fehler" data-kennung="UEBERPEGEL">UEBERPEGEL</dt>
+          <dd>Überpegel — der Tuner übersteuert.</dd>
+          <dt class="mk-fehler" data-kennung="UEBERPEGEL-BEGINN">UEBERPEGEL-BEGINN</dt>
+          <dd>Beginnende Übersteuerung — Pegel am oberen Rand, Rauschabstand fällt.</dd>
+          <dt class="mk-fehler" data-kennung="UEBERPEGEL-GRENZ">UEBERPEGEL-GRENZ</dt>
+          <dd>Pegel über dem Grenzwert, Rauschabstand bereits angegriffen.</dd>
+          <dt class="mk-fehler" data-kennung="UNTERPEGEL">UNTERPEGEL</dt>
+          <dd>Unterpegel — zu wenig Leistung am Tuner.</dd>
+          <dt class="mk-unklar" data-kennung="UNPLAUSIBEL">UNPLAUSIBEL</dt>
+          <dd>Rauschabstand unplausibel hoch.</dd>
+          <dt class="mk-unklar" data-kennung="WIDERSPRUCH">WIDERSPRUCH</dt>
+          <dd>Werte passen nicht zusammen.</dd>
+        </dl>
+      </details>
 
-      <p class="mk-quelle mk-fuss">Erzeugt aus assets/grenzwerte.js · <code>node dokumentation/erzeuge-matrix.cjs</code></p>
+      <p class="mk-quelle mk-fuss">Erzeugt aus assets/grenzwerte.js · <code>npm run doku</code></p>
     </section>
   </div>
 </div>

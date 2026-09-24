@@ -17,9 +17,16 @@
    tests/tabelle.test.cjs vergleicht beide Orte miteinander.
    ============================================================ */
 (function (root, factory) {
-  if (typeof module === 'object' && module.exports) { module.exports = factory(); }
-  else { root.DIAGNOSE = factory(); }
-}(typeof self !== 'undefined' ? self : this, function () {
+  if (typeof module === 'object' && module.exports) {
+    /* Im Test ohne Seite: die deutschen Texte. Wer die englischen
+       braucht, laedt assets/texte/en.js selbst. */
+    module.exports = factory(function () { return require('./texte/de.js'); });
+  } else {
+    /* Im Browser hat die Seite ihre Textdatei schon geladen. Die Sprache
+       wird nicht abgefragt — es ist da, was da ist. */
+    root.DIAGNOSE = factory(function () { return root.TEXTE; });
+  }
+}(typeof self !== 'undefined' ? self : this, function (T) {
   'use strict';
 
   /* ---------- Schwellen ----------
@@ -32,27 +39,25 @@
      unplausibel darüber Fehlmessung                                   */
   var GRENZWERTE = {
     sat: {
-      bezeichnung: 'Satellit · DVB-S/S2',
       pegel: {
-        name: 'Pegel', einheit: 'dBm',
+        einheit: 'dBm',
         von: -90, bis: -10,
         unten: -70, randUnten: -65, randOben: null, ueber: -25
       },
       rausch: {
-        name: 'Rauschabstand', kurz: 'SNR', einheit: 'dB',
+        einheit: 'dB',
         von: 0, bis: 25,
         min: 6, soll: 11, unplausibel: 20
       }
     },
     kabel: {
-      bezeichnung: 'Kabel · DVB-C',
       pegel: {
-        name: 'Pegel', einheit: 'dBµV',
+        einheit: 'dBµV',
         von: 20, bis: 100,
         unten: 45, randUnten: 50, randOben: 70, ueber: 78
       },
       rausch: {
-        name: 'MER', kurz: 'MER', einheit: 'dB',
+        einheit: 'dB',
         von: 0, bis: 45,
         /* Gilt für 256QAM. Offene Frage: 42 dB als Obergrenze ist gesetzt,
            aber nicht belegt. Bei Satellit stammen die 20 dB aus der
@@ -62,20 +67,9 @@
     }
   };
 
-  var PEGELKLASSEN = {
-    P1: 'zu niedrig',
-    P2: 'unterer Rand',
-    P3: 'normal',
-    P4: 'oberer Rand',
-    P5: 'zu hoch'
-  };
-  var RAUSCHKLASSEN = {
-    Q0: 'kein Einrasten',
-    Q1: 'unter Minimum',
-    Q2: 'Grenzbereich',
-    Q3: 'gut',
-    Q4: 'unplausibel hoch'
-  };
+  /* Die Reihenfolge der Klassen. Die Namen stehen in der Textschicht. */
+  var PEGELKLASSEN = ['P1', 'P2', 'P3', 'P4', 'P5'];
+  var RAUSCHKLASSEN = ['Q0', 'Q1', 'Q2', 'Q3', 'Q4'];
 
   /* ---------- Klassifizierung ---------- */
 
@@ -123,289 +117,40 @@
   };
 
   /* ---------- Diagnosen ----------
-     Befund, Begründung und Schritte. Die Schritte erscheinen in der
-     Reihenfolge: erst die gemeinsamen, dann die der Empfangsart. */
-  var DIAGNOSEN = {
-    'KEIN-SIGNAL': {
-      zustand: 'fehler',
-      befund: 'Kein Signal am Tuner.',
-      warum: 'Pegel unter dem Sollbereich und kein Rauschabstand — es kommt praktisch nichts an. Bei einer falschen Einstellung läge dagegen Leistung an.',
-      schritte: {
-        gemeinsam: [
-          'Kabel an Dose und am Gerät prüfen, Stecker fest?',
-          'Richtigen Antenneneingang am Gerät gewählt?',
-          'Gegenprobe: anderes Gerät an dieselbe Dose.'
-        ],
-        sat: [
-          'LNB-Strom im Menü auf Ein.',
-          'F-Stecker auf Kurzschluss prüfen — abstehende Litze am Innenleiter.'
-        ],
-        kabel: ['Verteilerausgang wechseln.']
-      }
-    },
-
-    'KONFIG': {
-      zustand: 'fehler',
-      befund: 'Leistung kommt an, der Tuner rastet nicht ein.',
-      warum: 'Der Pegel liegt im erwarteten Bereich, der Rauschabstand ist exakt null. Der Tuner ist auf etwas anderes eingestellt als das, was ankommt.',
-      schritte: {
-        gemeinsam: ['Suchlauf-Methode und Filter prüfen.'],
-        sat: [
-          'Referenz-Transponder eingeben: 11494 MHz · H · SR 22000.',
-          'LNB-Frequenz prüfen: Universal muss 9750 / 10600 MHz sein.',
-          'DiSEqC bei einem LNB auf Aus.',
-          'Unicable-Anlage: eigene UB-Nummer und zugehörige Frequenz eintragen.'
-        ],
-        kabel: [
-          'Vollständige Suche statt Netzwerk- oder Schnellsuche.',
-          'Frequenz, Symbolrate und Modulation im manuellen Suchlauf prüfen.',
-          'Senderliste vor dem Suchlauf löschen lassen.'
-        ]
-      }
-    },
-
-    'KONFIG-ODER-UEBERPEGEL': {
-      zustand: 'fehler',
-      befund: 'Sehr hoher Pegel, aber nichts dekodierbar.',
-      warum: 'Zwei Ursachen sind möglich: eine falsche Einstellung, oder eine so starke Übersteuerung, dass der Tuner vollständig dichtmacht. Die Einstellung ist ohne Material prüfbar, deshalb zuerst.',
-      schritte: {
-        gemeinsam: [
-          'Zuerst Einstellung prüfen: Suchlauf-Methode, Frequenz, Modulation.',
-          'Danach Dämpfungsglied {daempfung} dB einsetzen und erneut messen.',
-          'Steigt der Rauschabstand über null, war es Übersteuerung.',
-          'Verstärker in der Leitung? Abschalten ist kostenlos.'
-        ],
-        sat: ['Referenz-Transponder eingeben: 11494 MHz · H · SR 22000.'],
-        kabel: ['Vollständige Suche statt Netzwerk- oder Schnellsuche.']
-      }
-    },
-
-    'UNTERPEGEL': {
-      zustand: 'fehler',
-      befund: 'Unterpegel — zu wenig Leistung am Tuner.',
-      warum: 'Das Nutzsignal liegt zu dicht am Rauschen, deshalb bricht der Rauschabstand ein. Ein Dämpfungsglied verschlimmert diesen Zustand.',
-      schritte: {
-        gemeinsam: [
-          'Kein Dämpfungsglied.',
-          'Stecker prüfen, alte Blechstecker gegen Kompressionsstecker tauschen.',
-          'Kabellänge und Anzahl der Verteiler prüfen.'
-        ],
-        sat: [
-          'Ausrichtung der Schüssel prüfen lassen, nach Sturm besonders.',
-          'Feuchtigkeit im LNB oder im F-Stecker prüfen lassen.'
-        ],
-        kabel: [
-          'Je höher die Etage, desto länger die Leitung.',
-          'Verstärker ist Sache des Kabelanbieters — und hilft nur nahe an der Quelle.'
-        ]
-      }
-    },
-
-    'UNTERPEGEL-GRENZ': {
-      zustand: 'grenz',
-      befund: 'Pegel am unteren Rand, Reserve fast aufgebraucht.',
-      warum: 'Es läuft noch, aber jede zusätzliche Dämpfung kippt es — Regen, ein weiterer Verteiler, ein gealterter Stecker. Das erklärt Aussetzer, die kommen und gehen.',
-      schritte: {
-        gemeinsam: [
-          'Kein Dämpfungsglied.',
-          'Stecker und Verteiler prüfen.',
-          'Auf mehreren Kanälen gegenmessen.'
-        ],
-        sat: ['Bei Regen und Wind schlechter? Dann ist die Reserve zu knapp.'],
-        kabel: ['Kabellänge und Anzahl der Verteiler prüfen.']
-      }
-    },
-
-    'RAND-UNTEN-OK': {
-      zustand: 'grenz',
-      befund: 'Pegel am unteren Rand, Rauschabstand gut.',
-      warum: 'Derzeit unproblematisch. Auffällig ist nur, dass nach unten wenig Reserve bleibt.',
-      schritte: {
-        gemeinsam: [
-          'Derzeit nichts nötig.',
-          'Bei späteren Aussetzern Stecker und Kabellänge prüfen.'
-        ],
-        sat: ['Auf mehreren Transpondern gegenmessen.'],
-        kabel: ['Auf mehreren Kanälen gegenmessen.']
-      }
-    },
-
-    'STOERUNG': {
-      zustand: 'fehler',
-      befund: 'Störung im Signalweg — Pegel stimmt, Signal ist verzerrt.',
-      warum: 'Es kommt genug Leistung an und der Rauschabstand ist trotzdem schlecht. Also wird etwas eingestreut oder reflektiert. Weder Verstärker noch Dämpfungsglied ändern daran etwas, weil beide Nutzsignal und Störung gleichermaßen anheben oder senken.',
-      schritte: {
-        gemeinsam: [
-          'Kein Verstärker, kein Dämpfungsglied.',
-          'Stecker und Schirmung prüfen, alte Blechstecker gegen Kompressionsstecker tauschen.',
-          'Kabel auf Knicke, Quetschungen und gelöste Schirmung prüfen.'
-        ],
-        sat: [
-          'Feuchtigkeit im LNB oder im F-Stecker prüfen lassen.',
-          'Bleibt es: Antennenbauer.'
-        ],
-        kabel: [
-          'LTE-Filter einsetzen, Abstand zu Mobilfunkgeräten und LED-Netzteilen vergrößern.',
-          'Bleibt es: Kabelanbieter.'
-        ]
-      }
-    },
-
-    'STOERUNG-GRENZ': {
-      zustand: 'grenz',
-      befund: 'Grenzbereich — Pegel stimmt, Rauschabstand ohne Reserve.',
-      warum: 'Es läuft, aber der Abstand zum Minimum ist klein. Typisch für Aussetzer, die sporadisch auftreten und sich schwer nachstellen lassen.',
-      schritte: {
-        gemeinsam: [
-          'Kein Verstärker, kein Dämpfungsglied.',
-          'Stecker und Verteiler prüfen.',
-          'Auf mehreren Kanälen gegenmessen.'
-        ],
-        sat: ['Bei Regen und Wind schlechter? Dann ist die Reserve zu knapp.'],
-        kabel: ['Alte Blechstecker gegen Kompressionsstecker tauschen.']
-      }
-    },
-
-    'OK': {
-      zustand: 'gut',
-      befund: 'Empfangswerte in Ordnung — die Ursache liegt woanders.',
-      warum: 'Pegel und Rauschabstand liegen beide im guten Bereich. Ein Empfangsproblem ist damit ausgeschlossen.',
-      schritte: {
-        gemeinsam: [
-          'Suchlauf-Methode und Filter prüfen.',
-          'Betrifft es nur eine Quelle: HDMI-Kabel und Eingang prüfen.',
-          'Betrifft es auch Apps: Netzwerk oder Gerät, nicht der Empfang.'
-        ],
-        sat: [
-          'Richtigen Satelliten gewählt? Satellitenliste statt Blindscan.',
-          'Fehlen nur die Privaten: HD+ oder CI+-Modul prüfen.'
-        ],
-        kabel: ['Fehlen nur verschlüsselte Sender: Abo, CI+-Modul oder Anbieter-Box.']
-      }
-    },
-
-    'RAND-OBEN-OK': {
-      zustand: 'grenz',
-      befund: 'Pegel am oberen Rand, Rauschabstand gut.',
-      warum: 'Noch innerhalb der Toleranz. Auffällig, weil nach oben wenig Reserve bleibt — steigt der Pegel weiter, beginnt die Übersteuerung.',
-      schritte: {
-        gemeinsam: [
-          'Derzeit nichts nötig.',
-          'Bei späteren Klötzchen: Dämpfungsglied {daempfung} dB.'
-        ],
-        sat: [],
-        kabel: [
-          'Auf mehreren Kanälen gegenmessen, dort kann der Pegel höher liegen.',
-          'Wohnung nah am Hausverstärker?'
-        ]
-      }
-    },
-
-    'UEBERPEGEL-BEGINN': {
-      zustand: 'fehler',
-      befund: 'Beginnende Übersteuerung — Pegel am oberen Rand, Rauschabstand fällt.',
-      warum: 'Diese Kombination ist typisch für einen Tuner an seiner Grenze: die Regelung steht am Anschlag, kleine Pegelschwankungen schlagen sofort auf den Rauschabstand durch.',
-      schritte: {
-        gemeinsam: [
-          'Verstärker in der Leitung? Abschalten ist kostenlos.',
-          'Dämpfungsglied {daempfung} dB einsetzen und erneut messen.',
-          'Steigt der Rauschabstand, ist die Übersteuerung bestätigt.'
-        ],
-        sat: [],
-        kabel: [
-          'Wohnung nah am Hausverstärker? Anlage nie eingepegelt?',
-          'Auf mehreren Kanälen gegenmessen.'
-        ]
-      }
-    },
-
-    'UEBERPEGEL': {
-      zustand: 'fehler',
-      befund: 'Überpegel — der Tuner übersteuert.',
-      warum: 'Hoher Pegel und gleichzeitig schlechter Rauschabstand. Die Eingangsstufe arbeitet nicht mehr linear und erzeugt Störprodukte im eigenen Kanal. Das ist der einzige Fall, in dem Dämpfen den Rauschabstand verbessert.',
-      schritte: {
-        gemeinsam: [
-          'Verstärker in der Leitung? Abschalten ist kostenlos.',
-          'Dämpfungsglied {daempfung} dB einsetzen und erneut messen.',
-          'Steigt der Rauschabstand, ist es bestätigt.',
-          'Bleibt er gleich, sitzt die Verzerrung schon vor dem Gerät — dann muss die Anlage eingepegelt werden.'
-        ],
-        sat: ['Wurde kürzlich ein neues LNB montiert? Neuere LNBs liefern mehr Pegel.'],
-        kabel: ['Im Mehrfamilienhaus ist der Kabelanbieter für das Einpegeln zuständig.']
-      }
-    },
-
-    'UEBERPEGEL-GRENZ': {
-      zustand: 'fehler',
-      befund: 'Pegel über dem Grenzwert, Rauschabstand bereits angegriffen.',
-      warum: 'Übersteuerung ist wahrscheinlich, aber noch nicht voll durchgeschlagen. Sie zeigt sich zuerst als Klötzchen bei Schwankungen im Netz.',
-      schritte: {
-        gemeinsam: [
-          'Verstärker in der Leitung? Abschalten ist kostenlos.',
-          'Dämpfungsglied {daempfung} dB einsetzen und erneut messen.',
-          'Steigt der Rauschabstand, ist es bestätigt.'
-        ],
-        sat: ['Auf mehreren Transpondern gegenmessen.'],
-        kabel: ['Auf mehreren Kanälen gegenmessen.']
-      }
-    },
-
-    'PEGEL-HOCH-OK': {
-      zustand: 'grenz',
-      befund: 'Pegel über dem Grenzwert, Rauschabstand noch gut.',
-      warum: 'Der Pegel ist zu hoch, aber das Bild leidet bisher nicht darunter. Es fehlt nur der Puffer nach oben: Steigt der Pegel weiter, fängt es an zu stören.',
-      schritte: {
-        gemeinsam: [
-          'Derzeit nichts nötig.',
-          'Bei späteren Aussetzern Dämpfungsglied {daempfung} dB.',
-          'Verstärker in der Leitung? Prüfen, ob er überhaupt gebraucht wird.'
-        ],
-        sat: ['Auf mehreren Transpondern gegenmessen, dort kann der Pegel höher liegen.'],
-        kabel: ['Auf mehreren Kanälen gegenmessen, dort kann der Pegel höher liegen.']
-      }
-    },
-
-    'WIDERSPRUCH': {
-      zustand: 'unklar',
-      befund: 'Werte passen nicht zusammen.',
-      warum: 'Niedriger Pegel bei gutem Rauschabstand kommt praktisch nicht vor. Meist ist der Transponder oder Kanal falsch eingegeben, oder die beiden Werte stammen aus verschiedenen Messungen.',
-      schritte: {
-        gemeinsam: [
-          'Beide Werte in derselben Ansicht neu ablesen lassen.',
-          'Auf die Einheit achten: negativ ist dBm, positiv zwischen 40 und 90 ist dBµV.',
-          'Danach erneut auswerten.'
-        ],
-        sat: ['Referenz-Transponder eingeben: 11494 MHz · H · SR 22000.'],
-        kabel: ['Im manuellen Suchlauf gegenprüfen.']
-      }
-    },
-
-    'UNPLAUSIBEL': {
-      zustand: 'unklar',
-      befund: 'Rauschabstand unplausibel hoch.',
-      warum: 'Der Wert liegt über dem, was diese Empfangsart erreichen kann. Meist wird eine Prozentanzeige für einen dB-Wert gehalten.',
-      schritte: {
-        gemeinsam: [
-          'Prüfen, ob die Anzeige dB oder Prozent zeigt.',
-          'Prozentwerte sind herstellerskaliert und nicht umrechenbar.',
-          'Im manuellen Suchlauf gegenprüfen und erneut auswerten.'
-        ],
-        sat: [],
-        kabel: []
-      }
-    }
+     Hier steht nur noch, wie eine Diagnose zu werten ist. Befund,
+     Begruendung und Schritte sind Wortlaut und stehen in der
+     Textschicht — sie aendern sich mit der Sprache, der Zustand nicht. */
+  var ZUSTAND = {
+    'KEIN-SIGNAL': 'fehler',
+    'KONFIG': 'fehler',
+    'KONFIG-ODER-UEBERPEGEL': 'fehler',
+    'UNTERPEGEL': 'fehler',
+    'UNTERPEGEL-GRENZ': 'grenz',
+    'RAND-UNTEN-OK': 'grenz',
+    'STOERUNG': 'fehler',
+    'STOERUNG-GRENZ': 'grenz',
+    'OK': 'gut',
+    'RAND-OBEN-OK': 'grenz',
+    'UEBERPEGEL-BEGINN': 'fehler',
+    'UEBERPEGEL': 'fehler',
+    'UEBERPEGEL-GRENZ': 'fehler',
+    'PEGEL-HOCH-OK': 'grenz',
+    'WIDERSPRUCH': 'unklar',
+    'UNPLAUSIBEL': 'unklar'
   };
 
+  /* Die Schritte erscheinen in der Reihenfolge: erst die gemeinsamen,
+     dann die der Empfangsart. */
   var MAX_SCHRITTE = 5;
 
   /* Erst die gemeinsamen Schritte, dann die der Empfangsart. Wird es zu
      lang, entfallen gemeinsame von hinten — die spezifischen sind die
      genaueren und bleiben immer stehen. */
   function schritteFuer(id, art) {
-    var d = DIAGNOSEN[id];
-    var eigen = (d.schritte[art] || []).slice();
+    var s = T().diagnosen[id].schritte;
+    var eigen = (s[art] || []).slice();
     var frei = Math.max(0, MAX_SCHRITTE - eigen.length);
-    return d.schritte.gemeinsam.slice(0, frei).concat(eigen);
+    return s.gemeinsam.slice(0, frei).concat(eigen);
   }
 
   /* Minuszeichen als echtes Zeichen, nicht als Bindestrich */
@@ -415,24 +160,24 @@
      Behauptung — mit der Angabe ist nachvollziehbar, wogegen gemessen
      wurde und wie weit der Wert danebenliegt. */
   function pegelBereich(art, klasse) {
-    var p = GRENZWERTE[art].pegel, e = ' ' + p.einheit;
+    var p = GRENZWERTE[art].pegel, e = ' ' + p.einheit, b = T().bereiche;
     var obenNormal = p.randOben === null ? p.ueber : p.randOben;
     switch (klasse) {
-      case 'P1': return 'unter ' + zahl(p.unten) + e;
-      case 'P2': return zahl(p.unten) + ' bis ' + zahl(p.randUnten) + e;
-      case 'P3': return zahl(p.randUnten) + ' bis ' + zahl(obenNormal) + e;
-      case 'P4': return zahl(p.randOben) + ' bis ' + zahl(p.ueber) + e;
-      default:   return 'über ' + zahl(p.ueber) + e;
+      case 'P1': return b.unter(zahl(p.unten), e);
+      case 'P2': return b.spanne(zahl(p.unten), zahl(p.randUnten), e);
+      case 'P3': return b.spanne(zahl(p.randUnten), zahl(obenNormal), e);
+      case 'P4': return b.spanne(zahl(p.randOben), zahl(p.ueber), e);
+      default:   return b.ueber(zahl(p.ueber), e);
     }
   }
   function rauschBereich(art, klasse) {
-    var g = GRENZWERTE[art].rausch, e = ' ' + g.einheit;
+    var g = GRENZWERTE[art].rausch, e = ' ' + g.einheit, b = T().bereiche;
     switch (klasse) {
-      case 'Q0': return 'exakt 0' + e;
-      case 'Q1': return 'unter ' + zahl(g.min) + e;
-      case 'Q2': return zahl(g.min) + ' bis ' + zahl(g.soll) + e;
-      case 'Q3': return 'ab ' + zahl(g.soll) + e;
-      default:   return 'über ' + zahl(g.unplausibel) + e;
+      case 'Q0': return b.exakt('0', e);
+      case 'Q1': return b.unter(zahl(g.min), e);
+      case 'Q2': return b.spanne(zahl(g.min), zahl(g.soll), e);
+      case 'Q3': return b.ab(zahl(g.soll), e);
+      default:   return b.ueber(zahl(g.unplausibel), e);
     }
   }
 
@@ -468,28 +213,24 @@
   function pruefeWertebereich(art, pegel, rausch) {
     var g = GRENZWERTE[art];
     var treffer = [];
-    [[pegel, g.pegel], [rausch, g.rausch]].forEach(function (paar) {
+    [[pegel, g.pegel, 'pegel'], [rausch, g.rausch, 'rausch']].forEach(function (paar) {
       var w = paar[0], f = paar[1];
       if (w !== null && w !== undefined && (w < f.von || w > f.bis)) {
-        treffer.push({ wert: w, feld: f });
+        treffer.push({ wert: w, feld: f, feldname: paar[2] });
       }
     });
     if (!treffer.length) { return null; }
 
-    var was = treffer.map(function (t) {
-      return t.feld.name + ' ' + zahl(t.wert) + ' ' + t.feld.einheit;
+    var t = T(), r = t.rechner;
+    var was = treffer.map(function (x) {
+      return t.arten[art][x.feldname] + ' ' + zahl(x.wert) + ' ' + x.feld.einheit;
     });
-    var gueltig = treffer.map(function (t) {
-      return zahl(t.feld.von) + ' bis ' + zahl(t.feld.bis) + ' ' + t.feld.einheit;
+    var gueltig = treffer.map(function (x) {
+      return zahl(x.feld.von) + r.bis + zahl(x.feld.bis) + ' ' + x.feld.einheit;
     });
     return {
-      meldung: was.join(' und ') + (treffer.length > 1 ? ' sind' : ' ist') +
-        ' nicht möglich. Gültig: ' + gueltig.join(' und ') + '.',
-      schritte: [
-        'Wert erneut ablesen lassen.',
-        'Auf die Einheit achten: negativ ist dBm, positiv zwischen 40 und 90 ist dBµV.',
-        'Umrechnung bei 75 Ohm: dBm = dBµV − 108,75.'
-      ]
+      meldung: r.bereichMeldung(was.join(r.und), gueltig.join(r.und), treffer.length > 1),
+      schritte: r.bereichSchritte.slice()
     };
   }
 
@@ -497,31 +238,33 @@
   function diagnose(art, pegel, rausch) {
     var klassen = klassifiziere(art, pegel, rausch);
     var id = MATRIX[art][klassen.pegel][klassen.rausch];
-    var d = DIAGNOSEN[id];
     var g = GRENZWERTE[art];
+    var t = T(), d = t.diagnosen[id], f = t.arten[art], r = t.rechner;
     var glied = empfohleneDaempfung(art, pegel);
     var schritte = schritteFuer(id, art).map(function (x) {
       return x.replace('{daempfung}', String(glied));
     });
     return {
       id: id,
-      zustand: d.zustand,
+      zustand: ZUSTAND[id],
       befund: d.befund,
       warum: d.warum,
       schritte: schritte,
       klassen: klassen,
       daempfung: glied,
-      messwerte: g.pegel.name + ' ' + zahl(pegel) + ' ' + g.pegel.einheit +
-        ' (' + PEGELKLASSEN[klassen.pegel] + ', ' + pegelBereich(art, klassen.pegel) + ') · ' +
-        g.rausch.kurz + ' ' + zahl(rausch) + ' ' + g.rausch.einheit +
-        ' (' + RAUSCHKLASSEN[klassen.rausch] + ', ' + rauschBereich(art, klassen.rausch) + ')'
+      messwerte:
+        r.messwert(f.pegel, zahl(pegel), g.pegel.einheit,
+          t.pegelklassen[klassen.pegel], pegelBereich(art, klassen.pegel)) +
+        r.messwerteTrenner +
+        r.messwert(f.rauschKurz, zahl(rausch), g.rausch.einheit,
+          t.rauschklassen[klassen.rausch], rauschBereich(art, klassen.rausch))
     };
   }
 
   return {
     GRENZWERTE: GRENZWERTE,
     MATRIX: MATRIX,
-    DIAGNOSEN: DIAGNOSEN,
+    ZUSTAND: ZUSTAND,
     PEGELKLASSEN: PEGELKLASSEN,
     RAUSCHKLASSEN: RAUSCHKLASSEN,
     MAX_SCHRITTE: MAX_SCHRITTE,

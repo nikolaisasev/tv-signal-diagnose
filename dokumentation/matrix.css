@@ -1,141 +1,23 @@
 /* ============================================================
-   Diagnosematrix — Dokumentationsseite
+   Diagnosematrix — nur was die Dokumentationsseite betrifft
    ------------------------------------------------------------
-   Ergaenzt assets/stil.css um das, was nur diese Tabelle braucht.
-   Alle Farben, Schriften und Abstaende kommen aus den Tokens der
-   Anwendung; hier wird keine neue Farbe erfunden.
-
-   Die Zellen folgen demselben Muster wie die Urteilszeile im
-   Rechner: weiche Flaeche in der Zustandsfarbe, Text in der
-   kraeftigen Variante derselben Farbe.
+   Die Regeln fuer die Matrix selbst stehen in assets/stil.css,
+   weil index.html sie ebenfalls braucht.
    ============================================================ */
 
 .mk-sub{
   color:var(--muted);
   margin:-40px 0 48px;
 }
-
-.mk-quelle{
-  font-family:var(--mono);
-  font-size:13px;
-  color:var(--muted);
-  margin:0 0 14px;
-}
 .mk-fuss{margin-top:40px;}
 
-/* ---------- Tabelle ---------- */
-.matrixtabelle{
-  width:100%;
-  border-collapse:separate;
-  border-spacing:3px;
-  margin:0 0 8px;
-}
-.matrixtabelle caption{
-  caption-side:top;
-  text-align:left;
-  font-size:14px;
-  color:var(--muted);
-  padding:0 0 12px;
-}
-.matrixtabelle th{
-  font-weight:400;
-  padding:8px 6px;
-  text-align:center;
-  vertical-align:bottom;
-  border:0;
-}
-.matrixtabelle th[scope="row"]{
-  text-align:right;
-  vertical-align:middle;
-  padding-right:14px;
-  width:160px;
-}
-.mk-ecke{background:transparent;}
-
-.mk-kl{
-  display:block;
-  font-family:var(--mono);
-  font-size:14px;font-weight:500;
-  color:var(--ink);
-}
-.mk-na{
-  display:block;
-  font-size:13px;line-height:1.3;
-  color:var(--muted);
-  margin-top:2px;
-}
-.mk-br{
-  display:block;
-  font-family:var(--mono);
-  font-size:12px;
-  color:var(--ink-2);
-  margin-top:3px;
-}
-
-.matrixtabelle td{
-  padding:11px 6px;
-  text-align:center;
-  border:0;
-  border-radius:8px;
-  font-family:var(--mono);
-  font-size:11.5px;
-  line-height:1.35;
-}
-
-/* Zustandsfarben, dieselben wie im Urteil des Rechners */
-.mk-gut   {background:var(--ok-soft);     color:var(--ok);}
-.mk-grenz {background:var(--warn-soft);   color:var(--warn);}
-.mk-fehler{background:var(--fault-soft);  color:var(--fault);}
-.mk-unklar{background:var(--neutral-soft);color:var(--neutral);}
-
-
-/* ---------- Legende ---------- */
-.mk-legende{
-  display:flex;gap:20px;flex-wrap:wrap;
-  font-size:14px;color:var(--muted);
-  margin:16px 0 0;
-}
-.mk-legende i{
-  display:inline-block;
-  width:11px;height:11px;
-  border-radius:3px;
-  margin-right:7px;
-  font-style:normal;
-  vertical-align:baseline;
-}
-.mk-legende .mk-gut{background:var(--ok);}
-.mk-legende .mk-grenz{background:var(--warn);}
-.mk-legende .mk-fehler{background:var(--fault);}
-.mk-legende .mk-unklar{background:var(--neutral);}
-
-code{
+/* Auf die Fusszeile beschraenkt, damit die Regel nicht in die
+   Anwendung hineinwirkt. */
+.mk-fuss code{
   font-family:var(--mono);
   font-size:14px;
 }
 
-/* ---------- Schmale Bildschirme ---------- */
 @media(max-width:860px){
   .mk-sub{margin:-24px 0 32px;}
-  .matrixtabelle th[scope="row"]{width:120px;padding-right:10px;}
-  .matrixtabelle td{font-size:10.5px;padding:9px 4px;}
-  .mk-na{font-size:12px;}
-  .mk-br{font-size:11px;}
-}
-
-/* ---------- Druck ----------
-   Die Flaechen muessen mitgedruckt werden, sonst traegt die Tabelle
-   keine Information mehr. Die Kennung in der Zelle nennt den Befund
-   ohnehin im Wortlaut, die Farbe ist nur die zweite Spur. */
-@media print{
-  body{background:#fff;}
-  .matrixtabelle td,
-  .mk-legende i{
-    -webkit-print-color-adjust:exact;
-    print-color-adjust:exact;
-  }
-  .matrixtabelle td{border:1px solid var(--hairline);}
-  .matrixtabelle{page-break-inside:avoid;}
-  h2{page-break-after:avoid;}
-  .note{page-break-inside:avoid;}
-  .mk-sub{margin:8pt 0 20pt;}
 }

@@ -2,7 +2,12 @@
 
    Genau diese Lücke war der Anlass des Umbaus: die Tabelle wies über
    −25 dBm Übersteuerung aus, der Rechner meldete Grenzbereich. Wer eine
-   Zahl nur an einem der beiden Orte ändert, soll das hier merken. */
+   Zahl nur an einem der beiden Orte ändert, soll das hier merken.
+
+   Die Grenzwerttabellen der Seite sind inzwischen durch die erzeugte
+   Diagnosematrix ersetzt; sie prueft tests/dokumentation.test.cjs.
+   Hier bleiben die Hinweise an den Eingabefeldern, die Reihenfolge der
+   Skripte und die Dopplungspruefung. */
 
 const test = require('node:test');
 const assert = require('node:assert');
@@ -10,8 +15,7 @@ const path = require('node:path');
 const fs = require('node:fs');
 
 const D = require(path.join(__dirname, '..', 'assets', 'grenzwerte.js'));
-const SEITE = fs.readFileSync(
-  path.join(__dirname, '..', 'index.html'), 'utf8');
+const S = require(path.join(__dirname, 'seiten.cjs'));
 
 /* Die Seite schreibt Minus als −, JavaScript als -. */
 function zahlen(text) {
@@ -19,65 +23,11 @@ function zahlen(text) {
     .map((x) => parseFloat(x.replace(',', '.')));
 }
 
-/* Eine Zeile der Tabelle "Alle Grenzwerte im Überblick" holen und die
-   Zahlen je Spalte zurückgeben: {sat: [...], kabel: [...]} */
-function zeile(beschriftung) {
-  const tabelle = SEITE.slice(SEITE.indexOf('Alle Grenzwerte im Überblick'));
-  const muster = new RegExp(
-    '<tr[^>]*>\\s*<td[^>]*>(?:<strong>)?' + beschriftung +
-    '(?:</strong>)?</td>\\s*<td[^>]*>(.*?)</td>\\s*<td[^>]*>(.*?)</td>', 's');
-  const t = tabelle.match(muster);
-  assert.ok(t, `Zeile "${beschriftung}" nicht in der Tabelle gefunden`);
-  return { sat: zahlen(t[1]), kabel: zahlen(t[2]) };
-}
-
-function gleich(beschriftung, spalte, erwartet, woher) {
-  const gefunden = zeile(beschriftung)[spalte];
-  assert.deepStrictEqual(
-    gefunden, erwartet,
-    `Zeile "${beschriftung}", Spalte ${spalte}: ` +
-    `HTML nennt ${JSON.stringify(gefunden)}, ` +
-    `grenzwerte.js nennt ${JSON.stringify(erwartet)} (${woher})`
-  );
-}
-
-test('Pegelzeilen der Tabelle stimmen mit GRENZWERTE überein', () => {
-  const s = D.GRENZWERTE.sat.pegel;
-  const k = D.GRENZWERTE.kabel.pegel;
-
-  gleich('Pegel perfekt', 'sat', [s.randUnten, s.ueber], 'randUnten, ueber');
-  gleich('Pegel perfekt', 'kabel', [k.randUnten, k.randOben], 'randUnten, randOben');
-
-  gleich('Pegel befriedigend', 'sat', [s.unten, s.randUnten], 'unten, randUnten');
-  gleich('Pegel befriedigend', 'kabel',
-    [k.unten, k.randUnten, k.randOben, k.ueber], 'unten, randUnten, randOben, ueber');
-
-  gleich('Überpegel ab', 'sat', [s.ueber], 'ueber');
-  gleich('Überpegel ab', 'kabel', [k.ueber], 'ueber');
-
-  gleich('zu schwach ab', 'sat', [s.unten], 'unten');
-  gleich('zu schwach ab', 'kabel', [k.unten], 'unten');
-});
-
-test('Rauschabstandszeilen der Tabelle stimmen mit GRENZWERTE überein', () => {
-  const s = D.GRENZWERTE.sat.rausch;
-  const k = D.GRENZWERTE.kabel.rausch;
-
-  gleich('Rauschabstand perfekt', 'sat', [s.soll], 'soll');
-  gleich('Rauschabstand perfekt', 'kabel', [k.soll, 256], 'soll, Modulation 256QAM');
-
-  gleich('Rauschabstand befriedigend', 'sat', [s.min, s.soll], 'min, soll');
-  gleich('Rauschabstand befriedigend', 'kabel', [k.min, k.soll, 256], 'min, soll, 256QAM');
-
-  gleich('Rauschabstand Minimum', 'sat', [s.min], 'min');
-  gleich('Rauschabstand Minimum', 'kabel', [k.min, 256], 'min, 256QAM');
-});
-
 /* Hinweistext eines Eingabefelds holen */
-function hinweis(feldId) {
-  const m = SEITE.match(
+function hinweis(seite, datei, feldId) {
+  const m = seite.match(
     new RegExp('<label for="' + feldId + '">.*?<span class="hint">(.*?)</span>', 's'));
-  assert.ok(m, `Hinweis am Feld ${feldId} nicht gefunden`);
+  assert.ok(m, `${datei}: Hinweis am Feld ${feldId} nicht gefunden`);
   return m[1];
 }
 
@@ -91,22 +41,26 @@ test('die Hinweise an den Eingabefeldern nennen dieselben Zahlen', () => {
     ['i-mer',  [k.rausch.soll, 256], 'soll, 256QAM']
   ];
 
-  for (const [feld, erwartet, woher] of faelle) {
-    const gefunden = zahlen(hinweis(feld));
-    assert.deepStrictEqual(
-      gefunden, erwartet,
-      `Hinweis am Feld ${feld}: HTML nennt ${JSON.stringify(gefunden)}, ` +
-      `grenzwerte.js nennt ${JSON.stringify(erwartet)} (${woher})`
-    );
+  for (const [datei, seite] of S.ALLE) {
+    for (const [feld, erwartet, woher] of faelle) {
+      const gefunden = zahlen(hinweis(seite, datei, feld));
+      assert.deepStrictEqual(
+        gefunden, erwartet,
+        `${datei}, Feld ${feld}: HTML nennt ${JSON.stringify(gefunden)}, ` +
+        `grenzwerte.js nennt ${JSON.stringify(erwartet)} (${woher})`
+      );
+    }
   }
 });
 
-test('grenzwerte.js wird von der Seite vor handbuch.js geladen', () => {
-  const g = SEITE.indexOf('assets/grenzwerte.js');
-  const h = SEITE.indexOf('assets/handbuch.js');
-  assert.ok(g >= 0, 'grenzwerte.js ist nicht eingebunden');
-  assert.ok(h >= 0, 'handbuch.js ist nicht eingebunden');
-  assert.ok(g < h, 'grenzwerte.js muss vor handbuch.js stehen');
+test('grenzwerte.js wird von jeder Fassung vor handbuch.js geladen', () => {
+  for (const [datei, seite] of S.ALLE) {
+    const g = seite.indexOf('assets/grenzwerte.js');
+    const h = seite.indexOf('assets/handbuch.js');
+    assert.ok(g >= 0, `${datei}: grenzwerte.js ist nicht eingebunden`);
+    assert.ok(h >= 0, `${datei}: handbuch.js ist nicht eingebunden`);
+    assert.ok(g < h, `${datei}: grenzwerte.js muss vor handbuch.js stehen`);
+  }
 });
 
 test('keine Schwelle steht doppelt — handbuch.js kennt keine Grenzwerte', () => {

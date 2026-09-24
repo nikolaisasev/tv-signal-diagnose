@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- Arbeitsunterlage: nicht in Suchmaschinen aufnehmen -->
+<meta name="robots" content="noindex, nofollow">
+<title>Formeln und Umrechnung — TV-Diagnose</title>
+<link rel="stylesheet" href="assets/stil.css">
+</head>
+<body>
+
+<!-- Eigene Seite, absichtlich ohne Verweis aus index.html.
+
+     Der Inhalt stand zuvor im Abschnitt Grundlagen und ist Wort fuer
+     Wort uebernommen. Geaendert ist allein die Ueberschriftsebene: die
+     Unterpunkte tragen hier die Seite und stehen deshalb als h2 statt
+     als h4 unter der ehemaligen Zwischenueberschrift.
+
+     Geprueft von tests/formeln.test.cjs -->
+
+<main class="fall">
+<div class="shell">
+  <div class="track-body">
+    <h1 class="track-title">Formeln und Umrechnung</h1>
+
+    <section class="sec">
+      <h2>dB in ein Verhältnis umrechnen</h2>
+      <p>dB ist eine logarithmische Skala und beschreibt immer ein Verhältnis, nie eine absolute Menge.</p>
+      <div class="formel">
+        <div class="formel-zeile"><span>dB</span><span>=</span><span>10 · log₁₀(Verhältnis)</span></div>
+        <div class="formel-zeile"><span>Verhältnis</span><span>=</span><span>10^(dB ÷ 10)</span></div>
+      </div>
+      <div class="tw"><table>
+        <thead><tr><th>dB</th><th>Faktor</th></tr></thead>
+        <tbody>
+          <tr><td class="num">3</td><td class="num">2</td></tr>
+          <tr><td class="num">10</td><td class="num">10</td></tr>
+          <tr><td class="num">20</td><td class="num">100</td></tr>
+          <tr><td class="num">30</td><td class="num">1000</td></tr>
+        </tbody>
+      </table></div>
+      <p>Jede Verzehnfachung des Verhältnisses entspricht 10 dB. Ein MER von 30 dB bedeutet also: Das Nutzsignal ist rund tausendmal stärker als das Rauschen.</p>
+      <p><strong>Achtung bei Spannungen:</strong> Für Spannungsverhältnisse — und dazu gehört dBµV — gilt der Faktor 20 statt 10. Eine Verdopplung der Leistung sind 3 dB, eine Verdopplung der Spannung 6 dB.</p>
+
+      <h2>dBµV in dBm umrechnen</h2>
+      <p>Beide messen den Pegel, nur mit unterschiedlichem Bezugspunkt: dBm bezieht sich auf 1 Milliwatt, dBµV auf 1 Mikrovolt. Bei den in der TV-Technik genormten 75 Ohm gilt:</p>
+      <div class="formel">
+        <div class="formel-zeile"><span>dBm</span><span>=</span><span>dBµV − 108,75</span></div>
+        <div class="formel-zeile"><span>dBµV</span><span>=</span><span>dBm + 108,75</span></div>
+      </div>
+
+      <p>Die Konstante ergibt sich aus einem einzigen Bezugspunkt: 0 dBm entspricht genau 1 Milliwatt. Rechnet man diese Leistung an 75 Ohm in eine Spannung um, erhält man den Wert in dBµV.</p>
+
+      <div class="formel formel--herleitung">
+        <div class="formel-zeile"><span>P</span><span>=</span><span>1 mW = 0,001 W</span></div>
+        <div class="formel-zeile"><span>R</span><span>=</span><span>75 Ω</span></div>
+        <div class="formel-zeile"><span>U</span><span>=</span><span>√(P · R) = √(0,001 · 75)</span></div>
+        <div class="formel-zeile"><span></span><span>=</span><span>0,274 V = 274.000 µV</span></div>
+        <div class="formel-zeile"><span>L</span><span>=</span><span><strong>20 · log₁₀(274.000) = 108,75 dBµV</strong></span></div>
+      </div>
+
+      <p>0 dBm und 108,75 dBµV bezeichnen damit denselben Pegel. Weil beide Skalen logarithmisch sind, ist dieser Versatz überall gleich groß — er lässt sich einfach addieren oder abziehen, so wie zwischen Celsius und Kelvin.</p>
+      <p>Der Faktor 20 statt 10 steht dort, weil dBµV eine Spannung beschreibt und keine Leistung.</p>
+      <p>Beispiel: 60 dBµV entsprechen −48,75 dBm. Bei 50 Ohm, also bei Mobilfunk und WLAN, lautet die Konstante 107.</p>
+
+      <h2>Warum 75 Ohm</h2>
+      <p>Leistung und Spannung hängen nur über den Widerstand zusammen:</p>
+
+      <div class="formel">
+        <div class="formel-zeile"><span>P</span><span>=</span><span>U² ÷ R</span></div>
+      </div>
+
+      <p>Ohne einen festen Widerstand gäbe es deshalb keine feste Umrechnung zwischen dBm und dBµV. Die gesamte TV-Technik ist auf 75 Ohm genormt — Kabel, Stecker, Verteiler, Tuner. Der Wert gilt damit überall im Empfangsbereich.</p>
+      <p>Bei Mobilfunk und WLAN sind es 50 Ohm, und dort lautet die Konstante 107. Anderer Widerstand, andere Zahl.</p>
+
+      <div class="note">
+        <p class="note-t">Der Wert ist eine Bauvorschrift, kein Prüfwert</p>
+        <p>Alle Bauteile sind auf 75 Ohm gebaut, damit sie zusammenpassen. Trifft eine Welle auf einen Übergang mit abweichendem Wellenwiderstand, wird ein Teil <strong>reflektiert</strong> — sie läuft zurück statt weiter und überlagert sich mit dem ankommenden Signal. Der MER bricht ein.</p>
+        <p>Daher kommen die bekannten Fälle: ein 50-Ohm-Kabel im TV-Weg, ein schlecht montierter Stecker, ein Verteiler, der nur bis 862 MHz spezifiziert ist. Ein sauber gesetzter Kompressionsstecker bringt oft 5 bis 10 dB MER — nicht weil er weniger dämpft, sondern weil er die 75 Ohm durchgehend hält.</p>
+      </div>
+
+      <h2>Kabeldämpfung berechnen</h2>
+      <p>Jedes Kabel dämpft. Wie stark, hängt von Länge, Qualität und vor allem von der Frequenz ab — hohe Frequenzen werden deutlich stärker gedämpft als niedrige.</p>
+
+      <div class="formel">
+        <div class="formel-zeile"><span>Dämpfung</span><span>=</span><span>Dämpfungsbelag × Länge ÷ 100</span></div>
+      </div>
+
+      <p>Der Dämpfungsbelag wird in dB je 100 Meter angegeben. Richtwerte:</p>
+
+      <div class="tw"><table>
+        <thead><tr><th>Frequenz</th><th>Einfaches Koax</th><th>Gutes Koax</th></tr></thead>
+        <tbody>
+          <tr><td>862 MHz — oberes Kabelband</td><td class="num">~19 dB / 100 m</td><td class="num">~14 dB / 100 m</td></tr>
+          <tr><td>2150 MHz — obere Sat-ZF</td><td class="num">~30 dB / 100 m</td><td class="num">~20 dB / 100 m</td></tr>
+        </tbody>
+      </table></div>
+
+      <p>Die Werte gelten für den ungünstigsten Fall am oberen Ende des jeweiligen Bandes. Bei niedrigeren Frequenzen fällt die Dämpfung geringer aus — die Dämpfung wächst etwa mit der Wurzel der Frequenz.</p>
+
+      <div class="note note--warn">
+        <p class="note-t">Verteiler und Dosen dämpfen zusätzlich</p>
+        <p>Wer nur die Kabellänge rechnet, hält eine normale Anlage schnell für defekt. Jeder Verteilerausgang kostet <strong>4 bis 8 dB</strong>, jede Antennendose <strong>2 bis 6 dB</strong>. Diese Anteile gehören zur erwarteten Dämpfung dazu, bevor verglichen wird.</p>
+      </div>
+
+      <p><strong>So wird daraus ein Beweis:</strong> Pegel am Einspeisepunkt und an der Dose messen, die Differenz bilden und mit der erwarteten Dämpfung vergleichen. Liegt die gemessene Dämpfung deutlich darüber, ist das Kabel oder ein Stecker defekt.</p>
+
+      <h2>Dämpfung prüfen</h2>
+      <p>Prüft, ob die gemessene Pegeldifferenz zur Kabellänge passt. Für die Störungsdiagnose ist der Rechner ganz oben zuständig.</p>
+
+      <div class="kdcalc">
+        <div class="fields">
+          <div class="field">
+            <label for="kd-laenge">Kabellänge<span class="hint">Meter, geschätzt genügt</span></label>
+            <input type="number" id="kd-laenge" min="1" max="300" step="1" placeholder="z. B. 20">
+          </div>
+        </div>
+
+        <fieldset class="fset">
+          <legend>Frequenzbereich</legend>
+          <div class="seg">
+            <label><input type="radio" name="kd-frequenz" value="sat" checked><span>Satellit · 2150 MHz</span></label>
+            <label><input type="radio" name="kd-frequenz" value="kabel"><span>Kabel · 862 MHz</span></label>
+          </div>
+        </fieldset>
+
+        <div class="calc-actions kdcalc-actions">
+          <button type="button" class="btn btn-secondary" id="kd-go">Dämpfung prüfen</button>
+          <button type="button" class="btn btn-secondary" id="kd-reset">Zurücksetzen</button>
+        </div>
+      </div>
+
+      <div id="kd-out" class="ergebnis kdcalc-out hidden" aria-live="polite"></div>
+
+      <h2>Summenpegel bei Kabel</h2>
+      <p>Der Tuner bekommt alle Kanäle gleichzeitig, nicht nur den eingestellten. Ihre Leistungen addieren sich. Bei gleichem Pegel je Kanal:</p>
+      <div class="formel">
+        <div class="formel-zeile"><span>L_Summe</span><span>=</span><span>L_Kanal + 10 · log₁₀(Anzahl)</span></div>
+      </div>
+      <p>Bei unterschiedlichen Pegeln müssen die Einzelleistungen addiert werden. Ein Mittelwert der dB-Werte wäre falsch, weil die Skala logarithmisch ist und der stärkste Kanal das Ergebnis dominiert:</p>
+      <div class="formel">
+        <div class="formel-zeile"><span>L_Summe</span><span>=</span><span>10 · log₁₀ ( 10^(L₁/10) + … + 10^(Lₙ/10) )</span></div>
+      </div>
+      <p>Die Belastungsgrenze der Eingangsstufe liegt bei etwa 100 dBµV. Bei 60 Kanälen zu je 78 dBµV ergibt die Summe rund 96 dBµV — knapp darunter. Genau daraus ergibt sich die Grenze von 78 dBµV für den Einzelkanal.</p>
+      <p><strong>Praktische Folge:</strong> In einem Netz mit vielen Kanälen tritt Überpegel früher auf als in einer kleinen Hausanlage, bei identischem Einzelpegel.</p>
+    
+      <h2>Summenrechnung bei Satellit</h2>
+      <p>Die Formel ist dieselbe wie bei Kabel — Leistungsaddition kennt keinen Unterschied zwischen den Übertragungswegen. An die Stelle des Kanals tritt der <strong>Transponder</strong>.</p>
+      <p>Der Unterschied liegt in der Anzahl: Ein Universal-LNB liefert immer nur <strong>ein Band und eine Polarisation</strong> gleichzeitig, gesteuert über 13 beziehungsweise 18 Volt und das 22-kHz-Signal. Von den rund 120 Transpondern auf Astra 19,2° Ost erreichen den Tuner also nur etwa 30 auf einmal.</p>
+      <p>Deshalb fällt die Summe bei Satellit deutlich niedriger aus als bei Kabel, wo alle Kanäle gemeinsam anliegen. Überpegel entsteht bei Satellit meist durch ein einzelnes zu starkes LNB oder einen zu kurzen Weg, nicht durch die Zahl der Transponder.</p>
+      <p>Hinzu kommt: Die Pegel einzelner Transponder unterscheiden sich, weil Sendeleistung und Ausleuchtzone variieren. Eine Rechnung mit einem Mittelwert wäre daher ungenau — korrekt ist nur die Addition der Einzelleistungen.</p>
+      <p><strong>Zur Einordnung:</strong> An der Antennendose sind für Satellit 47 bis 77 dBµV vorgesehen. Ein typisches LNB gibt 75 bis 80 dBµV ab. Ab etwa 85 dBµV am Receiver wird eine Dämpfung nötig.</p>
+    </section>
+  </div>
+</div>
+</main>
+
+<button type="button" class="totop" id="totop" aria-label="Nach oben">↑</button>
+
+<script src="assets/texte/de.js"></script>
+<script src="assets/grenzwerte.js"></script>
+<script src="assets/handbuch.js"></script>
+</body>
+</html>

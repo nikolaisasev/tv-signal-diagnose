@@ -16,8 +16,10 @@ Fall danach nicht nur beheben, sondern versteht die Technik.
 BENUTZUNG
 ---------
 Den gesamten Ordner auspacken und die Datei "index.html"
-doppelklicken. Sie öffnet sich im Browser und zeigt den
-Rechner. Das war die gesamte Installation.
+doppelklicken. Sie öffnet sich im Browser und zeigt eine kurze
+Auswahl: vier Fassungen, drei deutsche Märkte und eine englische
+Fassung für Deutschland. Eine davon anklicken — das war die
+gesamte Installation.
 
 Es wird kein Server gebraucht, keine Internetverbindung und kein
 zusätzliches Programm. Alles funktioniert vollständig offline.
@@ -33,10 +35,46 @@ liegen, alle Verweise sind relativ.
 
 AUFBAU
 ------
-index.html            der Rechner, die gesamte Anwendung
-assets/grenzwerte.js  Schwellen, Diagnosen
+index.html            Auswahlseite
+de-DE/index.html      Deutsch, Deutschland
+de-AT/index.html      Deutsch, Österreich
+de-CH/index.html      Deutsch, Schweiz
+en-DE/index.html      English, Germany
+assets/grenzwerte.js  Schwellen, Matrix
+assets/texte/         jeder sichtbare Text, je Sprache
 assets/handbuch.js    Bedienung der Seite
 assets/stil.css       Gestaltung
+
+Der Fachinhalt ist in allen Fassungen derselbe. Sie unterscheiden
+sich in der Sprache der Seite und in den Angaben, die vom Land
+abhängen.
+
+Oben neben der Überschrift steht ein Wähler. Geschlossen nennt
+er die Kennung, etwa "de-DE". Angeklickt zeigt er alle vier
+Fassungen mit Sprache und Markt; die aktuelle ist
+gekennzeichnet, die anderen sind anklickbar.
+
+Die Sprache der Menüwege folgt der Fassung: die deutschen
+Fassungen zeigen den deutschen Weg, die englische den
+englischen. Ein Sternchen am Ende heisst: diese Bezeichnung
+ist noch nicht am Geraet geprueft.
+
+Rechts an jedem Menüweg steht ein kleines Kopierzeichen —
+dasselbe wie am Messwert des Rechners. Ein Klick legt den Pfad
+in die Zwischenablage, danach erscheint kurz ein Haekchen.
+Sperrt der Browser die Zwischenablage, wird der Pfad markiert
+und ein Hinweis eingeblendet — dann genuegt Strg+C bzw. Cmd+C.
+
+Der Wähler klebt nicht: beim Scrollen wandert er mit dem Text
+nach oben aus dem Bild. Geöffnet legt er sich über den Text und
+verschiebt nichts.
+
+Ein schmaler grauer Streifen am linken Rand heißt: diese Stelle
+ist noch nicht übersetzt. Sie ist trotzdem benutzbar.
+
+Oben klebt nichts. Die Sprungauswahl für schmale Bildschirme
+steht neben dem Wähler und wandert beim Scrollen mit dem Text
+nach oben aus dem Bild.
 
 
 DAUERHAFT GRIFFBEREIT
@@ -56,8 +94,8 @@ HINWEISE
   davon — der Text bleibt wie er ist.
 
 - Aus den Antworten entsteht am Ende des Abschnitts eine Notiz
-  zum Kopieren. Sie ist frei bearbeitbar. "Reset" oben leert
-  alles für einen neuen Durchgang.
+  zum Kopieren. Sie ist frei bearbeitbar. "Zurücksetzen" unter
+  dem Rechner leert dessen Felder.
 
 - Der Überpegel-Rechner erwartet die Werte, die das Gerät
   anzeigt. Satellit und Kabel haben verschiedene Grenzwerte,
@@ -86,6 +124,13 @@ Signalwerte, nur sichtbar wenn Live-TV läuft:
 Signaltest, nur bei Antenne und Kabel:
   Alle Einstellungen -> Allgemein -> Sender -> Sendereinstellung ->
   Programmsuche und -einstellungen -> Signaltest
+
+Frequenz, Symbolrate und Modulation:
+  Alle Einstellungen -> Allgemein -> Sender -> Sendereinstellung
+  (Programmsuche und -einstellungen) -> Manuelle Einstellung
+
+  Der Punkt heisst Manuelle Einstellung, englisch Manual Tuning.
+  DiSEqC traegt Buchstaben statt Zahlen: A~D / ToneA~B.
 
 SIMPLINK (HDMI-CEC):
   Alle Einstellungen -> Allgemein -> Externe Geräte ->

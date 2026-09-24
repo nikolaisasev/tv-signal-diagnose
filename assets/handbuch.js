@@ -14,6 +14,21 @@
    ============================================================ */
 
 /* ============================================================
+   Zeichen
+   ------------------------------------------------------------
+   Zwei Sinnbilder, an zwei Stellen gebraucht: am Messwert des
+   Rechners und an jedem Menueweg. Einmal beschrieben, damit sie
+   nicht auseinanderlaufen.
+   ============================================================ */
+var TVZEICHEN = {
+  kopieren: '<svg viewBox="0 0 16 16" aria-hidden="true" focusable="false">' +
+    '<rect x="5.5" y="1.5" width="9" height="11" rx="1.5"/>' +
+    '<path d="M10.5 14.5h-8a1 1 0 0 1-1-1v-9"/></svg>',
+  fertig: '<svg viewBox="0 0 16 16" aria-hidden="true" focusable="false">' +
+    '<path d="M2.5 8.5l4 4 7-9"/></svg>'
+};
+
+/* ============================================================
    Fortschrittsschiene, Sprungleiste, Zurück-nach-oben
    ============================================================
 
@@ -34,7 +49,6 @@
   var line     = document.querySelector('.rail-track');
   var fill     = document.querySelector('.rail-fill');
   var jump     = document.getElementById('jump');
-  var topbar   = document.getElementById('topbar');
   var totop    = document.getElementById('totop');
 
   /* Zurück-nach-oben gibt es auch ohne Navigation */
@@ -135,12 +149,29 @@
   }
 
   /* ---------- Beobachter: oberster Abschnitt im oberen Drittel ----------
-     Der Bereich beginnt unterhalb der klebenden Kopfleiste, damit der
-     vorangehende Abschnitt nicht mit seiner letzten Zeile gewinnt.      */
+     Der Bereich beginnt dort, wo ein angesprungener Abschnitt landet,
+     und noch ein Stueck darunter.
+
+     Vorher begann er acht Pixel unter der Kopfleiste. Weil zwischen
+     zwei Abschnitten 64 Pixel Abstand liegen, endete der vorherige
+     Abschnitt nach einem Sprung genau auf dieser Kante — und gewann,
+     weil der oberste treffende Abschnitt zaehlt. Angeklickt wurde
+     "Richtwerte Satellit", markiert blieb "Anderes Geraet · Kabel".
+
+     scroll-padding-top steht im Stylesheet und bestimmt, wo ein
+     Sprungziel zu liegen kommt. Von dort wird gerechnet, damit beide
+     Werte nicht auseinanderlaufen koennen.                            */
+  var ANKER_LUFT = 12;
+
+  function ankerAbstand(){
+    var v = parseFloat(
+      window.getComputedStyle(document.documentElement).scrollPaddingTop);
+    return isNaN(v) ? 0 : v;
+  }
+
   function bandMargin(){
     var vh = window.innerHeight || document.documentElement.clientHeight || 0;
-    var barH = topbar ? topbar.offsetHeight : 0;
-    var top = barH + 8;
+    var top = Math.round(ankerAbstand()) + ANKER_LUFT;
     var bottom = Math.max(top + 48, Math.round(vh / 3));
     if(bottom >= vh){ bottom = Math.max(1, vh - 1); }
     if(top >= bottom){ top = Math.max(0, bottom - 1); }
@@ -221,27 +252,25 @@
   }
 
   function liste(schritte){
-    return '<div class="aktion"><p class="aktion-t">Jetzt prüfen</p><ul>'+
+    return '<div class="aktion"><p class="aktion-t">'+TEXTE.rechner.jetztPruefen+'</p><ul>'+
       schritte.map(function(x){return '<li>'+x+'</li>';}).join('')+'</ul></div>';
   }
 
   /* Messwerte in die Zwischenablage. Erst der moderne Weg, sonst der
      alte über ein kurzlebiges Textfeld — die Seite laeuft auch lokal
      aus dem Dateisystem, wo navigator.clipboard fehlen kann. */
-  var ZEICHEN_KOPIEREN='<svg viewBox="0 0 16 16" aria-hidden="true" focusable="false">'+
-    '<rect x="5.5" y="1.5" width="9" height="11" rx="1.5"/>'+
-    '<path d="M10.5 14.5h-8a1 1 0 0 1-1-1v-9"/></svg>';
-  var ZEICHEN_FERTIG='<svg viewBox="0 0 16 16" aria-hidden="true" focusable="false">'+
-    '<path d="M2.5 8.5l4 4 7-9"/></svg>';
+  var ZEICHEN_KOPIEREN = TVZEICHEN.kopieren;
+  var ZEICHEN_FERTIG = TVZEICHEN.fertig;
 
   function kopiere(text, knopf){
     function fertig(ok){
       knopf.innerHTML = ok ? ZEICHEN_FERTIG : ZEICHEN_KOPIEREN;
-      knopf.setAttribute('aria-label', ok ? 'Messwerte kopiert' : 'Kopieren nicht möglich');
+      knopf.setAttribute('aria-label',
+        ok ? TEXTE.rechner.kopiert : TEXTE.rechner.kopierenFehlt);
       knopf.setAttribute('data-fertig', ok ? 'ja' : 'nein');
       window.setTimeout(function(){
         knopf.innerHTML=ZEICHEN_KOPIEREN;
-        knopf.setAttribute('aria-label','Messwerte kopieren');
+        knopf.setAttribute('aria-label', TEXTE.rechner.kopieren);
         knopf.removeAttribute('data-fertig');
       }, 2000);
     }
@@ -275,8 +304,8 @@
       '<p class="urteil-befund">'+d.befund+'</p>'+
       '<p class="urteil-warum">'+d.warum+'</p></div>'+
       '<p class="urteil-werte"><span>'+d.messwerte+'</span>'+
-      '<button type="button" class="werte-kopieren" aria-label="Messwerte kopieren" '+
-      'title="Messwerte kopieren">'+ZEICHEN_KOPIEREN+'</button></p>'+
+      '<button type="button" class="werte-kopieren" aria-label="'+TEXTE.rechner.kopieren+'" '+
+      'title="'+TEXTE.rechner.kopieren+'">'+ZEICHEN_KOPIEREN+'</button></p>'+
       liste(d.schritte);
     out.classList.remove('hidden');
     var knopf=out.querySelector('.werte-kopieren');
@@ -303,10 +332,7 @@
     if(fehler){ zeigeHinweis(fehler.meldung, fehler.schritte); return; }
 
     if(pegel===null||rausch===null){
-      zeigeHinweis('Werte fehlen.',[
-        'Pegel und Rauschabstand eintragen.',
-        'Beide stehen unter Support → Schnellhilfe → Selbstdiagnose und Pflege → RF/HDMI.'
-      ]);
+      zeigeHinweis(TEXTE.rechner.werteFehlen, TEXTE.rechner.werteFehlenSchritte);
       return;
     }
 
@@ -352,56 +378,66 @@
 (function(){
   'use strict';
 
+  /* Nur noch der Bau: welche Optionen es gibt, welche sich
+     ausschliessen, wo ein Hinweis erscheint. Jeder Wortlaut steht in
+     der Textschicht und wird ueber die Kennung geholt.
+
+     opt.v    sprachneutrale Kennung, wird ausgewertet
+     solo     schliesst die uebrigen Optionen der Gruppe aus
+     full     ersetzt die ganze Antwort durch den Satz aus "voll"
+     hint     blendet den Hinweis aus "hinweise" ein; sec nennt den
+              Abschnitt, zu dem er fuehrt                              */
   var QUESTIONS = {
-
-    /* ---------- beide Spuren ---------- */
     aenderung: {
-      pre: 'Kurz vor dem Problem: ',
-      groups: [{ multi: true, legend: 'Was war kurz vor dem Problem?', opt: [
-        {v:'Neues Gerät'}, {v:'Update'}, {v:'Umzug'}, {v:'Renovierung'},
-        {v:'Handwerker im Haus'}, {v:'Neuer Router'}, {v:'Neuer Tarif'},
-        {v:'Sturm'}, {v:'Werksreset'},
-        {v:'Nichts bekannt', solo:true, full:'Problem trat plötzlich auf, keine Änderung kurz davor'}
-      ]}],
-      text: { label: 'Was genau, und wie lange her?', placeholder: 'z. B. neuer Receiver seit zwei Wochen' }
+      multi: true,
+      opt: [
+        { v: 'neuesGeraet' }, { v: 'update' }, { v: 'umzug' }, { v: 'renovierung' },
+        { v: 'handwerker' }, { v: 'neuerRouter' }, { v: 'neuerTarif' },
+        { v: 'sturm', hint: {} }, { v: 'werksreset' },
+        { v: 'nichtsBekannt', solo: true, full: true }
+      ],
+      text: true
     },
-
-    /* ---------- Spur: Empfang ---------- */
     empfangsart: {
-      pre: 'Empfang: ',
-      groups: [{ legend: 'Empfangsart', opt: [
-        {v:'Satellit'}, {v:'Kabel'}
-      ]}],
-      text: { label: 'Anbieter', placeholder: 'z. B. Vodafone' }
+      opt: [{ v: 'sat' }, { v: 'kabel' }],
+      text: true
     },
     vorher: {
-      pre: 'Vorgeschichte: ',
-      groups: [{ legend: 'Lief es vorher?', opt: [
-        {v:'lief jahrelang', hint:{t:'Keine Konfiguration. Die ändert sich nicht von selbst'}},
-        {v:'lief bisher störungsfrei'},
-        {v:'war noch nie in Ordnung'}
-      ]}],
-      text: { label: 'Seit wann gestört?', placeholder: 'z. B. seit etwa drei Wochen' }
+      opt: [
+        { v: 'liefJahrelang', hint: {} },
+        { v: 'liefStoerungsfrei' },
+        { v: 'nieInOrdnung' }
+      ],
+      text: true
     },
     andereGeraet: {
-      pre: 'Anderes Gerät an derselben Dose: ',
-      groups: [{ legend: 'Anderes Gerät an derselben Dose?', opt: [
-        /* Nur bei "läuft" der Sprung in den eigenen Abschnitt — die anderen
-           beiden Antworten führen dort nicht weiter. */
-        {v:'läuft', hint:{label:'Anderes Gerät läuft problemlos', sec:'anderesgeraet'}},
-        {v:'läuft ebenfalls nicht'},
-        {v:'nicht geprüft'}
-      ]}],
-      text: { label: 'Welches Gerät?', placeholder: 'z. B. Receiver im Schlafzimmer' }
+      opt: [
+        /* Nur bei "laeuft" der Sprung in den eigenen Abschnitt — die
+           anderen beiden Antworten fuehren dort nicht weiter. */
+        { v: 'laeuft', hint: { sec: 'anderesgeraet-sat' } },
+        { v: 'laeuftNicht' },
+        { v: 'nichtGeprueft' }
+      ],
+      text: true
     },
     haus: {
-      pre: 'Gebäude: ',
-      groups: [{ legend: 'Gebäude', opt: [
-        {v:'Einfamilienhaus'}, {v:'Mehrfamilienhaus'}
-      ]}],
-      text: { label: 'Wie viele Parteien?', placeholder: 'z. B. 12 Parteien' }
+      opt: [{ v: 'einfamilien' }, { v: 'mehrfamilien' }],
+      text: true
     }
   };
+
+  /* ---------- Zugang zur Textschicht ---------- */
+  function worte(qid){ return TEXTE.fragen[qid]; }
+  function anzeige(qid, v){ return worte(qid).optionen[v] || v; }
+  function hinweisVon(qid, o){
+    if(!o.hint){ return null; }
+    var w = worte(qid);
+    return {
+      t: w.hinweise ? w.hinweise[o.v] : null,
+      label: w.verweise ? w.verweise[o.v] : null,
+      sec: o.hint.sec
+    };
+  }
 
   /* ------------------------------------------------------------
      Zustand — bewusst nur für die laufende Sitzung.
@@ -431,11 +467,7 @@
     });
     s.texts = keep;
   }
-  function options(cfg){
-    var all = [];
-    (cfg.groups || []).forEach(function(g){ g.opt.forEach(function(o){ all.push(o); }); });
-    return all;
-  }
+  function options(cfg){ return cfg.opt || []; }
   function findOpt(cfg, v){
     var hit = null;
     options(cfg).forEach(function(o){ if(o.v === v){ hit = o; } });
@@ -453,13 +485,13 @@
     var cfg = QUESTIONS[qid], a = ANSWERS[qid];
     if(!cfg || !a){ return ''; }
     var txt = (a.text || '').trim();
-    var pre = cfg.pre || '';
+    var pre = worte(qid).pre || '';
 
     /* Eine Option mit fertigem Satz ersetzt die ganze Antwort */
     var full = null;
     a.sel.forEach(function(v){
       var o = findOpt(cfg, v);
-      if(o && o.full){ full = o.full; }
+      if(o && o.full){ full = worte(qid).voll[o.v]; }
     });
     if(full){ return txt ? full + ' (' + txt + ')' : full; }
 
@@ -474,7 +506,7 @@
 
     var labels = a.sel.map(function(v){
       var o = findOpt(cfg, v);
-      return (o && o.n) || v;
+      return anzeige(qid, v);
     });
     if(labels.length && txt){ return pre + labels.join(', ') + ' (' + txt + ')'; }
     if(labels.length){ return pre + labels.join(', '); }
@@ -485,10 +517,11 @@
   function hintsOf(qid){
     var cfg = QUESTIONS[qid], a = ANSWERS[qid];
     if(!cfg || !a){ return []; }
-    var list = [];
+    var list = [], gesehen = {};
     a.sel.forEach(function(v){
       var o = findOpt(cfg, v);
-      if(o && o.hint && list.indexOf(o.hint) === -1){ list.push(o.hint); }
+      var h = o ? hinweisVon(qid, o) : null;
+      if(h && !gesehen[v]){ gesehen[v] = true; list.push(h); }
     });
     return list;
   }
@@ -496,8 +529,8 @@
   /* Antwort auf die Empfangsart stellt den Rechner passend ein. */
   function applyEmpfangsart(){
     var sel = (ANSWERS.empfangsart && ANSWERS.empfangsart.sel) || [];
-    var mode = sel.indexOf('Satellit') >= 0 ? 'sat'
-             : sel.indexOf('Kabel') >= 0 ? 'kabel' : null;
+    var mode = sel.indexOf('sat') >= 0 ? 'sat'
+             : sel.indexOf('kabel') >= 0 ? 'kabel' : null;
     if(!mode){ return; }
     var radio = document.querySelector('input[name="art"][value="' + mode + '"]');
     if(!radio || radio.checked){ return; }
@@ -517,10 +550,11 @@
      zwangsläufig gleich aussehen und sich gleich verhalten. */
   function chipGroup(qid, g){
     var group = el('div', 'q-group');
-    if(g.legend){ group.appendChild(el('p', 'q-legend', g.legend)); }
+    var legende = worte(qid).legende;
+    if(legende){ group.appendChild(el('p', 'q-legend', legende)); }
     var chips = el('div', 'q-chips');
     g.opt.forEach(function(o){
-      var chip = el('button', 'chip', o.v);
+      var chip = el('button', 'chip', anzeige(qid, o.v));
       chip.type = 'button';
       chip.setAttribute('aria-pressed', 'false');
       chip.setAttribute('data-opt', o.v);
@@ -587,20 +621,18 @@
        zweiter Hinweis — sonst stünde dasselbe doppelt auf der Seite. */
     var ausgelagert = hasEntscheidung(qid);
     if(!ausgelagert){
-      (cfg.groups || []).forEach(function(g){
-        panel.appendChild(chipGroup(qid, g));
-      });
+      panel.appendChild(chipGroup(qid, cfg));
     }
 
     if(cfg.text){
       var field = el('div', 'q-text-field');
       var inputId = 'qt-' + panelId;
-      var lab = el('label', null, cfg.text.label);
+      var lab = el('label', null, worte(qid).text.label);
       lab.setAttribute('for', inputId);
       var input = el('input');
       input.type = 'text';
       input.id = inputId;
-      input.placeholder = cfg.text.placeholder || '';
+      input.placeholder = worte(qid).text.platzhalter || '';
       input.addEventListener('input', function(){
         state(qid).text = input.value;
         refresh(qid);
@@ -696,7 +728,6 @@
           /* Ein Hinweis darf reine Navigation sein: ohne Text und mit
              eigener Beschriftung statt der Abschnittsnummer. */
           var p = el('p', null, h.t ? h.t + ' ' : '');
-          p.style.margin = '0';
           var label = h.label || secLabel(h.sec);
           if(label){
             var a = el('a', null, '→ ' + label);
@@ -749,9 +780,7 @@
       var cfg = QUESTIONS[qid];
       if(!cfg){ return; }
       var panel = el('div', 'q-panel');
-      (cfg.groups || []).forEach(function(g){
-        panel.appendChild(chipGroup(qid, g));
-      });
+      panel.appendChild(chipGroup(qid, cfg));
       box.insertBefore(panel, box.firstChild);
 
       /* Der Block gehört in das Panel seiner Frage: sichtbar erst, wenn die
@@ -783,7 +812,7 @@
 
     var calc = null;
     if(CALC && document.getElementById('out')){
-      calc = 'Rechner: ' + (CALC.vals ? CALC.vals + ' → ' : '') + CALC.dx;
+      calc = TEXTE.notiz.rechnerVorsatz + (CALC.vals ? CALC.vals + ' → ' : '') + CALC.dx;
     }
     if(!parts.length && !calc){ return ''; }
 
@@ -792,7 +821,7 @@
     var titel = fall ? fall.getAttribute('data-fall') : '';
     lines.push((titel ? [titel] : []).concat(parts).join(' | '));
     if(calc){ lines.push(''); lines.push(calc); }
-    if(hints.length){ lines.push(''); lines.push('→ Richtung: ' + hints.join(' · ')); }
+    if(hints.length){ lines.push(''); lines.push(TEXTE.notiz.richtung + hints.join(' · ')); }
     return lines.join('\n');
   }
 
@@ -817,19 +846,13 @@
       memo.classList.toggle('has-content', !!out.value.trim());
     });
 
-    var jump = document.getElementById('memoJump');
-    if(jump){
-      jump.classList.toggle('hidden', !document.querySelector('.memo.has-content'));
-    }
   }
 
   function copyMemo(memo){
     var out = memo.querySelector('.memo-out');
     var status = memo.querySelector('.memo-status');
     function done(ok){
-      status.textContent = ok
-        ? 'In die Zwischenablage kopiert.'
-        : 'Kopieren nicht möglich. Text oben markieren und mit Strg+C bzw. Cmd+C kopieren.';
+      status.textContent = ok ? TEXTE.notiz.kopiert : TEXTE.notiz.kopierenFehlt;
       status.classList.toggle('is-warn', !ok);
     }
     function fallback(){
@@ -895,13 +918,6 @@
     updateMemos();
   });
 
-  var jump = document.getElementById('memoJump');
-  if(jump){
-    jump.addEventListener('click', function(){
-      var memo = document.querySelector('[data-memo]');
-      if(memo){ memo.scrollIntoView({ block: 'start' }); }
-    });
-  }
 
   updateMemos();
 })();
@@ -927,7 +943,8 @@
   if(!out || !$('kd-go')){ return; }
 
   /* Belag in dB je 100 m, als Spanne — dieselben Richtwerte wie in der
-     Tabelle im Abschnitt darüber. Wer sie dort ändert, muss hier nachziehen. */
+     Tabelle darüber auf formeln.html. Wer sie dort ändert, muss hier
+     nachziehen; tests/formeln.test.cjs vergleicht beide Orte. */
   var BELAG={ sat:[20,30], kabel:[14,19] };
   var LAENGE_MIN=1, LAENGE_MAX=300;
 
@@ -936,7 +953,7 @@
     out.innerHTML=
       '<div class="urteil urteil--'+zustand+'">'+
       '<p class="urteil-befund">'+urteil+'</p></div>'+
-      '<div class="aktion"><p class="aktion-t">Jetzt prüfen</p><ul>'+
+      '<div class="aktion"><p class="aktion-t">'+TEXTE.rechner.jetztPruefen+'</p><ul>'+
       schritte.map(function(x){return '<li>'+x+'</li>';}).join('')+
       '</ul></div>';
   }
@@ -946,21 +963,16 @@
     var laenge=v===''?null:parseFloat(v);
 
     if(laenge===null || isNaN(laenge)){
-      zeige('unklar','Länge eintragen, 1 bis 300 Meter.',[
-        'Kabellänge in Metern eintragen — eine Schätzung genügt.',
-        'Frequenzbereich wählen: Satellit oder Kabel.'
-      ]);
+      zeige('unklar', TEXTE.daempfung.laengeFehlt, TEXTE.daempfung.laengeFehltSchritte);
       out.classList.remove('hidden');
       return;
     }
 
     /* Wie im Hauptrechner: die Meldung benennt Feld, Wert und Bereich */
     if(laenge<LAENGE_MIN || laenge>LAENGE_MAX){
-      zeige('unklar','Kabellänge '+laenge+' m ist nicht möglich. Gültig: '+
-        LAENGE_MIN+' bis '+LAENGE_MAX+' m.',[
-        'Länge erneut schätzen — gemeint ist der Weg von der Dose zum Gerät.',
-        'Bei sehr langen Wegen die Anlage abschnittsweise betrachten.'
-      ]);
+      zeige('unklar',
+        TEXTE.daempfung.laengeUnmoeglich(laenge, LAENGE_MIN, LAENGE_MAX),
+        TEXTE.daempfung.laengeUnmoeglichSchritte);
       out.classList.remove('hidden');
       return;
     }
@@ -969,10 +981,7 @@
     var dMin=Math.round(b[0]*laenge/100);
     var dMax=Math.round(b[1]*laenge/100);
 
-    zeige('info','Erwartete Kabeldämpfung: '+dMin+' bis '+dMax+' dB.',[
-      'Verteiler und Dosen dämpfen zusätzlich — je Verteilerausgang 4 bis 8 dB, je Dose 2 bis 6 dB.',
-      'Richtwerte. Der tatsächliche Belag steht im Datenblatt des Kabels.'
-    ]);
+    zeige('info', TEXTE.daempfung.erwartet(dMin, dMax), TEXTE.daempfung.erwartetSchritte);
     out.classList.remove('hidden');
   });
 
@@ -980,4 +989,129 @@
     $('kd-laenge').value='';
     out.classList.add('hidden');
   });
+})();
+
+
+/* ============================================================
+   Kopierknopf an den Menuewegen
+   ------------------------------------------------------------
+   Menuewege wandern in Tickets, Notizen und Nachrichten. Von Hand
+   abgeschrieben verrutscht gerade bei den langen Pfaden mit
+   Klammerzusatz leicht ein Zeichen.
+
+   Kopiert wird der sichtbare Pfad, zusammengesetzt aus seinen
+   Gliedern. Alles ausserhalb der Glieder — das Sternchen fuer eine
+   ungepruefte Bezeichnung, der Knopf selbst — bleibt draussen.
+
+   Drei Stufen, wie bei der Notiz. Stillschweigend nichts tun ist
+   keine davon:
+     1. navigator.clipboard
+     2. execCommand ueber ein kurzlebiges Textfeld
+     3. den Pfad markieren und sagen, dass Strg+C genuegt
+   ============================================================ */
+(function(){
+  'use strict';
+
+  var knoepfe = document.querySelectorAll('.mw-kopieren');
+  if(!knoepfe.length || typeof TEXTE === 'undefined'){ return; }
+
+  var DAUER = 2000;
+
+  /* Der Kasten kann mehrere Wege enthalten, wenn spaeter wieder eine
+     zweite Menuesprache danebensteht. Genommen wird der sichtbare. */
+  function wegZu(knopf){
+    var kasten = knopf.parentNode;
+    var alle = kasten.querySelectorAll('.mw');
+    for(var i = 0; i < alle.length; i++){
+      if(alle[i].offsetParent !== null){ return alle[i]; }
+    }
+    return alle[0] || null;
+  }
+
+  /* Aus den Gliedern, nicht aus dem Elementtext: so bleiben Sternchen
+     und geschuetzte Leerzeichen draussen. */
+  function pfadText(weg){
+    var glieder = weg.querySelectorAll('.mw-glied');
+    var teile = [];
+    for(var i = 0; i < glieder.length; i++){
+      teile.push(glieder[i].textContent);
+    }
+    /* Das geschuetzte Leerzeichen vor dem Pfeil haelt Glied und Pfeil
+       zusammen. In der Zwischenablage hat es nichts zu suchen. */
+    return teile.join(' ').replace(/\u00a0/g, ' ').replace(/\s+/g, ' ').trim();
+  }
+
+  function markiere(weg){
+    try{
+      var bereich = document.createRange();
+      bereich.selectNodeContents(weg);
+      var auswahl = window.getSelection();
+      auswahl.removeAllRanges();
+      auswahl.addRange(bereich);
+      return true;
+    } catch(e){ return false; }
+  }
+
+  /* Gelungen: das Haekchen, still. Der Wortlaut geht nur an
+     Vorlesehilfen. Muss der Leser dagegen selbst Strg+C druecken,
+     wird der Hinweis sichtbar — sonst wuesste er nicht, was zu tun
+     ist. */
+  function melde(knopf, status, text, dauer, sichtbar){
+    knopf.innerHTML = TVZEICHEN.fertig;
+    knopf.setAttribute('data-fertig', 'ja');
+    status.textContent = text;
+    status.classList.toggle('mw-status--sichtbar', !!sichtbar);
+    window.setTimeout(function(){
+      knopf.innerHTML = TVZEICHEN.kopieren;
+      knopf.removeAttribute('data-fertig');
+      status.textContent = '';
+      status.classList.remove('mw-status--sichtbar');
+    }, dauer);
+  }
+
+  function ueberTextfeld(text){
+    try{
+      var feld = document.createElement('textarea');
+      feld.value = text;
+      feld.setAttribute('readonly', '');
+      feld.className = 'sr-only';
+      document.body.appendChild(feld);
+      feld.select();
+      var ok = document.execCommand('copy');
+      document.body.removeChild(feld);
+      return !!ok;
+    } catch(e){ return false; }
+  }
+
+  for(var i = 0; i < knoepfe.length; i++){
+    (function(knopf){
+      /* Der Generator legt den Knopf verborgen an. Erst hier bekommt er
+         sein Zeichen und wird sichtbar: ohne Skript koennte er nichts
+         ausrichten und stuende nur im Weg. */
+      knopf.innerHTML = TVZEICHEN.kopieren;
+      knopf.removeAttribute('hidden');
+
+      knopf.addEventListener('click', function(){
+        var weg = wegZu(knopf);
+        if(!weg){ return; }
+        var status = knopf.parentNode.querySelector('.mw-status');
+        var text = pfadText(weg);
+
+        function gelungen(){ melde(knopf, status, TEXTE.menue.kopiert, DAUER); }
+        function ersatz(){
+          if(ueberTextfeld(text)){ gelungen(); return; }
+          markiere(weg);
+          melde(knopf, status, TEXTE.menue.markiert, DAUER * 2, true);
+        }
+
+        try{
+          if(navigator.clipboard && navigator.clipboard.writeText){
+            navigator.clipboard.writeText(text).then(gelungen, ersatz);
+            return;
+          }
+        } catch(e){ /* faellt unten zurueck */ }
+        ersatz();
+      });
+    }(knoepfe[i]));
+  }
 })();

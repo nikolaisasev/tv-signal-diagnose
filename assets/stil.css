@@ -27,9 +27,10 @@
 
   --ease:cubic-bezier(.4,0,.2,1);
   --pad:40px;
-  /* Ohne Leiste auf breiten Bildschirmen: davon haengen der Klebepunkt
-     der Schiene und scroll-padding-top ab. */
-  --topbar-h:0px;
+  /* Abstand eines Sprungziels vom oberen Rand. Seit die Kopfleiste
+     weg ist, muss nur noch Luft bleiben, keine Leiste mehr. Davon
+     haengt auch ab, ab wo die Schiene den aktiven Abschnitt misst. */
+  --ankerluft:24px;
   --text-w:68ch;
   --block-w:720px;
   --wide-w:860px;
@@ -41,7 +42,7 @@
 *{box-sizing:border-box;}
 html{
   scroll-behavior:smooth;
-  scroll-padding-top:calc(var(--topbar-h) + 24px);
+  scroll-padding-top:var(--ankerluft);
   -webkit-text-size-adjust:100%;
 }
 body{
@@ -67,42 +68,18 @@ strong{font-weight:600;color:var(--ink);}
 .hidden{display:none !important;}
 
 /* ============================================================
-   Kopfleiste — kleiner Schalter, mobil zusätzlich Sprungleiste
+   Sprungleiste
+   ------------------------------------------------------------
+   Es klebt nichts mehr am oberen Rand. Die Sprungleiste gehoert
+   zum Seitenkopf und wandert beim Scrollen mit dem Text nach
+   oben aus dem Bild; auf breiten Schirmen fuehrt ohnehin die
+   Schiene links.
    ============================================================ */
-/* Auf breiten Bildschirmen ist die Leiste leer — die Schiene steht links,
-   der Notiz-Knopf waere ihr einziger Inhalt. Sie erscheint erst dort, wo
-   sie gebraucht wird: auf schmalen Bildschirmen traegt sie die
-   Sprungleiste, die dort die Schiene ersetzt. */
-.topbar{
-  display:none;
-  position:sticky;top:0;z-index:40;
-  background:var(--bg);
-  border-bottom:1px solid var(--hairline-soft);
-}
-.topbar-row{
-  /* Seit dem Wegfall des Zurueck-Verweises steht hier nur noch die
-     Werkzeuggruppe. Ohne flex-end rutschte sie an den linken Rand. */
-  display:flex;align-items:center;justify-content:flex-end;gap:16px;
-  height:var(--topbar-h);
-}
-.topbar-name{
-  font-size:14px;color:var(--muted);
-  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
-}
-.switch{
-  flex:none;
-  background:transparent;border:0;border-radius:6px;
-  padding:6px 8px;margin-right:-8px;
-  font-family:inherit;font-size:14px;font-weight:600;
-  color:var(--accent);cursor:pointer;
-}
-.switch:hover{background:var(--accent-soft);}
-
-.jumpbar{display:none;padding-bottom:10px;}
+.jumpbar{display:none;flex:1 1 220px;min-width:0;}
 .jumpbar select{
   width:100%;
-  padding:11px 40px 11px 13px;
-  font-family:inherit;font-size:16px;font-weight:500;
+  padding:9px 40px 9px 13px;
+  font-family:inherit;font-size:15px;font-weight:500;
   color:var(--ink);background-color:var(--bg-alt);
   border:1px solid var(--hairline);border-radius:8px;
   appearance:none;-webkit-appearance:none;
@@ -113,6 +90,115 @@ strong{font-weight:600;color:var(--ink);}
   background-size:6px 6px,6px 6px;
   background-repeat:no-repeat;
 }
+
+/* ============================================================
+   Fassungswaehler
+   ------------------------------------------------------------
+   Geschlossen sagt er, wo man ist; geoeffnet bietet er die
+   anderen Fassungen an.
+
+   Er klebt nicht: die Fassung waehlt man einmal am Anfang, beim
+   Lesen braucht man die Sprungleiste. Deshalb steht er im
+   Seitenkopf und wandert beim Scrollen mit dem Text nach oben aus
+   dem Bild.
+
+   Die geoeffnete Auswahl legt sich ueber den Inhalt, statt ihn
+   nach unten zu schieben: die Ordnung der Seite bleibt dieselbe,
+   ob der Waehler nun offen steht oder nicht.
+
+   Die Menuesprache folgt der Sprache der Fassung und hat keinen
+   eigenen Schalter.
+   ============================================================ */
+/* Die Abstaende der Titelzeile wandern vom Titel auf den Kopf. Sonst
+   richtete sich der Waehler an der Mitte der Aussenabstaende aus statt
+   an der Ueberschrift.
+
+   Der Titel darf schmaler werden als sein Text — so bleibt der Waehler
+   neben ihm, statt eine Zeile tiefer zu rutschen. Erst wenn es wirklich
+   eng wird, bricht die Zeile um, und der Waehler steht rechtsbuendig
+   darunter. */
+.seitenkopf{
+  display:flex;align-items:center;justify-content:space-between;
+  flex-wrap:wrap;gap:12px 24px;
+  /* Dicht am oberen Rand: der leere Streifen darueber kostete auf
+     einem 800 px hohen Schirm ein Achtel der Flaeche, bevor der
+     erste Inhalt erschien. Die Schiene ruecht nicht mit — sie steht
+     in der eigenen Rasterspalte und haelt ihren Abstand. */
+  margin:15px 0 32px;
+  /* Anker fuer die Auswahl. Der Waehler selbst bleibt static: er
+     bekommt keine eigene Schicht und verschiebt nichts. */
+  position:relative;
+}
+.seitenkopf .track-title{margin:0;flex:1 1 320px;min-width:0;}
+.seitenkopf-werkzeuge{
+  display:flex;align-items:center;gap:12px;
+  flex:0 1 auto;margin-left:auto;min-width:0;
+}
+.fw{flex:0 0 auto;}
+
+.fw > summary{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:7px 12px;
+  border:1px solid var(--hairline);border-radius:8px;
+  background:var(--bg);
+  font-size:13px;color:var(--ink-2);
+  cursor:pointer;list-style:none;white-space:nowrap;
+}
+.fw > summary::-webkit-details-marker{display:none;}
+.fw > summary::marker{content:"";}
+.fw > summary:hover{background:var(--bg-alt);}
+.fw > summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+.fw-pfeil{color:var(--muted);font-size:13px;line-height:1;}
+.fw[open] > summary .fw-pfeil{transform:rotate(180deg);}
+
+/* Ueber dem Inhalt, rechtsbuendig unter dem Knopf. Die Seite behaelt
+   ihre Ordnung: nichts rueckt, wenn der Waehler auf- oder zugeht.
+   Die Breitenbegrenzung haelt ihn auch auf dem Telefon im Bild. */
+.fw-inhalt{
+  position:absolute;top:calc(100% + 8px);right:0;z-index:30;
+  padding:16px 18px;
+  border:1px solid var(--hairline);border-radius:12px;
+  background:var(--bg);
+  box-shadow:0 8px 28px rgba(0,0,0,.12);
+  width:max-content;min-width:240px;
+  max-width:min(340px, calc(100vw - 2 * var(--pad)));
+}
+.fw-gruppe{
+  margin:0 0 8px;
+  font-size:12px;font-weight:600;letter-spacing:.04em;
+  text-transform:uppercase;color:var(--muted);
+}
+.fw-liste{list-style:none;margin:0;padding:0;}
+.fw-liste li{margin:0 0 2px;}
+.fw-liste a,.fw-jetzt{
+  display:flex;align-items:baseline;gap:8px;
+  padding:7px 10px;border-radius:8px;
+  font-size:14px;text-decoration:none;color:var(--ink);
+}
+.fw-liste a:hover{background:var(--accent-soft);}
+.fw-jetzt{background:var(--bg-alt);}
+.fw-kennung{font-family:var(--mono);font-size:13px;flex:0 0 auto;}
+.fw-was{color:var(--muted);font-size:13px;}
+.fw-marke{margin-left:auto;font-size:12px;color:var(--muted);padding-left:8px;}
+/* Am Knopf steht dieselbe Zeile wie in der Liste, nur enger */
+.fw-stand{display:inline-flex;align-items:baseline;gap:8px;}
+
+/* Der Abstand stand frueher als Inline-Stil im Skript. */
+.q-hint p{margin:0;}
+
+/* ============================================================
+   Offene Uebersetzung
+   ------------------------------------------------------------
+   Ein schmaler Streifen am linken Rand in der Farbe fuer
+   Unklares. Die Stelle bleibt lesbar und benutzbar, ist aber
+   beim Lesen als unfertig erkennbar. Im Druck faellt der
+   Streifen weg: dort wuerde er wie eine Hervorhebung wirken.
+   ============================================================ */
+[data-todo]{
+  border-left:3px solid var(--neutral);
+  padding-left:10px;
+}
+
 
 /* ============================================================
    Spuren-Layout
@@ -143,7 +229,7 @@ strong{font-weight:600;color:var(--ink);}
    Fortschrittsschiene
    ============================================================ */
 .rail{display:none;}
-.js .rail{display:block;position:sticky;top:calc(var(--topbar-h) + 24px);padding-top:60px;}
+.js .rail{display:block;position:sticky;top:var(--ankerluft);padding-top:60px;}
 .rail-lines{position:relative;}
 .rail-list{list-style:none;margin:0;padding:0;}
 .rail-track{
@@ -321,15 +407,83 @@ ul.tight li,ol.tight li{margin-bottom:6px;}
 /* ============================================================
    Menüweg und Code
    ============================================================ */
+/* Ein Menueweg ist mit einem Blick ganz zu erfassen: nichts wird
+   abgeschnitten, nichts muss seitlich geschoben werden. Umbrochen
+   wird zwischen den Gliedern — jedes Glied ist ein inline-block und
+   rutscht als Ganzes in die naechste Zeile. Passt ein Glied selbst
+   nicht in die Zeile, bricht es innerhalb um; ein abgeschnittener
+   Weg waere unbrauchbar. */
 .path{
   display:block;
-  font-family:var(--mono);font-size:14px;
+  font-family:var(--mono);font-size:14px;line-height:1.7;
   background:var(--bg-alt);color:var(--ink);
   border-radius:6px;
   padding:8px 12px;
   margin:8px 0;
   max-width:var(--block-w);
-  overflow-x:auto;white-space:nowrap;
+  white-space:normal;
+}
+.mw-glied{display:inline-block;max-width:100%;overflow-wrap:anywhere;}
+.mw-pfeil{color:var(--muted);}
+
+/* Der Kasten traegt den Knopf: rechts, senkrecht mittig. Der Text
+   bekommt so viel Innenabstand, dass er nie darunter laeuft. */
+.path:has(.mw){position:relative;padding-right:44px;}
+/* Dasselbe Zeichen wie am Messwert des Rechners, damit ein Knopf mit
+   dieser Bedeutung ueberall gleich aussieht. */
+.mw-kopieren{
+  position:absolute;right:8px;top:50%;transform:translateY(-50%);
+  display:inline-flex;align-items:center;justify-content:center;
+  width:28px;height:28px;padding:0;
+  background:transparent;border:0;border-radius:6px;
+  color:var(--muted);cursor:pointer;
+}
+.mw-kopieren svg{
+  width:15px;height:15px;
+  fill:none;stroke:currentColor;stroke-width:1.6;
+  stroke-linecap:round;stroke-linejoin:round;
+}
+.mw-kopieren:hover{background:var(--bg);color:var(--accent);}
+.mw-kopieren:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+.mw-kopieren[data-fertig]{color:var(--ok);}
+
+/* Gelungen sagt das Haekchen. Die Meldung geht an Vorlesehilfen —
+   sichtbar wird sie nur, wenn der Leser selbst Strg+C druecken muss. */
+.mw-status{
+  position:absolute;width:1px;height:1px;padding:0;margin:-1px;
+  overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0;
+}
+.mw-status--sichtbar{
+  position:static;width:auto;height:auto;margin:6px 0 0;
+  overflow:visible;clip:auto;white-space:normal;
+  display:block;font-family:var(--sans);font-size:13px;color:var(--muted);
+}
+
+/* Ungeprueft: frueher ein Balken vor dem ersten Wort, der das Bild
+   stoerte. Jetzt ein Sternchen hinter dem letzten Glied. Es steht
+   ausserhalb der Glieder und wird deshalb nicht mitkopiert. */
+.path .mw[data-todo]{border-left:0;padding-left:0;}
+.mw-stern{color:var(--muted);font-size:.8em;padding-left:2px;cursor:help;}
+
+/* Schmal: der Knopf bekommt eine eigene Zeile, der Pfad die volle
+   Breite zurueck. */
+@media(max-width:599px){
+  .path:has(.mw){padding-right:12px;}
+  .mw-kopieren{
+    position:static;transform:none;
+    display:flex;margin:6px 0 0 auto;
+  }
+}
+
+/* Auf breiten Schirmen bekommt der Kasten die volle Spaltenbreite und
+   die Schrift 13 px: so passt der laengste Weg — der Unicable-Pfad mit
+   rund 170 Zeichen — ab etwa 1190 px in zwei Zeilen. Darunter braucht
+   er mehr, weil die Spalte es nicht hergibt; abgeschnitten wird er auf
+   keiner Breite. Unter 861 px bleibt die Schrift bei 14 px: dort sind
+   zwei Zeilen ohnehin unerreichbar, und lesbar wiegt schwerer. */
+@media(min-width:861px){
+  .path:has(.mw){max-width:var(--wide-w);}
+  .path .mw{font-size:13px;}
 }
 code{
   font-family:var(--mono);font-size:.86em;
@@ -393,6 +547,8 @@ tbody tr.is-bad  td:first-child::before{background:var(--fault);}
   padding:24px;
   margin:24px 0;
   max-width:var(--block-w);
+  position:relative;
+  padding-right:52px;
 }
 .fset{border:0;padding:0;margin:0 0 20px;min-width:0;}
 .fset legend{
@@ -645,20 +801,12 @@ tbody tr.is-bad  td:first-child::before{background:var(--fault);}
 .memo-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px;}
 .memo-status{font-size:14px;color:var(--ok);margin:10px 0 0;min-height:21px;}
 .memo-status.is-warn{color:var(--warn);}
-.topbar-tools{display:flex;align-items:center;gap:2px;flex:none;}
-.memo-jump{
-  background:transparent;border:0;border-radius:6px;
-  padding:6px 8px;font-family:inherit;font-size:14px;font-weight:600;
-  color:var(--accent);cursor:pointer;
-}
-.memo-jump:hover{background:var(--accent-soft);}
 
 /* ============================================================
    Responsiv
    ============================================================ */
 @media(max-width:860px){
-  :root{--pad:20px;--topbar-h:48px;}
-  .topbar{display:block;}
+  :root{--pad:20px;}
   .chip{padding:12px 16px;font-size:16px;min-height:44px;}
   .q-panel{padding:14px;}
   .q-port{grid-template-columns:1fr;gap:6px;}
@@ -667,16 +815,18 @@ tbody tr.is-bad  td:first-child::before{background:var(--fault);}
   .memo-out{font-size:16px;}
   .memo-actions .btn{flex:1 1 auto;text-align:center;}
   .formel{padding:16px;}
-  .topbar-name{font-size:13px;}
-  html{scroll-padding-top:112px;}
+  html{scroll-padding-top:var(--ankerluft);}
   body{font-size:16px;}
 
 
+  /* Hier ersetzt die Auswahl die Schiene */
   .jumpbar{display:block;}
+  .seitenkopf-werkzeuge{flex:1 1 100%;margin-left:0;}
 
   .track-inner,.js .track-inner{grid-template-columns:1fr;gap:0;padding-bottom:64px;}
   .rail,.js .rail{display:none;}
   .track-title{font-size:30px;margin:28px 0 40px;}
+  .seitenkopf .track-title{margin:0;}
 
   .sec{margin-bottom:44px;}
   .sec h2{font-size:24px;}
@@ -725,7 +875,6 @@ tbody tr.is-bad  td:first-child::before{background:var(--fault);}
 @media(max-width:400px){
   :root{--pad:12px;}
   /* Platz für die Knöpfe — die Spur steht direkt darunter als Überschrift */
-  .topbar-name{display:none;}
   body{font-size:15.5px;}
   table{font-size:13px;}
   td.num,td.mono{font-size:13px;}
@@ -745,11 +894,265 @@ tbody tr.is-bad  td:first-child::before{background:var(--fault);}
 /* ============================================================
    Drucken — beide Spuren vollständig, keine Bedienelemente
    ============================================================ */
+
+/* ============================================================
+   Diagnosematrix
+   ------------------------------------------------------------
+   Wird aus assets/grenzwerte.js erzeugt und steht an zwei Orten:
+   in den Abschnitten Satellit und Kabel dieser Seite und auf der
+   Dokumentationsseite. Deshalb liegen die Regeln hier und nicht
+   bei der Dokumentation.
+
+   Die Zellen folgen dem Muster der Urteilszeile im Rechner: weiche
+   Flaeche in der Zustandsfarbe, Text in der kraeftigen Variante
+   derselben Farbe. Keine eigene Farbe.
+   ============================================================ */
+.mk-quelle{
+  font-family:var(--mono);
+  font-size:13px;
+  color:var(--muted);
+  margin:0 0 14px;
+}
+
+/* ---------- Tabelle ---------- */
+.matrixtabelle{
+  width:100%;
+  border-collapse:separate;
+  border-spacing:3px;
+  margin:0 0 8px;
+}
+.matrixtabelle caption{
+  caption-side:top;
+  text-align:left;
+  font-size:14px;
+  color:var(--muted);
+  padding:0 0 12px;
+}
+.matrixtabelle th{
+  font-weight:400;
+  padding:8px 6px;
+  text-align:center;
+  vertical-align:bottom;
+  border:0;
+}
+.matrixtabelle th[scope="row"]{
+  text-align:right;
+  vertical-align:middle;
+  padding-right:14px;
+  width:160px;
+}
+.mk-ecke{background:transparent;}
+
+.mk-kl{
+  display:block;
+  font-family:var(--mono);
+  font-size:14px;font-weight:500;
+  color:var(--ink);
+}
+.mk-na{
+  display:block;
+  font-size:13px;line-height:1.3;
+  color:var(--muted);
+  margin-top:2px;
+}
+.mk-br{
+  display:block;
+  font-family:var(--mono);
+  font-size:12px;
+  color:var(--ink-2);
+  margin-top:3px;
+}
+
+.matrixtabelle td{
+  padding:11px 6px;
+  text-align:center;
+  border:0;
+  border-radius:8px;
+  font-family:var(--mono);
+  font-size:11.5px;
+  line-height:1.35;
+}
+
+/* Zustandsfarben, dieselben wie im Urteil des Rechners */
+.mk-gut   {background:var(--ok-soft);     color:var(--ok);}
+.mk-grenz {background:var(--warn-soft);   color:var(--warn);}
+.mk-fehler{background:var(--fault-soft);  color:var(--fault);}
+.mk-unklar{background:var(--neutral-soft);color:var(--neutral);}
+
+
+/* ---------- Legende ---------- */
+.mk-legende{
+  display:flex;gap:20px;flex-wrap:wrap;
+  font-size:14px;color:var(--muted);
+  margin:16px 0 0;
+}
+.mk-legende i{
+  display:inline-block;
+  width:11px;height:11px;
+  border-radius:3px;
+  margin-right:7px;
+  font-style:normal;
+  vertical-align:baseline;
+}
+.mk-legende .mk-gut{background:var(--ok);}
+.mk-legende .mk-grenz{background:var(--warn);}
+.mk-legende .mk-fehler{background:var(--fault);}
+.mk-legende .mk-unklar{background:var(--neutral);}
+
+
+/* ---------- Befundlegende ----------
+   Die Zellen tragen Kennungen; hier steht, was jede bedeutet. Zwei
+   Spalten: links die Kennung, rechts der Satz aus grenzwerte.js. */
+.mk-befunde{
+  display:grid;
+  grid-template-columns:max-content minmax(0,1fr);
+  gap:6px 16px;
+  margin:18px 0 0;
+  max-width:var(--block-w);
+}
+.mk-befunde dt{
+  /* Nur die Zustandsfarbe, nicht die Flaeche: die Zellen der Matrix
+     sind gefuellt, die Legende soll daneben ruhig bleiben. */
+  background:transparent;
+  font-family:var(--mono);
+  font-size:12.5px;
+  line-height:1.5;
+}
+.mk-befunde dd{
+  margin:0;
+  font-size:15px;
+  line-height:1.5;
+  color:var(--ink-2);
+}
+
+/* ---------- Schmale Bildschirme ---------- */
+@media(max-width:860px){
+  .mk-sub{margin:-24px 0 32px;}
+  .matrixtabelle th[scope="row"]{width:120px;padding-right:10px;}
+  .matrixtabelle td{font-size:10.5px;padding:9px 4px;}
+  .mk-na{font-size:12px;}
+  .mk-br{font-size:11px;}
+}
+
+
+/* ---------- Druck ----------
+   Die Flaechen muessen mitgedruckt werden, sonst traegt die Tabelle
+   keine Information mehr. Die Kennung in der Zelle nennt den Befund
+   ohnehin im Wortlaut, die Farbe ist nur die zweite Spur. */
+/* ============================================================
+   Aufklappbares: Infoknopf im Rechner, Befundlegende
+   ------------------------------------------------------------
+   Beide mit details und summary, ohne Skript. So funktionieren sie
+   auch in der Dateivorschau unter iOS, wo nichts ausgefuehrt wird.
+   ============================================================ */
+
+/* ---------- Infoknopf ---------- */
+/* Nur der Knopf schwebt oben rechts. Der geoeffnete Inhalt steht im
+   Fluss als erstes Element des Kastens — die Felder ruecken nach unten,
+   statt verdeckt zu werden. */
+.rechner-info{position:static;}
+.rechner-info > summary{
+  position:absolute;
+  top:14px;right:14px;
+  z-index:1;
+  display:flex;align-items:center;justify-content:center;
+  width:26px;height:26px;
+  border-radius:50%;
+  background:var(--accent-soft);
+  color:var(--accent);
+  font-family:var(--mono);font-size:15px;font-weight:500;
+  cursor:pointer;
+  list-style:none;
+}
+/* Das Standarddreieck der Browser unterdruecken */
+.rechner-info > summary::-webkit-details-marker{display:none;}
+.rechner-info > summary::marker{content:"";}
+.rechner-info > summary:hover{background:var(--accent);color:var(--bg);}
+.rechner-info > summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+
+/* Geoeffnet als Block am oberen Rand des Kastens — die Felder ruecken
+   nach unten, nichts wird ueberdeckt und nichts seitlich verschoben. */
+.rechner-info-inhalt{
+  background:var(--bg);
+  border:1px solid var(--hairline);
+  border-radius:12px;
+  padding:16px 18px;
+  margin:0 0 20px;
+}
+.rechner-info-inhalt p:last-child{margin-bottom:0;}
+
+/* ---------- Befundlegende ---------- */
+.legende-aus{margin:14px 0 0;max-width:var(--block-w);}
+.legende-aus > summary{
+  display:inline-block;
+  font-size:15px;font-weight:600;
+  color:var(--accent);
+  cursor:pointer;
+  padding:4px 0;
+  list-style:none;
+}
+.legende-aus > summary::-webkit-details-marker{display:none;}
+.legende-aus > summary::marker{content:"";}
+.legende-aus > summary::before{content:"▸ ";}
+.legende-aus[open] > summary::before{content:"▾ ";}
+.legende-aus > summary:hover{text-decoration:underline;}
+.legende-aus > summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px;}
+
+@media print{
+  body{background:#fff;}
+  .matrixtabelle td,
+  .mk-legende i{
+    -webkit-print-color-adjust:exact;
+    print-color-adjust:exact;
+  }
+  .matrixtabelle td{border:1px solid var(--hairline);}
+  .matrixtabelle{page-break-inside:avoid;}
+  h2{page-break-after:avoid;}
+  .note{page-break-inside:avoid;}
+  .mk-sub{margin:8pt 0 20pt;}
+}
+
 @media print{
   :root{--pad:0;}
   html{scroll-padding-top:0;}
   body{font-size:11pt;color:#000;background:#fff;}
-  .topbar,.rail,.totop,.calc,.ergebnis{display:none !important;}
+  .rail,.totop,.ergebnis,.fw,.jumpbar,.mw-kopieren{display:none !important;}
+  /* Der Pfad bekommt die volle Breite zurueck; das Sternchen bleibt —
+     ein gedruckter Pfad soll Unbelegtes nicht als gesichert ausgeben. */
+  .path:has(.mw){padding-right:0 !important;}
+  /* Der Streifen fuer offene Uebersetzungen wirkte auf Papier wie
+     eine Hervorhebung. Der Text selbst bleibt stehen. */
+  [data-todo]{border-left:0 !important;padding-left:0 !important;}
+  /* Der Rechner ist auf Papier sinnlos — der Menueweg in seinem
+     Infoknopf nicht. Ein Kind eines ausgeblendeten Elements laesst sich
+     nicht sichtbar machen, deshalb bleibt der Kasten und verliert nur
+     seine Bedienelemente. */
+  .calc{
+    background:none !important;
+    padding:0 !important;
+    margin:0 0 16pt !important;
+  }
+  .calc > .fset,
+  .calc > .fields,
+  .calc > .calc-actions{display:none !important;}
+
+  /* Aufklappbares wird im Ausdruck immer ausgegeben — eine gedruckte
+     Matrix ohne Legende traegt nur Kennungen. Der Knopf selbst entfaellt,
+     er ist auf Papier sinnlos. */
+  /* Chrome und Safari verbergen geschlossene details ueber
+     content-visibility am ::details-content, nicht ueber display —
+     nur so landet der Inhalt wirklich im Ausdruck. */
+  details::details-content{content-visibility:visible !important;}
+  details{display:block !important;}
+  .legende-aus > summary{display:none !important;}
+  .rechner-info > summary{display:none !important;}
+  /* Der Infohinweis steht im Ausdruck im Fluss, nicht schwebend */
+  .rechner-info{position:static !important;}
+  .rechner-info-inhalt{
+    position:static !important;
+    max-width:none;
+    border:1px solid var(--hairline);
+  }
   /* Der Daempfungsrechner ist ein Bedienelement — der erklaerende Text
      davor bleibt im Ausdruck stehen, das Werkzeug selbst nicht. */
   .kdcalc{display:none !important;}

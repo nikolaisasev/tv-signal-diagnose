@@ -1,11 +1,12 @@
 {
-  "name": "tv-signal-diagnose",
+  "name": "tv-diagnose",
   "version": "1.0.0",
   "private": true,
-  "description": "Diagnose-Handbuch fuer TV-Empfang. Laeuft ohne Server und ohne Build; diese Datei existiert nur, damit node --test das Verzeichnis tests/ findet.",
+  "description": "Diagnose-Handbuch fuer TV-Empfang. Die ausgelieferten Fassungen sind fertige HTML-Dateien und brauchen weder Server noch Build; gebaut wird nur, wer die Quellen aendert.",
   "type": "commonjs",
   "scripts": {
     "test": "node --test tests/*.test.cjs",
-    "doku": "node dokumentation/erzeuge-matrix.cjs"
+    "bauen": "node bauen/erzeuge.cjs",
+    "doku": "node bauen/erzeuge-matrix.cjs"
   }
 }

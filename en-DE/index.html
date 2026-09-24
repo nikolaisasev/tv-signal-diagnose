@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<!-- Erzeugt von bauen/erzeuge.cjs — nicht von Hand bearbeiten.
+     Quelle: quelle/en.html
+     Markt:  assets/markt/de.js
+     Neu erzeugen mit: npm run bauen -->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- Working document: do not index -->
+<meta name="robots" content="noindex, nofollow">
+<title>Overload Calculator — TV Diagnostics</title>
+<link rel="stylesheet" href="../assets/stil.css">
+<script>document.documentElement.classList.add('js');</script>
+</head>
+<body>
+
+<noscript>
+  <div class="shell">
+    <div class="nojs">
+      <strong>JavaScript is turned off</strong>
+      <p>The calculator and the note need JavaScript.
+      On iOS it is turned off in the Files app preview.
+      The reference material below is complete either way.</p>
+    </div>
+  </div>
+</noscript>
+
+<main class="fall" data-fall="Reception disturbed / overload">
+<div class="shell track-inner">
+
+  <nav class="rail" aria-label="Sections">
+    <div class="rail-lines">
+      <span class="rail-track" aria-hidden="true"><span class="rail-fill"></span></span>
+      <ol class="rail-list"></ol>
+    </div>
+  </nav>
+
+  <div class="track-body">
+    <div class="seitenkopf">
+      <h1 class="track-title">Reception Disturbed / Overload</h1>
+      <!-- Es klebt nichts mehr am oberen Rand. Sprungleiste und
+           Fassungswaehler gehoeren zum Seitenkopf und wandern beim
+           Scrollen mit dem Text nach oben aus dem Bild. -->
+      <div class="seitenkopf-werkzeuge">
+        <nav class="jumpbar" aria-label="Quick jump">
+          <label class="sr-only" for="jump">Choose section</label>
+          <select id="jump">
+            <option value="">Choose section …</option>
+          </select>
+        </nav>
+        <!-- schalter:fassung:anfang -->
+      <details class="fw">
+        <summary aria-label="Choose version — en-DE, English · Germany">
+          <span class="fw-stand"><span class="fw-kennung">en-DE</span></span>
+          <span class="fw-pfeil" aria-hidden="true">▾</span>
+        </summary>
+        <div class="fw-inhalt">
+          <p class="fw-gruppe">Version</p>
+          <ul class="fw-liste">
+          <li><a href="../de-DE/index.html" hreflang="de"><span class="fw-kennung">de-DE</span><span class="fw-was">Deutsch · Germany</span></a></li>
+          <li><a href="../de-AT/index.html" hreflang="de"><span class="fw-kennung">de-AT</span><span class="fw-was">Deutsch · Austria</span></a></li>
+          <li><a href="../de-CH/index.html" hreflang="de"><span class="fw-kennung">de-CH</span><span class="fw-was">Deutsch · Switzerland</span></a></li>
+          <li class="fw-jetzt"><span class="fw-kennung">en-DE</span><span class="fw-was">English · Germany</span><span class="fw-marke">current</span></li>
+          </ul>
+        </div>
+      </details>
+      <!-- schalter:fassung:ende -->
+      </div>
+    </div>
+
+    <!-- 1. calculator -->
+    <section class="sec" id="rechner" data-nav="Overload calculator">
+      <div class="sec-head">
+        <p class="sec-num">Section 1</p>
+        <h2>Overload Calculator</h2>
+      </div>
+      <div class="calc">
+        <details class="rechner-info">
+          <summary aria-label="Where the values are on the TV">i</summary>
+          <div class="rechner-info-inhalt">
+            <p class="path" data-menue="signalwerte"><span class="mw" data-todo="Menuebezeichnung nicht belegt"><span class="mw-glied">All Settings&nbsp;<span class="mw-pfeil">→</span></span> <span class="mw-glied">Support&nbsp;<span class="mw-pfeil">→</span></span> <span class="mw-glied">Quick Help&nbsp;<span class="mw-pfeil">→</span></span> <span class="mw-glied">Device Self-Care&nbsp;<span class="mw-pfeil">→</span></span> <span class="mw-glied">RF/HDMI</span><sup class="mw-stern" role="note" title="English wording not yet verified against the manual" aria-label="English wording not yet verified against the manual">*</sup></span><button type="button" class="mw-kopieren" hidden aria-label="Copy menu path" title="Copy menu path"></button><span class="mw-status" role="status" aria-live="polite"></span></p>
+            <p>The <strong>RF/HDMI</strong> entry only appears while live TV is running — even when no signal is coming in at all.</p>
+          </div>
+        </details>
+
+        <fieldset class="fset">
+          <legend>Reception type</legend>
+          <div class="seg">
+            <label><input type="radio" name="art" value="sat" checked><span>Satellite · DVB-S/S2</span></label>
+            <label><input type="radio" name="art" value="kabel"><span>Cable · DVB-C</span></label>
+          </div>
+        </fieldset>
+
+        <div class="fields" id="f-satdb">
+          <div class="field">
+            <label for="i-pg">Level<span class="hint">dBm · ideal −65 to −25</span></label>
+            <input type="number" id="i-pg" step="0.1" placeholder="e.g. -22">
+          </div>
+          <div class="field">
+            <label for="i-snr">SNR / C/N<span class="hint">dB · ideal from 11</span></label>
+            <input type="number" id="i-snr" step="0.1" placeholder="e.g. 5.5">
+          </div>
+        </div>
+
+        <div class="fields hidden" id="f-kabel">
+          <div class="field">
+            <label for="i-kpg">Level<span class="hint">dBµV · ideal 50–70</span></label>
+            <input type="number" id="i-kpg" step="0.1" placeholder="e.g. 82">
+          </div>
+          <div class="field">
+            <label for="i-mer">MER / SNR<span class="hint">dB · ideal from 36 (256QAM)</span></label>
+            <input type="number" id="i-mer" step="0.1" placeholder="e.g. 27">
+          </div>
+        </div>
+
+
+        <div class="calc-actions">
+          <button type="button" class="btn btn-primary" id="go">Evaluate</button>
+          <button type="button" class="btn btn-secondary" id="reset">Reset</button>
+        </div>
+      </div>
+
+      <div id="out" class="ergebnis hidden" aria-live="polite"></div>
+
+    </section>
+
+
+    <!-- 2. first questions -->
+    <section class="sec" id="erstfragen" data-nav="First questions">
+      <div class="sec-head">
+        <p class="sec-num">Section 2</p>
+        <h2>First Questions</h2>
+      </div>
+
+      <h3>For reception problems</h3>
+      <ul class="tight">
+        <li data-q="empfangsart">Satellite or cable? Which provider?</li>
+        <li data-q="aenderung">What changed shortly before the problem started?</li>
+        <li data-q="vorher">Did it work before, or was it never right?</li>
+        <li data-q="andereGeraet">Is another device running on the same outlet?</li>
+        <li data-q="haus">Single or multi-family building? How many households?</li>
+      </ul>
+
+
+
+      <div class="memo" data-memo="signal">
+        <h3>Note</h3>
+        <p class="memo-hint">Freely editable. Changes are kept.</p>
+        <label class="sr-only" for="memo-out-signal">Summary</label>
+        <textarea class="memo-out" id="memo-out-signal" rows="5"></textarea>
+        <div class="memo-actions">
+          <button type="button" class="btn btn-primary" data-memo-copy>Copy to clipboard</button>
+          <button type="button" class="btn btn-secondary hidden" data-memo-rebuild>Rebuild from answers</button>
+        </div>
+        <p class="memo-status" role="status" aria-live="polite"></p>
+      </div>
+    </section>
+
+    <section class="sec" id="anderesgeraet-sat" data-nav="Other device · Satellite">
+      <div class="sec-head">
+        <p class="sec-num">Section 3</p>
+        <h2>Another Device Works Fine · Satellite</h2>
+      </div>
+      <p>One device on the installation works, the other does not. On satellite, a conflict between the devices is possible.</p>
+
+      <span class="path" data-menue="unicable"><span class="mw" data-todo="Menuebezeichnung nicht belegt"><span class="mw-glied">All Settings&nbsp;<span class="mw-pfeil">→</span></span> <span class="mw-glied">General&nbsp;<span class="mw-pfeil">→</span></span> <span class="mw-glied">Programmes&nbsp;<span class="mw-pfeil">→</span></span> <span class="mw-glied">Programme Tuning (Programme Tuning &amp; Settings)&nbsp;<span class="mw-pfeil">→</span></span> <span class="mw-glied">Auto Tuning&nbsp;<span class="mw-pfeil">→</span></span> <span class="mw-glied">Satellite Settings&nbsp;<span class="mw-pfeil">→</span></span> <span class="mw-glied">Unicable&nbsp;<span class="mw-pfeil">→</span></span> <span class="mw-glied">On&nbsp;<span class="mw-pfeil">→</span></span> <span class="mw-glied">Unicable Settings</span><sup class="mw-stern" role="note" title="English wording not yet verified against the manual" aria-label="English wording not yet verified against the manual">*</sup></span><button type="button" class="mw-kopieren" hidden aria-label="Copy menu path" title="Copy menu path"></button><span class="mw-status" role="status" aria-live="polite"></span></span>
+
+      <div class="note note--warn">
+        <p class="note-t">LG counts differently from the label</p>
+        <ul class="tight">
+          <li>Labels and converters usually count <strong>UB 1–4</strong> or <strong>1–8</strong></li>
+          <li>The device menu often counts <strong>from 0</strong> — label UB 3 is then number 2 in the menu</li>
+          <li>Question to ask: does the list in the menu start at 0 or at 1?</li>
+          <li><strong>Only the frequency is unambiguous</strong> — enter the one from the label and the number becomes secondary</li>
+          <li>Common values: 1210 · 1420 · 1680 · 2040 MHz — other converters use e.g. 1284 · 1400 · 1516 MHz</li>
+          <li>Where they differ, the label wins, not the default list</li>
+        </ul>
+      </div>
+
+      <h3>How to recognise Unicable</h3>
+      <ul class="tight">
+        <li>Multi-family building with one outlet per flat</li>
+        <li>The second TV loses the picture as soon as the first one runs — typically in the evening at prime time, when every device is on</li>
+        <li>The distributor is marked Unicable, SCR, SatCR, EN 50494 or EN 50607/JESS</li>
+        <li>The numbers are allocated by the <span data-markt="zustaendigSat">antenna installer</span></li>
+      </ul>
+
+      <h3>Possible causes</h3>
+      <ul class="tight">
+        <li>Two devices on the same UB number — the one that is switched on blocks the other completely</li>
+        <li>Unicable not enabled in the menu — the device sends DiSEqC instead of SCR commands</li>
+        <li>Number correct, transport frequency entered wrongly</li>
+        <li>Number off by 1 — the menu counts from 0, the label from 1</li>
+        <li>Wrong standard — installation is EN 50607 (Unicable 2 / JESS), device set to Unicable 1</li>
+        <li>DiSEqC or the 22 kHz tone still active — this disables Unicable</li>
+      </ul>
+
+      <h3>First</h3>
+      <ol class="tight">
+        <li><strong>Unplug</strong> the other satellite device — standby is not enough</li>
+        <li>Measure again — if signal appears, the number conflict is confirmed</li>
+        <li>Read the label on the converter or outlet: UB number, transport frequency, standard</li>
+      </ol>
+
+      <h3>Then</h3>
+      <ol class="tight" start="4">
+        <li>Enter a free UB number <strong>and its matching frequency</strong></li>
+        <li>DiSEqC off, 22 kHz tone off, motor type off — these four are mutually exclusive: when Unicable is switched on, the device turns DiSEqC, the 22 kHz tone and the motor type off by itself. If one of them stays active, the device sends the wrong commands.</li>
+        <li>Switch both devices on, measure again</li>
+        <li>No success: try the number one lower and one higher</li>
+        <li>No success: swap Unicable 1 for Unicable 2</li>
+      </ol>
+    </section>
+
+    <section class="sec" id="anderesgeraet-kabel" data-nav="Other device · Cable">
+      <div class="sec-head">
+        <p class="sec-num">Section 4</p>
+        <h2>Another Device Works Fine · Cable</h2>
+      </div>
+      <p>One device on the outlet works, the other does not. On cable, a conflict between the devices is ruled out — every device gets the same signal at the same time.</p>
+
+
+      <h3>Possible causes</h3>
+      <ul class="tight">
+        <li><strong>A device conflict is ruled out</strong> — every device gets the same signal at the same time, nothing is allocated</li>
+        <li>Connecting cable or plug between outlet and device faulty</li>
+        <li>One distributor output weaker or faulty</li>
+        <li>Search method or filter set wrongly on the device</li>
+        <li>If only encrypted channels are missing: CI+ module or smartcard</li>
+        <li>Level at this outlet too low — longer run, more distributors</li>
+      </ul>
+
+      <h3>First</h3>
+      <ol class="tight">
+        <li><strong>Device straight to the outlet</strong> — no distributor, no intermediate cable, other device unplugged</li>
+        <li>If it works then: the cause is on the way there — distributor, intermediate cable or plug</li>
+        <li>If it still does not work: the cause is the outlet itself or the device</li>
+        <li>Check the connecting cable and plug, change the distributor output</li>
+        <li>Cross-check: put a working device on the same line</li>
+      </ol>
+
+      <h3>Then</h3>
+      <ol class="tight" start="4">
+        <li>Check search method and filter on the device, start the search again</li>
+        <li>If only encrypted channels are missing: check the CI+ module and smartcard</li>
+        <li>Measure the level at both outlets and compare the difference with the expected attenuation</li>
+      </ol>
+    </section>
+
+    <!-- 3. measuring -->
+
+
+
+    <!-- 5. satellite -->
+    <section class="sec" id="sat" data-nav="Satellite values">
+      <div class="sec-head">
+        <p class="sec-num">Section 5</p>
+        <h2>Reference Values, Satellite (DVB-S/S2)</h2>
+      </div>
+
+      <h3>Diagnostic matrix</h3>
+      <!-- matrix:sat:anfang -->
+      <p class="mk-quelle">Level in dBm, range −90 … −10 · SNR in dB, range 0 … 25</p>
+      <div class="tw"><table class="matrixtabelle">
+  <caption>No upper edge range defined, so P4 is omitted</caption>
+  <tr>
+    <th class="mk-ecke"></th>
+    <th scope="col"><span class="mk-kl">Q0</span><span class="mk-na">no lock</span><span class="mk-br">exactly 0</span></th>
+    <th scope="col"><span class="mk-kl">Q1</span><span class="mk-na">below minimum</span><span class="mk-br">&lt; 6</span></th>
+    <th scope="col"><span class="mk-kl">Q2</span><span class="mk-na">marginal</span><span class="mk-br">6 … &lt;11</span></th>
+    <th scope="col"><span class="mk-kl">Q3</span><span class="mk-na">good</span><span class="mk-br">11 … 20</span></th>
+    <th scope="col"><span class="mk-kl">Q4</span><span class="mk-na">implausibly high</span><span class="mk-br">&gt; 20</span></th>
+  </tr>
+  <tr>
+    <th scope="row"><span class="mk-kl">P1</span><span class="mk-na">too low</span><span class="mk-br">&lt; −70</span></th>
+    <td class="mk-fehler" data-kennung="KEIN-SIGNAL">NO-SIGNAL</td>
+    <td class="mk-fehler" data-kennung="UNTERPEGEL">LOW-LEVEL</td>
+    <td class="mk-fehler" data-kennung="UNTERPEGEL">LOW-LEVEL</td>
+    <td class="mk-unklar" data-kennung="WIDERSPRUCH">CONTRADICTION</td>
+    <td class="mk-unklar" data-kennung="UNPLAUSIBEL">IMPLAUSIBLE</td>
+  </tr>
+  <tr>
+    <th scope="row"><span class="mk-kl">P2</span><span class="mk-na">lower edge</span><span class="mk-br">−70 … &lt;−65</span></th>
+    <td class="mk-fehler" data-kennung="KONFIG">CONFIG</td>
+    <td class="mk-fehler" data-kennung="UNTERPEGEL">LOW-LEVEL</td>
+    <td class="mk-grenz" data-kennung="UNTERPEGEL-GRENZ">LOW-LEVEL-MARGINAL</td>
+    <td class="mk-grenz" data-kennung="RAND-UNTEN-OK">LOWER-EDGE-OK</td>
+    <td class="mk-unklar" data-kennung="UNPLAUSIBEL">IMPLAUSIBLE</td>
+  </tr>
+  <tr>
+    <th scope="row"><span class="mk-kl">P3</span><span class="mk-na">normal</span><span class="mk-br">−65 … −25</span></th>
+    <td class="mk-fehler" data-kennung="KONFIG">CONFIG</td>
+    <td class="mk-fehler" data-kennung="STOERUNG">INTERFERENCE</td>
+    <td class="mk-grenz" data-kennung="STOERUNG-GRENZ">INTERFERENCE-MARGINAL</td>
+    <td class="mk-gut" data-kennung="OK">OK</td>
+    <td class="mk-unklar" data-kennung="UNPLAUSIBEL">IMPLAUSIBLE</td>
+  </tr>
+  <tr>
+    <th scope="row"><span class="mk-kl">P5</span><span class="mk-na">too high</span><span class="mk-br">&gt; −25</span></th>
+    <td class="mk-fehler" data-kennung="KONFIG-ODER-UEBERPEGEL">CONFIG-OR-OVERLOAD</td>
+    <td class="mk-fehler" data-kennung="UEBERPEGEL">OVERLOAD</td>
+    <td class="mk-fehler" data-kennung="UEBERPEGEL-GRENZ">OVERLOAD-MARGINAL</td>
+    <td class="mk-grenz" data-kennung="PEGEL-HOCH-OK">HIGH-LEVEL-OK</td>
+    <td class="mk-unklar" data-kennung="UNPLAUSIBEL">IMPLAUSIBLE</td>
+  </tr>
+      </table></div>
+      <p class="mk-legende">
+        <span><i class="mk-gut"></i>good</span>
+        <span><i class="mk-grenz"></i>marginal</span>
+        <span><i class="mk-fehler"></i>fault</span>
+        <span><i class="mk-unklar"></i>unclear</span>
+      </p>
+      <details class="legende-aus">
+        <summary>Show legend</summary>
+        <dl class="mk-befunde">
+          <dt class="mk-gut" data-kennung="OK">OK</dt>
+          <dd>Reception values fine — the cause lies elsewhere.</dd>
+          <dt class="mk-grenz" data-kennung="PEGEL-HOCH-OK">HIGH-LEVEL-OK</dt>
+          <dd>Level above the limit, noise margin still good.</dd>
+          <dt class="mk-grenz" data-kennung="RAND-UNTEN-OK">LOWER-EDGE-OK</dt>
+          <dd>Level at the lower edge, noise margin good.</dd>
+          <dt class="mk-grenz" data-kennung="STOERUNG-GRENZ">INTERFERENCE-MARGINAL</dt>
+          <dd>Marginal — level correct, noise margin without reserve.</dd>
+          <dt class="mk-grenz" data-kennung="UNTERPEGEL-GRENZ">LOW-LEVEL-MARGINAL</dt>
+          <dd>Level at the lower edge, reserve almost used up.</dd>
+          <dt class="mk-fehler" data-kennung="KEIN-SIGNAL">NO-SIGNAL</dt>
+          <dd>No signal at the tuner.</dd>
+          <dt class="mk-fehler" data-kennung="KONFIG">CONFIG</dt>
+          <dd>Power arrives, but the tuner does not lock.</dd>
+          <dt class="mk-fehler" data-kennung="KONFIG-ODER-UEBERPEGEL">CONFIG-OR-OVERLOAD</dt>
+          <dd>Very high level, but nothing decodable.</dd>
+          <dt class="mk-fehler" data-kennung="STOERUNG">INTERFERENCE</dt>
+          <dd>Interference in the signal path — level correct, signal distorted.</dd>
+          <dt class="mk-fehler" data-kennung="UEBERPEGEL">OVERLOAD</dt>
+          <dd>Overload — the tuner is overdriven.</dd>
+          <dt class="mk-fehler" data-kennung="UEBERPEGEL-GRENZ">OVERLOAD-MARGINAL</dt>
+          <dd>Level above the limit, noise margin already affected.</dd>
+          <dt class="mk-fehler" data-kennung="UNTERPEGEL">LOW-LEVEL</dt>
+          <dd>Low level — too little power at the tuner.</dd>
+          <dt class="mk-unklar" data-kennung="UNPLAUSIBEL">IMPLAUSIBLE</dt>
+          <dd>Noise margin implausibly high.</dd>
+          <dt class="mk-unklar" data-kennung="WIDERSPRUCH">CONTRADICTION</dt>
+          <dd>Values contradict each other.</dd>
+        </dl>
+      </details>
+      <!-- matrix:sat:ende -->
+
+      <h3>Checking the LNB and the installation</h3>
+      <p>All these values live in the same menu. Press the gear button, then “<span data-menuepunkt="alleEinstellungen"><span class="mp">All Settings</span></span>” at the very bottom.</p>
+      <span class="path" data-menue="satelliteneinstellungen"><span class="mw" data-todo="Menuebezeichnung nicht belegt"><span class="mw-glied">All Settings&nbsp;<span class="mw-pfeil">→</span></span> <span class="mw-glied">General&nbsp;<span class="mw-pfeil">→</span></span> <span class="mw-glied">Programmes&nbsp;<span class="mw-pfeil">→</span></span> <span class="mw-glied">Programme Tuning (Programme Tuning &amp; Settings)&nbsp;<span class="mw-pfeil">→</span></span> <span class="mw-glied">Satellite Settings</span><sup class="mw-stern" role="note" title="English wording not yet verified against the manual" aria-label="English wording not yet verified against the manual">*</sup></span><button type="button" class="mw-kopieren" hidden aria-label="Copy menu path" title="Copy menu path"></button><span class="mw-status" role="status" aria-live="polite"></span></span>
+      <div class="tw"><table>
+        <thead><tr><th>Item</th><th>Expected value</th></tr></thead>
+        <tbody>
+          <tr><td>LNB type Universal</td><td class="mono">9750 / 10600 MHz</td></tr>
+          <tr><td>LNB Single</td><td class="mono">9750 MHz</td></tr>
+          <tr><td>DiSEqC</td><td class="mono">Off · with several LNBs A~D / ToneA~B</td></tr>
+        </tbody>
+      </table></div>
+
+      <p>The menu offers more frequency values: 9750/10750, 10600, 10750, 11300, 5150 and MDU1 to MDU5. They belong to special installations. If anything other than 9750/10600 is set, that is the fault on an ordinary Universal installation. If the right value is not in the list, the <span data-menuepunkt="benutzer"><span class="mp">User</span></span> entry allows free input.</p>
+
+      <p>DiSEqC names the inputs with letters, not numbers: <strong>A to D</strong> plus <strong>ToneA</strong> and <strong>ToneB</strong>. With a single LNB, DiSEqC stays off; with several, pick the right position A to D.</p>
+
+      <p>Unicable installation? → <a href="#anderesgeraet-sat">Another device works fine</a></p>
+
+    </section>
+
+    <section class="sec" id="transponder" data-nav="Transponder reference">
+      <div class="sec-head">
+        <p class="sec-num">Section 6</p>
+        <h2>Transponder Reference <span data-markt="satellit">Astra 19,2° Ost</span></h2>
+      </div>
+      <p>If the device shows <strong>low strength with high quality</strong>, the transponder is usually entered wrongly or the reading is faulty — that combination otherwise practically never occurs. Read the values again.</p>
+      <!-- markt:transponder:anfang -->
+      <span class="path">11494 MHz · H · SR 22000 · DVB-S2 — Das Erste HD, frei</span>
+      <span class="path">11362 MHz · H · SR 22000 · DVB-S2 — ZDF HD, frei</span>
+      <span class="path">12188 MHz · H · SR 27500 · DVB-S — RTL-Familie SD, frei</span>
+      <!-- markt:transponder:ende -->
+      <p>The two public-broadcaster transponders make good references because they are unencrypted and permanently occupied.</p>
+      <p>Transponder assignments change. Check the current state before giving important information, for example via kingofsat.net or astra.de.</p>
+      <p>For a different satellite (Hotbird 13° East, Astra 23.5° East), look up different values.</p>
+    </section>
+
+    <!-- 6. cable -->
+    <section class="sec" id="kabel" data-nav="Cable values">
+      <div class="sec-head">
+        <p class="sec-num">Section 7</p>
+        <h2>Reference Values, Cable (DVB-C)</h2>
+      </div>
+
+      <h3>Diagnostic matrix</h3>
+      <!-- matrix:kabel:anfang -->
+      <p class="mk-quelle">Level in dBµV, range 20 … 100 · MER in dB, range 0 … 45</p>
+      <div class="tw"><table class="matrixtabelle">
+  <tr>
+    <th class="mk-ecke"></th>
+    <th scope="col"><span class="mk-kl">Q0</span><span class="mk-na">no lock</span><span class="mk-br">exactly 0</span></th>
+    <th scope="col"><span class="mk-kl">Q1</span><span class="mk-na">below minimum</span><span class="mk-br">&lt; 30</span></th>
+    <th scope="col"><span class="mk-kl">Q2</span><span class="mk-na">marginal</span><span class="mk-br">30 … &lt;36</span></th>
+    <th scope="col"><span class="mk-kl">Q3</span><span class="mk-na">good</span><span class="mk-br">36 … 42</span></th>
+    <th scope="col"><span class="mk-kl">Q4</span><span class="mk-na">implausibly high</span><span class="mk-br">&gt; 42</span></th>
+  </tr>
+  <tr>
+    <th scope="row"><span class="mk-kl">P1</span><span class="mk-na">too low</span><span class="mk-br">&lt; 45</span></th>
+    <td class="mk-fehler" data-kennung="KEIN-SIGNAL">NO-SIGNAL</td>
+    <td class="mk-fehler" data-kennung="UNTERPEGEL">LOW-LEVEL</td>
+    <td class="mk-fehler" data-kennung="UNTERPEGEL">LOW-LEVEL</td>
+    <td class="mk-unklar" data-kennung="WIDERSPRUCH">CONTRADICTION</td>
+    <td class="mk-unklar" data-kennung="UNPLAUSIBEL">IMPLAUSIBLE</td>
+  </tr>
+  <tr>
+    <th scope="row"><span class="mk-kl">P2</span><span class="mk-na">lower edge</span><span class="mk-br">45 … &lt;50</span></th>
+    <td class="mk-fehler" data-kennung="KONFIG">CONFIG</td>
+    <td class="mk-fehler" data-kennung="UNTERPEGEL">LOW-LEVEL</td>
+    <td class="mk-grenz" data-kennung="UNTERPEGEL-GRENZ">LOW-LEVEL-MARGINAL</td>
+    <td class="mk-grenz" data-kennung="RAND-UNTEN-OK">LOWER-EDGE-OK</td>
+    <td class="mk-unklar" data-kennung="UNPLAUSIBEL">IMPLAUSIBLE</td>
+  </tr>
+  <tr>
+    <th scope="row"><span class="mk-kl">P3</span><span class="mk-na">normal</span><span class="mk-br">50 … 70</span></th>
+    <td class="mk-fehler" data-kennung="KONFIG">CONFIG</td>
+    <td class="mk-fehler" data-kennung="STOERUNG">INTERFERENCE</td>
+    <td class="mk-grenz" data-kennung="STOERUNG-GRENZ">INTERFERENCE-MARGINAL</td>
+    <td class="mk-gut" data-kennung="OK">OK</td>
+    <td class="mk-unklar" data-kennung="UNPLAUSIBEL">IMPLAUSIBLE</td>
+  </tr>
+  <tr>
+    <th scope="row"><span class="mk-kl">P4</span><span class="mk-na">upper edge</span><span class="mk-br">&gt;70 … 78</span></th>
+    <td class="mk-fehler" data-kennung="KONFIG">CONFIG</td>
+    <td class="mk-fehler" data-kennung="UEBERPEGEL">OVERLOAD</td>
+    <td class="mk-fehler" data-kennung="UEBERPEGEL-BEGINN">OVERLOAD-ONSET</td>
+    <td class="mk-grenz" data-kennung="RAND-OBEN-OK">UPPER-EDGE-OK</td>
+    <td class="mk-unklar" data-kennung="UNPLAUSIBEL">IMPLAUSIBLE</td>
+  </tr>
+  <tr>
+    <th scope="row"><span class="mk-kl">P5</span><span class="mk-na">too high</span><span class="mk-br">&gt; 78</span></th>
+    <td class="mk-fehler" data-kennung="KONFIG-ODER-UEBERPEGEL">CONFIG-OR-OVERLOAD</td>
+    <td class="mk-fehler" data-kennung="UEBERPEGEL">OVERLOAD</td>
+    <td class="mk-fehler" data-kennung="UEBERPEGEL-GRENZ">OVERLOAD-MARGINAL</td>
+    <td class="mk-grenz" data-kennung="PEGEL-HOCH-OK">HIGH-LEVEL-OK</td>
+    <td class="mk-unklar" data-kennung="UNPLAUSIBEL">IMPLAUSIBLE</td>
+  </tr>
+      </table></div>
+      <p class="mk-legende">
+        <span><i class="mk-gut"></i>good</span>
+        <span><i class="mk-grenz"></i>marginal</span>
+        <span><i class="mk-fehler"></i>fault</span>
+        <span><i class="mk-unklar"></i>unclear</span>
+      </p>
+      <details class="legende-aus">
+        <summary>Show legend</summary>
+        <dl class="mk-befunde">
+          <dt class="mk-gut" data-kennung="OK">OK</dt>
+          <dd>Reception values fine — the cause lies elsewhere.</dd>
+          <dt class="mk-grenz" data-kennung="PEGEL-HOCH-OK">HIGH-LEVEL-OK</dt>
+          <dd>Level above the limit, noise margin still good.</dd>
+          <dt class="mk-grenz" data-kennung="RAND-OBEN-OK">UPPER-EDGE-OK</dt>
+          <dd>Level at the upper edge, noise margin good.</dd>
+          <dt class="mk-grenz" data-kennung="RAND-UNTEN-OK">LOWER-EDGE-OK</dt>
+          <dd>Level at the lower edge, noise margin good.</dd>
+          <dt class="mk-grenz" data-kennung="STOERUNG-GRENZ">INTERFERENCE-MARGINAL</dt>
+          <dd>Marginal — level correct, noise margin without reserve.</dd>
+          <dt class="mk-grenz" data-kennung="UNTERPEGEL-GRENZ">LOW-LEVEL-MARGINAL</dt>
+          <dd>Level at the lower edge, reserve almost used up.</dd>
+          <dt class="mk-fehler" data-kennung="KEIN-SIGNAL">NO-SIGNAL</dt>
+          <dd>No signal at the tuner.</dd>
+          <dt class="mk-fehler" data-kennung="KONFIG">CONFIG</dt>
+          <dd>Power arrives, but the tuner does not lock.</dd>
+          <dt class="mk-fehler" data-kennung="KONFIG-ODER-UEBERPEGEL">CONFIG-OR-OVERLOAD</dt>
+          <dd>Very high level, but nothing decodable.</dd>
+          <dt class="mk-fehler" data-kennung="STOERUNG">INTERFERENCE</dt>
+          <dd>Interference in the signal path — level correct, signal distorted.</dd>
+          <dt class="mk-fehler" data-kennung="UEBERPEGEL">OVERLOAD</dt>
+          <dd>Overload — the tuner is overdriven.</dd>
+          <dt class="mk-fehler" data-kennung="UEBERPEGEL-BEGINN">OVERLOAD-ONSET</dt>
+          <dd>Onset of overload — level at the upper edge, noise margin falling.</dd>
+          <dt class="mk-fehler" data-kennung="UEBERPEGEL-GRENZ">OVERLOAD-MARGINAL</dt>
+          <dd>Level above the limit, noise margin already affected.</dd>
+          <dt class="mk-fehler" data-kennung="UNTERPEGEL">LOW-LEVEL</dt>
+          <dd>Low level — too little power at the tuner.</dd>
+          <dt class="mk-unklar" data-kennung="UNPLAUSIBEL">IMPLAUSIBLE</dt>
+          <dd>Noise margin implausibly high.</dd>
+          <dt class="mk-unklar" data-kennung="WIDERSPRUCH">CONTRADICTION</dt>
+          <dd>Values contradict each other.</dd>
+        </dl>
+      </details>
+      <!-- matrix:kabel:ende -->
+
+      <p>Which modulation is in use is shown under <span data-menuepunkt="manuelleEinstellung"><span class="mp">Manual Tuning</span></span> next to frequency and symbol rate. When in doubt assume 256QAM — the standard in Germany and Poland.</p>
+      <span class="path" data-menue="manuelleEinstellung"><span class="mw"><span class="mw-glied">All Settings&nbsp;<span class="mw-pfeil">→</span></span> <span class="mw-glied">General&nbsp;<span class="mw-pfeil">→</span></span> <span class="mw-glied">Programmes&nbsp;<span class="mw-pfeil">→</span></span> <span class="mw-glied">Programme Tuning (Programme Tuning &amp; Settings)&nbsp;<span class="mw-pfeil">→</span></span> <span class="mw-glied">Manual Tuning</span></span><button type="button" class="mw-kopieren" hidden aria-label="Copy menu path" title="Copy menu path"></button><span class="mw-status" role="status" aria-live="polite"></span></span>
+
+      <h3>Patterns specific to cable</h3>
+      <div class="tw"><table>
+        <thead><tr><th>Symptom</th><th>Cause</th></tr></thead>
+        <tbody>
+          <tr><td>You live high up in the building, the neighbour below has no problem</td><td>Longer run, more attenuation. It depends on frequency, so the upper channels go first</td></tr>
+          <tr><td>Perfect yesterday, black today, with nothing in between</td><td><strong>Digital cliff.</strong> The signal had been at the limit for a while. Not a sign of a sudden defect</td></tr>
+          <tr><td>Only RTL, Sat.1, ProSieben are missing</td><td>Not a signal problem. Encryption, subscription, CI+ module — interference does not respect broadcaster families</td></tr>
+          <tr><td>The picture freezes during certain activities</td><td>Electrical interference. Question to ask: live TV only → aerial cable. Apps as well → mains supply</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section class="sec" id="gemessen" data-nav="Fundamentals">
+      <div class="sec-head">
+        <p class="sec-num">Section 8</p>
+        <h2>Fundamentals</h2>
+      </div>
+      <div class="note note--ok">
+        <p class="note-t">Level is the loudness. MER is the clarity.</p>
+        <p><strong>Level</strong> says <em>how much</em> arrives — raw power, measured in dBµV or dBm. Noise and interference count towards it. A high level on its own proves nothing at all.</p>
+        <p><strong>MER</strong> says <em>how clean</em> it is — the ratio of wanted signal to error, measured in dB. Higher is better, because MER does not count interference but measures the distance from it. At 0 dB, signal and interference would be equally large.</p>
+        <p>Someone can speak loudly and indistinctly: high level, poor MER. Or quietly and perfectly clearly: low level, good MER.</p>
+      </div>
+
+      <div class="note note--warn">
+        <p class="note-t">What each measure actually does</p>
+        <p>An <strong>amplifier</strong> raises wanted signal and noise alike; an <strong>attenuator</strong> lowers both. The ratio is unchanged either way — <strong>neither measure improves the MER.</strong></p>
+        <p>Amplifiers only help with <strong>a low level and a good MER</strong>. If the MER has collapsed, there is interference in the signal that has to be found and removed: plug, shielding, faulty cable, a source of interference in the building.</p>
+      </div>
+
+      <p><strong>The most common mix-up:</strong> 9 dB is a usable limit on satellite and hopeless on cable. 256QAM has constellation points much closer together and therefore reacts more sensitively to noise.</p>
+      <p><strong>Percentage readings are not comparable.</strong> They are scaled per manufacturer and cannot be converted into dBµV or dBm. With DVB-C, strength readings around 50 to 60 percent are normal even with flawless reception.</p>
+
+      <h3>What the values mean</h3>
+      <div class="tw"><table>
+        <thead><tr><th>Value</th><th>Meaning</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Signal strength</strong></td><td>How much power is present at the tuner input. Derived from the AGC control voltage. <strong>Noise and interference count towards it.</strong> On its own it says nothing about whether reception is possible.</td></tr>
+          <tr><td><strong>Signal quality</strong></td><td>How cleanly the data stream can be decoded. Calculated from MER/SNR and error rate. <strong>The value that decides.</strong></td></tr>
+          <tr><td><strong>SNR / C/N / MER</strong> (dB)</td><td>Noise margin. A physical quantity, not scaled by the manufacturer. Higher is better.</td></tr>
+          <tr><td><strong>Level</strong> (dBm / dBµV)</td><td>Absolute power. Too high means overload.</td></tr>
+          <tr><td><strong>Headroom</strong> (link margin)</td><td>The gap between the measured MER and the minimum for the modulation. Cable example: 35 dB measured, 30 dB minimum → 5 dB headroom.</td></tr>
+        </tbody>
+      </table></div>
+
+      <h3>Why cable and satellite have different limits</h3>
+      <p>It is not the transmission path that decides but the <strong>modulation</strong> — how much information is packed into each symbol.</p>
+
+      <div class="tw"><table>
+        <thead><tr><th>&nbsp;</th><th>Satellite</th><th>Cable</th></tr></thead>
+        <tbody>
+          <tr><td>Method</td><td>QPSK / 8PSK</td><td>256QAM</td></tr>
+          <tr><td>Bits per symbol</td><td>2 – 3</td><td>8</td></tr>
+          <tr><td>MER required</td><td class="num">from 6 dB</td><td class="num">from 30 dB</td></tr>
+          <tr><td>Tolerance to interference</td><td><strong>high</strong></td><td><strong>low</strong></td></tr>
+        </tbody>
+      </table></div>
+
+      <div class="note">
+        <p class="note-t">Satellite is the lorry, cable the sports car</p>
+        <p>QPSK has four possible states, far apart from one another — the receiver may be badly wrong and still land correctly. With 256QAM, 256 states sit on the same area, and even slight scatter lands in the neighbouring field.</p>
+        <p>Satellite <strong>has to</strong> be robust, because the signal arrives weak and noisy from 36,000 km away. Cable <strong>can</strong> pack in more, because the medium is shielded — and does so, because bandwidth there is scarce.</p>
+        <p><strong>Practical consequence:</strong> a MER of 14 dB is a good value on satellite and useless on cable. The same number, two entirely different statements.</p>
+      </div>
+
+      <h3>What an LNB is, and why 9750 / 10600</h3>
+      <div class="note">
+        <p class="note-t">What an LNB is, and why 9750 / 10600</p>
+        <p><strong>LNB</strong> stands for <em>low noise block converter</em>. It sits at the focal point of the dish and has a single job: it receives the satellite frequencies between 10.7 and 12.75 GHz and converts them down to 950 to 2150 MHz. Without that step, carrying them in coaxial cable would be impossible — frequencies that high would vanish after a few metres.</p>
+        <p>The satellite band is about 2050 MHz wide, but the cable run carries only some 1200 MHz. It is therefore split into two halves, each with its own oscillator:</p>
+        <ul class="tight">
+          <li><strong>9750 MHz</strong> for the lower band, 10.7 to 11.7 GHz</li>
+          <li><strong>10600 MHz</strong> for the upper band, 11.7 to 12.75 GHz</li>
+        </ul>
+        <p>The tuner switches between the two with a 22 kHz signal. The arithmetic is plain subtraction:</p>
+        <div class="formel">
+          <div class="formel-zeile"><span>11362 MHz − 9750</span><span>=</span><span>1612 MHz</span></div>
+          <div class="formel-zeile"><span>12188 MHz − 10600</span><span>=</span><span>1588 MHz</span></div>
+        </div>
+        <p><strong>Why a wrong value blocks everything:</strong> if the TV holds a different oscillator frequency, the arithmetic yields the wrong intermediate frequency. The tuner then sits beside the actual channel and finds nothing — while the LNB keeps delivering full power. That is exactly where the picture of <strong>high strength with constant zero quality</strong> comes from.</p>
+        <p><strong>Other types:</strong> a single LNB feeds one device, a twin two, a quad four. A quattro LNB belongs on a multiswitch and does not work straight into a TV. A Unicable LNB carries several users over one cable and has to be set as such in the menu.</p>
+      </div>
+    </section>
+
+    <!-- 7. evidence -->
+
+  </div>
+</div>
+</main>
+
+<button type="button" class="totop" id="totop" aria-label="Back to top">↑</button>
+
+<script src="../assets/texte/en.js"></script>
+<script src="../assets/grenzwerte.js"></script>
+<script src="../assets/handbuch.js"></script>
+</body>
+</html>

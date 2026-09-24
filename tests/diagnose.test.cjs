@@ -7,6 +7,7 @@ const path = require('node:path');
 const fs = require('node:fs');
 
 const D = require(path.join(__dirname, '..', 'assets', 'grenzwerte.js'));
+const T = require(path.join(__dirname, '..', 'assets', 'texte', 'de.js'));
 const DATEN = JSON.parse(fs.readFileSync(path.join(__dirname, 'faelle.json'), 'utf8'));
 
 const RAUSCHKLASSEN = ['Q0', 'Q1', 'Q2', 'Q3', 'Q4'];
@@ -66,7 +67,7 @@ test('jede Diagnose-ID aus der Matrix existiert in DIAGNOSEN', () => {
     for (const pk of Object.keys(D.MATRIX[art])) {
       for (const rk of RAUSCHKLASSEN) {
         const id = D.MATRIX[art][pk][rk];
-        assert.ok(D.DIAGNOSEN[id], `${art} ${pk}/${rk} verweist auf unbekannte Diagnose ${id}`);
+        assert.ok(T.diagnosen[id], `${art} ${pk}/${rk} verweist auf unbekannte Diagnose ${id}`);
       }
     }
   }
@@ -79,15 +80,15 @@ test('keine toten Diagnosetexte — jede Diagnose wird verwendet', () => {
       for (const rk of RAUSCHKLASSEN) { benutzt.add(D.MATRIX[art][pk][rk]); }
     }
   }
-  const tot = Object.keys(D.DIAGNOSEN).filter((id) => !benutzt.has(id));
+  const tot = Object.keys(T.diagnosen).filter((id) => !benutzt.has(id));
   assert.deepStrictEqual(tot, [], 'unbenutzte Diagnosen: ' + tot.join(', '));
 });
 
 test('jede Diagnose hat Befund, Begründung und mindestens zwei Schritte', () => {
-  for (const [id, d] of Object.entries(D.DIAGNOSEN)) {
+  for (const [id, d] of Object.entries(T.diagnosen)) {
     assert.ok(d.befund && d.befund.length > 0, `${id}: kein Befund`);
     assert.ok(d.warum && d.warum.length > 0, `${id}: keine Begründung`);
-    assert.ok(['gut', 'grenz', 'fehler', 'unklar'].includes(d.zustand), `${id}: unbekannter Zustand`);
+    assert.ok(['gut', 'grenz', 'fehler', 'unklar'].includes(D.ZUSTAND[id]), `${id}: unbekannter Zustand`);
     for (const art of ['sat', 'kabel']) {
       const schritte = D.schritteFuer(id, art);
       assert.ok(schritte.length >= 2, `${id} / ${art}: nur ${schritte.length} Schritt(e)`);
@@ -96,7 +97,7 @@ test('jede Diagnose hat Befund, Begründung und mindestens zwei Schritte', () =>
 });
 
 test('nie mehr als fünf Schritte, spezifische bleiben immer erhalten', () => {
-  for (const [id, d] of Object.entries(D.DIAGNOSEN)) {
+  for (const [id, d] of Object.entries(T.diagnosen)) {
     for (const art of ['sat', 'kabel']) {
       const schritte = D.schritteFuer(id, art);
       assert.ok(schritte.length <= D.MAX_SCHRITTE, `${id} / ${art}: ${schritte.length} Schritte`);
@@ -177,7 +178,7 @@ test('die empfohlene Dämpfung bringt den Pegel in den perfekten Bereich', () =>
 });
 
 test('kein Schritt nennt mehr eine feste Dämpfung', () => {
-  for (const id of Object.keys(D.DIAGNOSEN)) {
+  for (const id of Object.keys(T.diagnosen)) {
     for (const art of ['sat', 'kabel']) {
       for (const schritt of D.schritteFuer(id, art)) {
         assert.ok(

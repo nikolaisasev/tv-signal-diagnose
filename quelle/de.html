@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- Arbeitsunterlage: nicht in Suchmaschinen aufnehmen -->
+<meta name="robots" content="noindex, nofollow">
+<title>Überpegel-Rechner — TV-Diagnose</title>
+<link rel="stylesheet" href="../assets/stil.css">
+<script>document.documentElement.classList.add('js');</script>
+</head>
+<body>
+
+<noscript>
+  <div class="shell">
+    <div class="nojs">
+      <strong>JavaScript ist abgeschaltet</strong>
+      <p>Der Rechner und die Notiz brauchen JavaScript.
+      Unter iOS ist es in der Vorschau der Dateien-App abgeschaltet.
+      Die Fachinhalte stehen unten trotzdem vollständig.</p>
+    </div>
+  </div>
+</noscript>
+
+<main class="fall" data-fall="Empfang gestört / Überpegel">
+<div class="shell track-inner">
+
+  <nav class="rail" aria-label="Abschnitte">
+    <div class="rail-lines">
+      <span class="rail-track" aria-hidden="true"><span class="rail-fill"></span></span>
+      <ol class="rail-list"></ol>
+    </div>
+  </nav>
+
+  <div class="track-body">
+    <div class="seitenkopf">
+      <h1 class="track-title">Empfang gestört / Überpegel</h1>
+      <!-- Es klebt nichts mehr am oberen Rand. Sprungleiste und
+           Fassungswaehler gehoeren zum Seitenkopf und wandern beim
+           Scrollen mit dem Text nach oben aus dem Bild. -->
+      <div class="seitenkopf-werkzeuge">
+        <nav class="jumpbar" aria-label="Schnellsprung">
+          <label class="sr-only" for="jump">Abschnitt wählen</label>
+          <select id="jump">
+            <option value="">Abschnitt wählen …</option>
+          </select>
+        </nav>
+        <!-- schalter:fassung:anfang --><!-- schalter:fassung:ende -->
+      </div>
+    </div>
+
+    <!-- 1. rechner -->
+    <section class="sec" id="rechner" data-nav="Überpegel-Rechner">
+      <div class="sec-head">
+        <p class="sec-num">Abschnitt 1</p>
+        <h2>Überpegel-Rechner</h2>
+      </div>
+      <div class="calc">
+        <details class="rechner-info">
+          <summary aria-label="Wo die Werte am Fernseher stehen">i</summary>
+          <div class="rechner-info-inhalt">
+            <p class="path" data-menue="signalwerte">Alle Einstellungen → Support → Schnellhilfe → Selbstdiagnose und Pflege → RF/HDMI</p>
+            <p>Der Eintrag <strong>RF/HDMI</strong> erscheint nur, wenn Live-TV läuft — auch dann, wenn gar kein Signal ankommt.</p>
+          </div>
+        </details>
+
+        <fieldset class="fset">
+          <legend>Empfangsart</legend>
+          <div class="seg">
+            <label><input type="radio" name="art" value="sat" checked><span>Satellit · DVB-S/S2</span></label>
+            <label><input type="radio" name="art" value="kabel"><span>Kabel · DVB-C</span></label>
+          </div>
+        </fieldset>
+
+        <div class="fields" id="f-satdb">
+          <div class="field">
+            <label for="i-pg">Pegel<span class="hint">dBm · perfekt −65 bis −25</span></label>
+            <input type="number" id="i-pg" step="0.1" placeholder="z. B. -22">
+          </div>
+          <div class="field">
+            <label for="i-snr">SNR / C/N<span class="hint">dB · perfekt ab 11</span></label>
+            <input type="number" id="i-snr" step="0.1" placeholder="z. B. 5.5">
+          </div>
+        </div>
+
+        <div class="fields hidden" id="f-kabel">
+          <div class="field">
+            <label for="i-kpg">Pegel<span class="hint">dBµV · perfekt 50–70</span></label>
+            <input type="number" id="i-kpg" step="0.1" placeholder="z. B. 82">
+          </div>
+          <div class="field">
+            <label for="i-mer">MER / SNR<span class="hint">dB · perfekt ab 36 (256QAM)</span></label>
+            <input type="number" id="i-mer" step="0.1" placeholder="z. B. 27">
+          </div>
+        </div>
+
+
+        <div class="calc-actions">
+          <button type="button" class="btn btn-primary" id="go">Auswerten</button>
+          <button type="button" class="btn btn-secondary" id="reset">Zurücksetzen</button>
+        </div>
+      </div>
+
+      <div id="out" class="ergebnis hidden" aria-live="polite"></div>
+
+    </section>
+
+
+    <!-- 2. erstfragen -->
+    <section class="sec" id="erstfragen" data-nav="Erstfragen">
+      <div class="sec-head">
+        <p class="sec-num">Abschnitt 2</p>
+        <h2>Erstfragen</h2>
+      </div>
+
+      <h3>Bei Empfangsproblemen</h3>
+      <ul class="tight">
+        <li data-q="empfangsart">Satellit oder Kabel? Anbieter?</li>
+        <li data-q="aenderung">Was hat sich geändert, kurz bevor das Problem anfing?</li>
+        <li data-q="vorher">Lief es vorher, oder war es noch nie in Ordnung?</li>
+        <li data-q="andereGeraet">Läuft ein anderes Gerät an derselben Dose?</li>
+        <li data-q="haus">Ein- oder Mehrfamilienhaus? Wie viele Parteien?</li>
+      </ul>
+
+
+
+      <div class="memo" data-memo="signal">
+        <h3>Notiz</h3>
+        <p class="memo-hint">Frei bearbeitbar. Änderungen bleiben erhalten.</p>
+        <label class="sr-only" for="memo-out-signal">Zusammenfassung</label>
+        <textarea class="memo-out" id="memo-out-signal" rows="5"></textarea>
+        <div class="memo-actions">
+          <button type="button" class="btn btn-primary" data-memo-copy>In Zwischenablage kopieren</button>
+          <button type="button" class="btn btn-secondary hidden" data-memo-rebuild>Aus Antworten neu erzeugen</button>
+        </div>
+        <p class="memo-status" role="status" aria-live="polite"></p>
+      </div>
+    </section>
+
+    <section class="sec" id="anderesgeraet-sat" data-nav="Anderes Gerät · Satellit">
+      <div class="sec-head">
+        <p class="sec-num">Abschnitt 3</p>
+        <h2>Anderes Gerät läuft · Satellit</h2>
+      </div>
+      <p>Ein Gerät an der Anlage funktioniert, das andere nicht. Bei Satellit ist ein Konflikt zwischen den Geräten möglich.</p>
+
+      <span class="path" data-menue="unicable">Alle Einstellungen → Allgemein → Sender → Sendereinstellung (Programmsuche und -einstellungen) → Autom. Einstellung → Satelliteneinstellungen → Unicable → Ein → Unicable-Einstellungen</span>
+
+      <div class="note note--warn">
+        <p class="note-t">LG zählt anders als der Aufkleber</p>
+        <ul class="tight">
+          <li>Aufkleber und Umsetzer zählen meist <strong>UB 1–4</strong> oder <strong>1–8</strong></li>
+          <li>Das Gerätemenü zählt oft <strong>ab 0</strong> — dann ist Aufkleber UB 3 im Menü die 2</li>
+          <li>Prüffrage: beginnt die Liste im Menü bei 0 oder bei 1?</li>
+          <li><strong>Eindeutig ist nur die Frequenz</strong> — die vom Aufkleber eintragen, dann ist die Nummer nachrangig</li>
+          <li>Häufige Werte: 1210 · 1420 · 1680 · 2040 MHz — andere Umsetzer nutzen z. B. 1284 · 1400 · 1516 MHz</li>
+          <li>Bei Abweichung gilt immer der Aufkleber, nicht die Standardliste</li>
+        </ul>
+      </div>
+
+      <h3>Woran man Unicable erkennt</h3>
+      <ul class="tight">
+        <li>Mehrfamilienhaus mit einer Dose pro Wohnung</li>
+        <li>Der zweite TV verliert das Bild, sobald der erste läuft — typisch abends zur Prime Time, wenn alle Geräte laufen</li>
+        <li>Am Verteiler steht Unicable, SCR, SatCR, EN 50494 oder EN 50607/JESS</li>
+        <li>Die Zuteilung der Nummern macht der <span data-markt="zustaendigSat">Antennenbauer</span></li>
+      </ul>
+
+      <h3>Mögliche Ursachen</h3>
+      <ul class="tight">
+        <li>Zwei Geräte auf derselben UB-Nummer — das eingeschaltete blockiert das andere vollständig</li>
+        <li>Unicable im Menü nicht aktiviert — Gerät sendet DiSEqC statt SCR-Befehlen</li>
+        <li>Nummer richtig, Transportfrequenz falsch eingetragen</li>
+        <li>Nummer um 1 verschoben — Menü zählt ab 0, Aufkleber ab 1</li>
+        <li>Falsche Norm — Anlage EN 50607 (Unicable 2 / JESS), Gerät auf Unicable 1</li>
+        <li>DiSEqC oder 22-kHz-Ton noch aktiv — schaltet Unicable ab</li>
+      </ul>
+
+      <h3>Zuerst</h3>
+      <ol class="tight">
+        <li>Anderes Sat-Gerät <strong>vom Strom trennen</strong> — Standby genügt nicht</li>
+        <li>Erneut messen — kommt Signal, ist der Nummernkonflikt bestätigt</li>
+        <li>Aufkleber an Umsetzer oder Dose lesen: UB-Nummer, Transportfrequenz, Norm</li>
+      </ol>
+
+      <h3>Dann</h3>
+      <ol class="tight" start="4">
+        <li>Freie UB-Nummer <strong>und die zugehörige Frequenz</strong> eintragen</li>
+        <li>DiSEqC auf Aus, 22-kHz-Ton auf Aus, Motortyp aus — diese vier schließen einander aus: wird Unicable eingeschaltet, schaltet das Gerät DiSEqC, 22-kHz-Ton und Motortyp selbst ab. Bleibt einer davon aktiv, sendet das Gerät die falschen Befehle.</li>
+        <li>Beide Geräte einschalten, erneut messen</li>
+        <li>Kein Erfolg: Nummer um 1 nach unten und nach oben probieren</li>
+        <li>Kein Erfolg: Unicable 1 gegen Unicable 2 tauschen</li>
+      </ol>
+    </section>
+
+    <section class="sec" id="anderesgeraet-kabel" data-nav="Anderes Gerät · Kabel">
+      <div class="sec-head">
+        <p class="sec-num">Abschnitt 4</p>
+        <h2>Anderes Gerät läuft · Kabel</h2>
+      </div>
+      <p>Ein Gerät an der Dose funktioniert, das andere nicht. Bei Kabel ist ein Konflikt zwischen den Geräten ausgeschlossen — alle Geräte bekommen dasselbe Signal gleichzeitig.</p>
+
+
+      <h3>Mögliche Ursachen</h3>
+      <ul class="tight">
+        <li><strong>Gerätekonflikt ausgeschlossen</strong> — alle Geräte bekommen dasselbe Signal gleichzeitig, es gibt keine Zuteilung</li>
+        <li>Anschlusskabel oder Stecker zwischen Dose und Gerät defekt</li>
+        <li>Ein Verteilerausgang schwächer oder defekt</li>
+        <li>Suchlauf-Methode oder Filter am Gerät falsch gesetzt</li>
+        <li>Fehlen nur verschlüsselte Sender: CI+-Modul oder Smartcard</li>
+        <li>Pegel an dieser Dose zu niedrig — längere Leitung, mehr Verteiler</li>
+      </ul>
+
+      <h3>Zuerst</h3>
+      <ol class="tight">
+        <li><strong>Gerät direkt an die Dose</strong> — ohne Verteiler, ohne Zwischenkabel, anderes Gerät abgezogen</li>
+        <li>Läuft es dann: die Ursache liegt im Weg dorthin — Verteiler, Zwischenkabel oder Stecker</li>
+        <li>Läuft es dann nicht: die Ursache liegt an der Dose selbst oder im Gerät</li>
+        <li>Anschlusskabel und Stecker prüfen, Verteilerausgang wechseln</li>
+        <li>Gegenprobe: funktionierendes Gerät an dieselbe Leitung</li>
+      </ol>
+
+      <h3>Dann</h3>
+      <ol class="tight" start="4">
+        <li>Am Gerät Suchlauf-Methode und Filter prüfen, Suchlauf neu starten</li>
+        <li>Fehlen nur verschlüsselte Sender: CI+-Modul und Smartcard prüfen</li>
+        <li>Pegel an beiden Dosen messen, Differenz mit der erwarteten Dämpfung vergleichen</li>
+      </ol>
+    </section>
+
+    <!-- 3. messen -->
+
+
+
+    <!-- 5. sat -->
+    <section class="sec" id="sat" data-nav="Werte Satellit">
+      <div class="sec-head">
+        <p class="sec-num">Abschnitt 5</p>
+        <h2>Richtwerte Satellit (DVB-S/S2)</h2>
+      </div>
+
+      <h3>Diagnosematrix</h3>
+      <!-- matrix:sat:anfang -->
+      <p class="mk-quelle">Pegel in dBm, Messbereich −90 … −10 · SNR in dB, Messbereich 0 … 25</p>
+      <div class="tw"><table class="matrixtabelle">
+  <caption>Kein oberer Randbereich definiert, deshalb entfällt P4</caption>
+  <tr>
+    <th class="mk-ecke"></th>
+    <th scope="col"><span class="mk-kl">Q0</span><span class="mk-na">kein Einrasten</span><span class="mk-br">exakt 0</span></th>
+    <th scope="col"><span class="mk-kl">Q1</span><span class="mk-na">unter Minimum</span><span class="mk-br">&lt; 6</span></th>
+    <th scope="col"><span class="mk-kl">Q2</span><span class="mk-na">Grenzbereich</span><span class="mk-br">6 … &lt;11</span></th>
+    <th scope="col"><span class="mk-kl">Q3</span><span class="mk-na">gut</span><span class="mk-br">11 … 20</span></th>
+    <th scope="col"><span class="mk-kl">Q4</span><span class="mk-na">unplausibel hoch</span><span class="mk-br">&gt; 20</span></th>
+  </tr>
+  <tr>
+    <th scope="row"><span class="mk-kl">P1</span><span class="mk-na">zu niedrig</span><span class="mk-br">&lt; −70</span></th>
+    <td class="mk-fehler" data-kennung="KEIN-SIGNAL">KEIN-SIGNAL</td>
+    <td class="mk-fehler" data-kennung="UNTERPEGEL">UNTERPEGEL</td>
+    <td class="mk-fehler" data-kennung="UNTERPEGEL">UNTERPEGEL</td>
+    <td class="mk-unklar" data-kennung="WIDERSPRUCH">WIDERSPRUCH</td>
+    <td class="mk-unklar" data-kennung="UNPLAUSIBEL">UNPLAUSIBEL</td>
+  </tr>
+  <tr>
+    <th scope="row"><span class="mk-kl">P2</span><span class="mk-na">unterer Rand</span><span class="mk-br">−70 … &lt;−65</span></th>
+    <td class="mk-fehler" data-kennung="KONFIG">KONFIG</td>
+    <td class="mk-fehler" data-kennung="UNTERPEGEL">UNTERPEGEL</td>
+    <td class="mk-grenz" data-kennung="UNTERPEGEL-GRENZ">UNTERPEGEL-GRENZ</td>
+    <td class="mk-grenz" data-kennung="RAND-UNTEN-OK">RAND-UNTEN-OK</td>
+    <td class="mk-unklar" data-kennung="UNPLAUSIBEL">UNPLAUSIBEL</td>
+  </tr>
+  <tr>
+    <th scope="row"><span class="mk-kl">P3</span><span class="mk-na">normal</span><span class="mk-br">−65 … −25</span></th>
+    <td class="mk-fehler" data-kennung="KONFIG">KONFIG</td>
+    <td class="mk-fehler" data-kennung="STOERUNG">STOERUNG</td>
+    <td class="mk-grenz" data-kennung="STOERUNG-GRENZ">STOERUNG-GRENZ</td>
+    <td class="mk-gut" data-kennung="OK">OK</td>
+    <td class="mk-unklar" data-kennung="UNPLAUSIBEL">UNPLAUSIBEL</td>
+  </tr>
+  <tr>
+    <th scope="row"><span class="mk-kl">P5</span><span class="mk-na">zu hoch</span><span class="mk-br">&gt; −25</span></th>
+    <td class="mk-fehler" data-kennung="KONFIG-ODER-UEBERPEGEL">KONFIG-ODER-<br>UEBERPEGEL</td>
+    <td class="mk-fehler" data-kennung="UEBERPEGEL">UEBERPEGEL</td>
+    <td class="mk-fehler" data-kennung="UEBERPEGEL-GRENZ">UEBERPEGEL-GRENZ</td>
+    <td class="mk-grenz" data-kennung="PEGEL-HOCH-OK">PEGEL-HOCH-OK</td>
+    <td class="mk-unklar" data-kennung="UNPLAUSIBEL">UNPLAUSIBEL</td>
+  </tr>
+      </table></div>
+      <p class="mk-legende">
+        <span><i class="mk-gut"></i>gut</span>
+        <span><i class="mk-grenz"></i>grenz</span>
+        <span><i class="mk-fehler"></i>fehler</span>
+        <span><i class="mk-unklar"></i>unklar</span>
+      </p>
+      <details class="legende-aus">
+        <summary>Legende zeigen</summary>
+        <dl class="mk-befunde">
+          <dt class="mk-gut" data-kennung="OK">OK</dt>
+          <dd>Empfangswerte in Ordnung — die Ursache liegt woanders.</dd>
+          <dt class="mk-grenz" data-kennung="PEGEL-HOCH-OK">PEGEL-HOCH-OK</dt>
+          <dd>Pegel über dem Grenzwert, Rauschabstand noch gut.</dd>
+          <dt class="mk-grenz" data-kennung="RAND-UNTEN-OK">RAND-UNTEN-OK</dt>
+          <dd>Pegel am unteren Rand, Rauschabstand gut.</dd>
+          <dt class="mk-grenz" data-kennung="STOERUNG-GRENZ">STOERUNG-GRENZ</dt>
+          <dd>Grenzbereich — Pegel stimmt, Rauschabstand ohne Reserve.</dd>
+          <dt class="mk-grenz" data-kennung="UNTERPEGEL-GRENZ">UNTERPEGEL-GRENZ</dt>
+          <dd>Pegel am unteren Rand, Reserve fast aufgebraucht.</dd>
+          <dt class="mk-fehler" data-kennung="KEIN-SIGNAL">KEIN-SIGNAL</dt>
+          <dd>Kein Signal am Tuner.</dd>
+          <dt class="mk-fehler" data-kennung="KONFIG">KONFIG</dt>
+          <dd>Leistung kommt an, der Tuner rastet nicht ein.</dd>
+          <dt class="mk-fehler" data-kennung="KONFIG-ODER-UEBERPEGEL">KONFIG-ODER-UEBERPEGEL</dt>
+          <dd>Sehr hoher Pegel, aber nichts dekodierbar.</dd>
+          <dt class="mk-fehler" data-kennung="STOERUNG">STOERUNG</dt>
+          <dd>Störung im Signalweg — Pegel stimmt, Signal ist verzerrt.</dd>
+          <dt class="mk-fehler" data-kennung="UEBERPEGEL">UEBERPEGEL</dt>
+          <dd>Überpegel — der Tuner übersteuert.</dd>
+          <dt class="mk-fehler" data-kennung="UEBERPEGEL-GRENZ">UEBERPEGEL-GRENZ</dt>
+          <dd>Pegel über dem Grenzwert, Rauschabstand bereits angegriffen.</dd>
+          <dt class="mk-fehler" data-kennung="UNTERPEGEL">UNTERPEGEL</dt>
+          <dd>Unterpegel — zu wenig Leistung am Tuner.</dd>
+          <dt class="mk-unklar" data-kennung="UNPLAUSIBEL">UNPLAUSIBEL</dt>
+          <dd>Rauschabstand unplausibel hoch.</dd>
+          <dt class="mk-unklar" data-kennung="WIDERSPRUCH">WIDERSPRUCH</dt>
+          <dd>Werte passen nicht zusammen.</dd>
+        </dl>
+      </details>
+      <!-- matrix:sat:ende -->
+
+      <h3>LNB und Anlage prüfen</h3>
+      <p>Diese Werte stehen alle im selben Menü. Man kommt dorthin über die Zahnrad-Taste, dann ganz unten „<span data-menuepunkt="alleEinstellungen">Alle Einstellungen</span>“.</p>
+      <span class="path" data-menue="satelliteneinstellungen">Sender → Sendersuchlauf und Einstellungen → Satelliteneinstellungen</span>
+      <div class="tw"><table>
+        <thead><tr><th>Punkt</th><th>Sollwert</th></tr></thead>
+        <tbody>
+          <tr><td>LNB-Typ Universal</td><td class="mono">9750 / 10600 MHz</td></tr>
+          <tr><td>LNB Single</td><td class="mono">9750 MHz</td></tr>
+          <tr><td>DiSEqC</td><td class="mono">Aus · bei mehreren LNB A~D / ToneA~B</td></tr>
+        </tbody>
+      </table></div>
+
+      <p>Das Menü bietet mehr Frequenzwerte an: 9750/10750, 10600, 10750, 11300, 5150 sowie MDU1 bis MDU5. Sie gehören zu Sonderanlagen. Steht dort etwas anderes als 9750/10600, ist das bei einer gewöhnlichen Universal-Anlage der Fehler. Findet sich der passende Wert nicht in der Liste, gibt es den Eintrag <span data-menuepunkt="benutzer">Benutzer</span> für die freie Eingabe.</p>
+
+      <p>DiSEqC bezeichnet die Anschlüsse mit Buchstaben, nicht mit Zahlen: <strong>A bis D</strong> sowie <strong>ToneA</strong> und <strong>ToneB</strong>. Bei einem einzelnen LNB bleibt DiSEqC auf Aus, bei mehreren wird die richtige Position A bis D gewählt.</p>
+
+      <p>Unicable-Anlage? → <a href="#anderesgeraet-sat">Anderes Gerät läuft problemlos</a></p>
+
+    </section>
+
+    <section class="sec" id="transponder" data-nav="Transponder-Referenz">
+      <div class="sec-head">
+        <p class="sec-num">Abschnitt 6</p>
+        <h2>Transponder-Referenz <span data-markt="satellit">Astra 19,2° Ost</span></h2>
+      </div>
+      <p>Zeigt das Gerät <strong>niedrige Stärke bei hoher Qualität</strong>, ist meist der Transponder falsch eingegeben oder die Messung fehlerhaft — diese Kombination kommt sonst praktisch nicht vor. Werte neu ablesen.</p>
+      <!-- markt:transponder:anfang -->
+      <span class="path">11494 MHz · H · SR 22000 · DVB-S2 — Das Erste HD, frei</span>
+      <span class="path">11362 MHz · H · SR 22000 · DVB-S2 — ZDF HD, frei</span>
+      <span class="path">12188 MHz · H · SR 27500 · DVB-S — RTL-Familie SD, frei</span>
+      <!-- markt:transponder:ende -->
+      <p>Als Referenz eignen sich die beiden öffentlich-rechtlichen Transponder, weil sie unverschlüsselt und dauerhaft belegt sind.</p>
+      <p>Transponderbelegungen ändern sich. Vor wichtigen Auskünften den aktuellen Stand prüfen, etwa über kingofsat.net oder astra.de.</p>
+      <p>Bei anderem Satelliten (Hotbird 13° Ost, Astra 23,5° Ost) andere Werte nachschlagen.</p>
+    </section>
+
+    <!-- 6. kabel -->
+    <section class="sec" id="kabel" data-nav="Werte Kabel">
+      <div class="sec-head">
+        <p class="sec-num">Abschnitt 7</p>
+        <h2>Richtwerte Kabel (DVB-C)</h2>
+      </div>
+
+      <h3>Diagnosematrix</h3>
+      <!-- matrix:kabel:anfang -->
+      <p class="mk-quelle">Pegel in dBµV, Messbereich 20 … 100 · MER in dB, Messbereich 0 … 45</p>
+      <div class="tw"><table class="matrixtabelle">
+  <tr>
+    <th class="mk-ecke"></th>
+    <th scope="col"><span class="mk-kl">Q0</span><span class="mk-na">kein Einrasten</span><span class="mk-br">exakt 0</span></th>
+    <th scope="col"><span class="mk-kl">Q1</span><span class="mk-na">unter Minimum</span><span class="mk-br">&lt; 30</span></th>
+    <th scope="col"><span class="mk-kl">Q2</span><span class="mk-na">Grenzbereich</span><span class="mk-br">30 … &lt;36</span></th>
+    <th scope="col"><span class="mk-kl">Q3</span><span class="mk-na">gut</span><span class="mk-br">36 … 42</span></th>
+    <th scope="col"><span class="mk-kl">Q4</span><span class="mk-na">unplausibel hoch</span><span class="mk-br">&gt; 42</span></th>
+  </tr>
+  <tr>
+    <th scope="row"><span class="mk-kl">P1</span><span class="mk-na">zu niedrig</span><span class="mk-br">&lt; 45</span></th>
+    <td class="mk-fehler" data-kennung="KEIN-SIGNAL">KEIN-SIGNAL</td>
+    <td class="mk-fehler" data-kennung="UNTERPEGEL">UNTERPEGEL</td>
+    <td class="mk-fehler" data-kennung="UNTERPEGEL">UNTERPEGEL</td>
+    <td class="mk-unklar" data-kennung="WIDERSPRUCH">WIDERSPRUCH</td>
+    <td class="mk-unklar" data-kennung="UNPLAUSIBEL">UNPLAUSIBEL</td>
+  </tr>
+  <tr>
+    <th scope="row"><span class="mk-kl">P2</span><span class="mk-na">unterer Rand</span><span class="mk-br">45 … &lt;50</span></th>
+    <td class="mk-fehler" data-kennung="KONFIG">KONFIG</td>
+    <td class="mk-fehler" data-kennung="UNTERPEGEL">UNTERPEGEL</td>
+    <td class="mk-grenz" data-kennung="UNTERPEGEL-GRENZ">UNTERPEGEL-GRENZ</td>
+    <td class="mk-grenz" data-kennung="RAND-UNTEN-OK">RAND-UNTEN-OK</td>
+    <td class="mk-unklar" data-kennung="UNPLAUSIBEL">UNPLAUSIBEL</td>
+  </tr>
+  <tr>
+    <th scope="row"><span class="mk-kl">P3</span><span class="mk-na">normal</span><span class="mk-br">50 … 70</span></th>
+    <td class="mk-fehler" data-kennung="KONFIG">KONFIG</td>
+    <td class="mk-fehler" data-kennung="STOERUNG">STOERUNG</td>
+    <td class="mk-grenz" data-kennung="STOERUNG-GRENZ">STOERUNG-GRENZ</td>
+    <td class="mk-gut" data-kennung="OK">OK</td>
+    <td class="mk-unklar" data-kennung="UNPLAUSIBEL">UNPLAUSIBEL</td>
+  </tr>
+  <tr>
+    <th scope="row"><span class="mk-kl">P4</span><span class="mk-na">oberer Rand</span><span class="mk-br">&gt;70 … 78</span></th>
+    <td class="mk-fehler" data-kennung="KONFIG">KONFIG</td>
+    <td class="mk-fehler" data-kennung="UEBERPEGEL">UEBERPEGEL</td>
+    <td class="mk-fehler" data-kennung="UEBERPEGEL-BEGINN">UEBERPEGEL-BEGINN</td>
+    <td class="mk-grenz" data-kennung="RAND-OBEN-OK">RAND-OBEN-OK</td>
+    <td class="mk-unklar" data-kennung="UNPLAUSIBEL">UNPLAUSIBEL</td>
+  </tr>
+  <tr>
+    <th scope="row"><span class="mk-kl">P5</span><span class="mk-na">zu hoch</span><span class="mk-br">&gt; 78</span></th>
+    <td class="mk-fehler" data-kennung="KONFIG-ODER-UEBERPEGEL">KONFIG-ODER-<br>UEBERPEGEL</td>
+    <td class="mk-fehler" data-kennung="UEBERPEGEL">UEBERPEGEL</td>
+    <td class="mk-fehler" data-kennung="UEBERPEGEL-GRENZ">UEBERPEGEL-GRENZ</td>
+    <td class="mk-grenz" data-kennung="PEGEL-HOCH-OK">PEGEL-HOCH-OK</td>
+    <td class="mk-unklar" data-kennung="UNPLAUSIBEL">UNPLAUSIBEL</td>
+  </tr>
+      </table></div>
+      <p class="mk-legende">
+        <span><i class="mk-gut"></i>gut</span>
+        <span><i class="mk-grenz"></i>grenz</span>
+        <span><i class="mk-fehler"></i>fehler</span>
+        <span><i class="mk-unklar"></i>unklar</span>
+      </p>
+      <details class="legende-aus">
+        <summary>Legende zeigen</summary>
+        <dl class="mk-befunde">
+          <dt class="mk-gut" data-kennung="OK">OK</dt>
+          <dd>Empfangswerte in Ordnung — die Ursache liegt woanders.</dd>
+          <dt class="mk-grenz" data-kennung="PEGEL-HOCH-OK">PEGEL-HOCH-OK</dt>
+          <dd>Pegel über dem Grenzwert, Rauschabstand noch gut.</dd>
+          <dt class="mk-grenz" data-kennung="RAND-OBEN-OK">RAND-OBEN-OK</dt>
+          <dd>Pegel am oberen Rand, Rauschabstand gut.</dd>
+          <dt class="mk-grenz" data-kennung="RAND-UNTEN-OK">RAND-UNTEN-OK</dt>
+          <dd>Pegel am unteren Rand, Rauschabstand gut.</dd>
+          <dt class="mk-grenz" data-kennung="STOERUNG-GRENZ">STOERUNG-GRENZ</dt>
+          <dd>Grenzbereich — Pegel stimmt, Rauschabstand ohne Reserve.</dd>
+          <dt class="mk-grenz" data-kennung="UNTERPEGEL-GRENZ">UNTERPEGEL-GRENZ</dt>
+          <dd>Pegel am unteren Rand, Reserve fast aufgebraucht.</dd>
+          <dt class="mk-fehler" data-kennung="KEIN-SIGNAL">KEIN-SIGNAL</dt>
+          <dd>Kein Signal am Tuner.</dd>
+          <dt class="mk-fehler" data-kennung="KONFIG">KONFIG</dt>
+          <dd>Leistung kommt an, der Tuner rastet nicht ein.</dd>
+          <dt class="mk-fehler" data-kennung="KONFIG-ODER-UEBERPEGEL">KONFIG-ODER-UEBERPEGEL</dt>
+          <dd>Sehr hoher Pegel, aber nichts dekodierbar.</dd>
+          <dt class="mk-fehler" data-kennung="STOERUNG">STOERUNG</dt>
+          <dd>Störung im Signalweg — Pegel stimmt, Signal ist verzerrt.</dd>
+          <dt class="mk-fehler" data-kennung="UEBERPEGEL">UEBERPEGEL</dt>
+          <dd>Überpegel — der Tuner übersteuert.</dd>
+          <dt class="mk-fehler" data-kennung="UEBERPEGEL-BEGINN">UEBERPEGEL-BEGINN</dt>
+          <dd>Beginnende Übersteuerung — Pegel am oberen Rand, Rauschabstand fällt.</dd>
+          <dt class="mk-fehler" data-kennung="UEBERPEGEL-GRENZ">UEBERPEGEL-GRENZ</dt>
+          <dd>Pegel über dem Grenzwert, Rauschabstand bereits angegriffen.</dd>
+          <dt class="mk-fehler" data-kennung="UNTERPEGEL">UNTERPEGEL</dt>
+          <dd>Unterpegel — zu wenig Leistung am Tuner.</dd>
+          <dt class="mk-unklar" data-kennung="UNPLAUSIBEL">UNPLAUSIBEL</dt>
+          <dd>Rauschabstand unplausibel hoch.</dd>
+          <dt class="mk-unklar" data-kennung="WIDERSPRUCH">WIDERSPRUCH</dt>
+          <dd>Werte passen nicht zusammen.</dd>
+        </dl>
+      </details>
+      <!-- matrix:kabel:ende -->
+
+      <p>Welche Modulation anliegt, steht unter <span data-menuepunkt="manuelleEinstellung">Manuelle Einstellung</span> neben Frequenz und Symbolrate. Im Zweifel 256QAM annehmen — Standard in Deutschland und Polen.</p>
+      <span class="path" data-menue="manuelleEinstellung">Alle Einstellungen → Allgemein → Sender → Sendereinstellung (Programmsuche und -einstellungen) → Manuelle Einstellung</span>
+
+      <h3>Kabelspezifische Muster</h3>
+      <div class="tw"><table>
+        <thead><tr><th>Symptom</th><th>Ursache</th></tr></thead>
+        <tbody>
+          <tr><td>Man wohnt weit oben im Haus, Nachbar unten hat kein Problem</td><td>Längere Leitung, mehr Dämpfung. Frequenzabhängig, deshalb oben zuerst</td></tr>
+          <tr><td>Gestern perfekt, heute schwarz, ohne Übergang</td><td><strong>Digital Cliff.</strong> Signal lag schon länger an der Grenze. Kein Zeichen für plötzlichen Defekt</td></tr>
+          <tr><td>Nur RTL, Sat.1, ProSieben fehlen</td><td>Kein Signalproblem. Verschlüsselung, Abo, CI+-Modul — Störungen halten sich nicht an Senderfamilien</td></tr>
+          <tr><td>Bild friert bei bestimmten Tätigkeiten ein</td><td>Elektrische Störung. Prüffrage: nur Live-TV → Antennenkabel. Auch Apps → Stromnetz</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section class="sec" id="gemessen" data-nav="Grundlagen">
+      <div class="sec-head">
+        <p class="sec-num">Abschnitt 8</p>
+        <h2>Grundlagen</h2>
+      </div>
+      <div class="note note--ok">
+        <p class="note-t">Pegel ist die Lautstärke. MER ist die Deutlichkeit.</p>
+        <p><strong>Pegel</strong> sagt, <em>wie viel</em> ankommt — reine Leistung, gemessen in dBµV oder dBm. Rauschen und Störer zählen mit. Ein hoher Pegel allein beweist gar nichts.</p>
+        <p><strong>MER</strong> sagt, <em>wie sauber</em> es ist — das Verhältnis von Nutzsignal zu Fehleranteil, gemessen in dB. Höher ist besser, denn MER zählt keine Störungen, sondern misst den Abstand zu ihnen. Bei 0 dB wären Signal und Störung gleich groß.</p>
+        <p>Jemand kann laut und undeutlich sprechen: hoher Pegel, schlechter MER. Oder leise und gestochen klar: niedriger Pegel, guter MER.</p>
+      </div>
+
+      <div class="note note--warn">
+        <p class="note-t">Was welche Maßnahme bewirkt</p>
+        <p>Ein <strong>Verstärker</strong> hebt Nutzsignal und Rauschen gleichermaßen an, ein <strong>Dämpfungsglied</strong> senkt beides. Das Verhältnis bleibt in beiden Fällen unverändert — <strong>keine der beiden Maßnahmen verbessert den MER.</strong></p>
+        <p>Verstärker helfen nur bei <strong>niedrigem Pegel und gutem MER</strong>. Ist der MER eingebrochen, steckt eine Störung im Signal, die gefunden und beseitigt werden muss: Stecker, Schirmung, defektes Kabel, Störquelle im Haus.</p>
+      </div>
+
+      <p><strong>Der häufigste Verwechslungsfehler:</strong> 9 dB sind bei Satellit ein nutzbarer Grenzwert, bei Kabel hoffnungslos. 256QAM hat viel dichter liegende Konstellationspunkte und reagiert dadurch empfindlicher auf Rauschen.</p>
+      <p><strong>Prozentanzeigen sind nicht vergleichbar.</strong> Sie sind herstellerspezifisch skaliert und lassen sich nicht in dBµV oder dBm umrechnen. Bei DVB-C sind Stärkewerte um 50 bis 60 Prozent auch bei einwandfreiem Empfang normal.</p>
+
+      <h3>Was die Werte bedeuten</h3>
+      <div class="tw"><table>
+        <thead><tr><th>Wert</th><th>Bedeutung</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Signalstärke</strong></td><td>Wie viel Leistung am Tuner-Eingang anliegt. Aus der AGC-Regelspannung abgeleitet. <strong>Rauschen und Störer zählen mit.</strong> Sagt allein nichts über Empfangbarkeit.</td></tr>
+          <tr><td><strong>Signalqualität</strong></td><td>Wie sauber der Datenstrom dekodierbar ist. Aus MER/SNR und Fehlerrate berechnet. <strong>Der entscheidende Wert.</strong></td></tr>
+          <tr><td><strong>SNR / C/N / MER</strong> (dB)</td><td>Rauschabstand. Physikalische Größe, nicht herstellerskaliert. Höher ist besser.</td></tr>
+          <tr><td><strong>Pegel</strong> (dBm / dBµV)</td><td>Absolute Leistung. Zu hoch heißt Übersteuerung.</td></tr>
+          <tr><td><strong>Reserve</strong> (Link Margin)</td><td>Abstand zwischen gemessenem MER und dem Minimum der Modulation. Beispiel Kabel: 35 dB gemessen, 30 dB Minimum → 5 dB Reserve.</td></tr>
+        </tbody>
+      </table></div>
+
+      <h3>Warum Kabel und Satellit verschiedene Grenzwerte haben</h3>
+      <p>Nicht der Übertragungsweg entscheidet, sondern die <strong>Modulation</strong> — also wie viel Information in jedes Symbol gepackt wird.</p>
+
+      <div class="tw"><table>
+        <thead><tr><th>&nbsp;</th><th>Satellit</th><th>Kabel</th></tr></thead>
+        <tbody>
+          <tr><td>Verfahren</td><td>QPSK / 8PSK</td><td>256QAM</td></tr>
+          <tr><td>Bits pro Symbol</td><td>2 – 3</td><td>8</td></tr>
+          <tr><td>Nötiger MER</td><td class="num">ab 6 dB</td><td class="num">ab 30 dB</td></tr>
+          <tr><td>Toleranz gegen Störung</td><td><strong>hoch</strong></td><td><strong>niedrig</strong></td></tr>
+        </tbody>
+      </table></div>
+
+      <div class="note">
+        <p class="note-t">Satellit ist der Lastwagen, Kabel der Sportwagen</p>
+        <p>Bei QPSK gibt es vier mögliche Zustände, die weit auseinanderliegen — der Empfänger darf sich stark verschätzen und trifft trotzdem richtig. Bei 256QAM liegen 256 Zustände auf derselben Fläche, und schon geringe Streuung führt ins Nachbarfeld.</p>
+        <p>Satellit <strong>muss</strong> robust sein, weil das Signal schwach und verrauscht aus 36.000 km Entfernung ankommt. Kabel <strong>kann</strong> mehr packen, weil das Medium geschirmt ist — und tut es, weil dort Bandbreite knapp ist.</p>
+        <p><strong>Praktische Folge:</strong> Ein MER von 14 dB ist bei Satellit ein guter Wert und bei Kabel unbrauchbar. Dieselbe Zahl, zwei völlig verschiedene Aussagen.</p>
+      </div>
+
+      <h3>Was ein LNB ist und warum 9750 / 10600</h3>
+      <div class="note">
+        <p class="note-t">Was ein LNB ist und warum 9750 / 10600</p>
+        <p><strong>LNB</strong> steht für <em>Low Noise Block Converter</em>. Es sitzt im Brennpunkt der Schüssel und hat eine einzige Aufgabe: Es empfängt die Satellitenfrequenzen zwischen 10,7 und 12,75 GHz und rechnet sie auf 950 bis 2150 MHz herunter. Ohne diesen Schritt wäre die Übertragung im Koaxkabel unmöglich — so hohe Frequenzen würden schon nach wenigen Metern verschwinden.</p>
+        <p>Das Satellitenband ist rund 2050 MHz breit, die Kabelstrecke überträgt aber nur etwa 1200 MHz. Deshalb wird es in zwei Hälften geteilt, und für jede gibt es einen eigenen Oszillator:</p>
+        <ul class="tight">
+          <li><strong>9750 MHz</strong> für das untere Band, 10,7 bis 11,7 GHz</li>
+          <li><strong>10600 MHz</strong> für das obere Band, 11,7 bis 12,75 GHz</li>
+        </ul>
+        <p>Der Tuner schaltet zwischen beiden über ein 22-kHz-Signal um. Gerechnet wird schlicht durch Abziehen:</p>
+        <div class="formel">
+          <div class="formel-zeile"><span>11362 MHz − 9750</span><span>=</span><span>1612 MHz</span></div>
+          <div class="formel-zeile"><span>12188 MHz − 10600</span><span>=</span><span>1588 MHz</span></div>
+        </div>
+        <p><strong>Warum ein falscher Wert alles blockiert:</strong> Steht im Fernseher eine andere Oszillatorfrequenz, ergibt die Rechnung eine falsche Zwischenfrequenz. Der Tuner stellt dann neben den tatsächlichen Kanal ein und findet nichts — während das LNB weiterhin volle Leistung liefert. Genau daraus entsteht das Bild <strong>hohe Stärke bei konstant null Qualität</strong>.</p>
+        <p><strong>Andere Bauformen:</strong> Ein Single-LNB versorgt ein Gerät, Twin zwei, Quad vier. Ein Quattro-LNB gehört an einen Multischalter und funktioniert nicht direkt am Fernseher. Ein Unicable-LNB überträgt mehrere Teilnehmer über ein Kabel und muss im Menü als solches eingestellt sein.</p>
+      </div>
+    </section>
+
+    <!-- 7. nachweis -->
+
+  </div>
+</div>
+</main>
+
+<button type="button" class="totop" id="totop" aria-label="Nach oben">↑</button>
+
+<script src="../assets/texte/de.js"></script>
+<script src="../assets/grenzwerte.js"></script>
+<script src="../assets/handbuch.js"></script>
+</body>
+</html>
